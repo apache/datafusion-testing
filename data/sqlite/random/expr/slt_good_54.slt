@@ -464,13 +464,11 @@ SELECT - - 38 + - - COUNT ( 79 )
 ----
 39
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 28
+# Datafusion - Expected - 36
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(28\) AS col1" at position 0 and "Int64\(36\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 28 AS col1, 36 AS col1
-----
-28
-36
 
 query I rowsort
 SELECT - + 94
@@ -545,13 +543,11 @@ SELECT + MAX ( + 51 )
 ----
 51
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 7680
+# Datafusion - Expected - 95
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(80\) \* Int64\(96\) AS col2" at position 0 and "Int64\(95\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 80 * + 96 AS col2, + 95 AS col2
-----
-7680
-95
 
 query I rowsort
 SELECT DISTINCT - 2 col2
@@ -678,13 +674,11 @@ SELECT ALL CAST ( 32 AS INTEGER )
 ----
 32
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-125
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -7
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col1" at position 0 and "max\(Int64\(\-7\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) AS col1, MAX ( ALL + - 7 ) col1
-----
-1
--7
 
 query I rowsort label-126
 SELECT ALL - ( CAST ( NULL AS INTEGER ) ) * - 1 col0
@@ -706,7 +700,7 @@ NULL
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-129
-SELECT + 52 AS col1, NULLIF ( CAST ( NULL AS REAL ), - + SUM ( DISTINCT - 5 ) * + 58 * - 73 - - + COUNT ( * ) )
+SELECT + 52 AS col1, NULLIF ( CAST ( NULL AS FLOAT8 ), - + SUM ( DISTINCT - 5 ) * + 58 * - 73 - - + COUNT ( * ) )
 ----
 52
 NULL
@@ -721,13 +715,11 @@ SELECT ALL - + NULLIF ( 24, + - 73 ) AS col1
 ----
 -24
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-132
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -52
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- coalesce\(Int64\(52\), \(\- \(\- count\(\*\)\)\) \* Int64\(73\)\)\) AS col0" at position 0 and "avg\(\(\- CAST\(NULL AS Int32\)\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - + COALESCE ( 52, - - COUNT ( * ) * + 73 ) AS col0, + AVG ( - CAST ( NULL AS INTEGER ) ) col0
-----
--52
-NULL
 
 query I rowsort label-133
 SELECT ( + 91 ) * - + COUNT ( * ) AS col0
@@ -861,13 +853,11 @@ SELECT COUNT ( * ) col1, 24
 1
 24
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-158
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col1" at position 0 and "count\(\*\) \* count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + - COUNT ( * ) AS col1, COUNT ( * ) * + COUNT ( * ) AS col1
-----
--1
-1
 
 query I rowsort label-159
 SELECT + COUNT ( * ) * + 73 * + + COUNT ( * ) AS col1
@@ -1032,12 +1022,10 @@ SELECT - CAST ( - COUNT ( * ) AS INTEGER ) col0
 ----
 1
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-191
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 52
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT CAST ( AVG ( DISTINCT 52 ) AS INTEGER )
-----
-52
 
 query I rowsort
 SELECT + 25 * - 40 AS col1
@@ -1245,7 +1233,7 @@ SELECT DISTINCT + 41 + - 63
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-232
-SELECT ALL 16 / CAST ( NULL AS REAL ) * + 90 * - + COUNT ( * )
+SELECT ALL 16 / CAST ( NULL AS FLOAT8 ) * + 90 * - + COUNT ( * )
 ----
 NULL
 
@@ -1260,13 +1248,11 @@ SELECT ALL CAST ( + 34 AS INTEGER )
 ----
 34
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-235
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 34
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(NULL AS Int32\) AS col1" at position 0 and "Int64\(34\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL CAST ( NULL AS INTEGER ) col1, + 34 AS col1
-----
-NULL
-34
 
 query I rowsort label-236
 SELECT ALL + COUNT ( * ) + + - COUNT ( * )
@@ -1441,7 +1427,7 @@ SELECT + ( - 48 ) + - 50
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-269
-SELECT DISTINCT CAST ( NULL AS REAL ) * - ( + - 69 ) + - - 31
+SELECT DISTINCT CAST ( NULL AS FLOAT8 ) * - ( + - 69 ) + - - 31
 ----
 NULL
 
@@ -1459,7 +1445,7 @@ SELECT COUNT ( DISTINCT + + 59 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-272
-SELECT + SUM ( CAST ( NULL AS REAL ) ) AS col2
+SELECT + SUM ( CAST ( NULL AS FLOAT8 ) ) AS col2
 ----
 NULL
 
@@ -1650,7 +1636,7 @@ SELECT ALL MAX ( + 90 ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-309
-SELECT DISTINCT MAX ( - ( CAST ( NULL AS REAL ) ) ) AS col0
+SELECT DISTINCT MAX ( - ( CAST ( NULL AS FLOAT8 ) ) ) AS col0
 ----
 NULL
 
@@ -1778,7 +1764,7 @@ SELECT DISTINCT - + 70 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-334
-SELECT ALL + - COUNT ( * ) - + + CAST ( NULL AS REAL ) col2
+SELECT ALL + - COUNT ( * ) - + + CAST ( NULL AS FLOAT8 ) col2
 ----
 NULL
 
@@ -1995,7 +1981,7 @@ SELECT + CAST ( + CAST ( + - COUNT ( * ) AS INTEGER ) AS INTEGER ) * - - COUNT (
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-376
-SELECT CAST ( NULL AS REAL ) + + ( + 91 )
+SELECT CAST ( NULL AS FLOAT8 ) + + ( + 91 )
 ----
 NULL
 
@@ -2289,7 +2275,7 @@ SELECT DISTINCT + - 73 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-433
-SELECT - CAST ( NULL AS REAL ) * 7
+SELECT - CAST ( NULL AS FLOAT8 ) * 7
 ----
 NULL
 
@@ -2809,13 +2795,11 @@ SELECT 35 * - 46 AS col1
 ----
 -1610
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-535
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 27
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(27\) AS col0" at position 0 and "count\(\*\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL 27 col0, COUNT ( * ) col0
-----
-27
-1
 
 query I rowsort
 SELECT DISTINCT - 97 * - + 78 * - 41 AS col0
@@ -2962,13 +2946,11 @@ SELECT MIN ( ALL + - 66 ) / + - 28 + 29
 ----
 31
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-565
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -55
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-55\) AS col1" at position 0 and "CAST\(NULL AS Int32\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 55 AS col1, CAST ( NULL AS INTEGER ) AS col1
-----
--55
-NULL
 
 query I rowsort label-566
 SELECT 94 * - - COUNT ( * )
@@ -3095,7 +3077,7 @@ SELECT ALL - 5 AS col0, - MIN ( - 9 )
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-589
-SELECT - 20 - 25 AS col0, CAST ( NULL AS REAL )
+SELECT - 20 - 25 AS col0, CAST ( NULL AS FLOAT8 )
 ----
 -45
 NULL
@@ -3334,13 +3316,11 @@ SELECT - COUNT ( - 87 )
 ----
 -1
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-636
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - -21
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col2" at position 0 and "Int64\(\-21\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - COUNT ( * ) AS col2, - 21 AS col2
-----
--1
--21
 
 query I rowsort label-637
 SELECT NULLIF ( + + 36, + 95 ) / - ( 34 )
@@ -3402,7 +3382,7 @@ SELECT ALL 60 + + - COUNT ( * ) AS col0
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-648
-SELECT DISTINCT CAST ( NULL AS REAL ), + 75 * + 97 * + COUNT ( * ) AS col1
+SELECT DISTINCT CAST ( NULL AS FLOAT8 ), + 75 * + 97 * + COUNT ( * ) AS col1
 ----
 NULL
 7275
@@ -3926,7 +3906,7 @@ SELECT ALL 19 col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-751
-SELECT + COUNT ( * ) * 91 * - CAST ( NULL AS REAL ) AS col2
+SELECT + COUNT ( * ) * 91 * - CAST ( NULL AS FLOAT8 ) AS col2
 ----
 NULL
 
@@ -4005,7 +3985,7 @@ SELECT ALL COUNT ( * ) * - - ( - 90 ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-766
-SELECT ALL - COUNT ( * ) * - CAST ( NULL AS REAL )
+SELECT ALL - COUNT ( * ) * - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -4135,12 +4115,10 @@ SELECT ALL - CAST ( + 53 AS INTEGER ) AS col1
 ----
 -53
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-792
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT - 0 * CAST ( NULL AS INTEGER ) * AVG ( DISTINCT - - CAST ( NULL AS INTEGER ) )
-----
-NULL
 
 query I rowsort label-793
 SELECT - COUNT ( - 88 ) AS col0
@@ -4191,7 +4169,7 @@ SELECT + + MIN ( ALL 75 ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-802
-SELECT DISTINCT - - CAST ( NULL AS REAL ) + + + 75
+SELECT DISTINCT - - CAST ( NULL AS FLOAT8 ) + + + 75
 ----
 NULL
 
@@ -4230,7 +4208,7 @@ SELECT + + 74 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-809
-SELECT ALL + ( + + CAST ( NULL AS REAL ) ) col0
+SELECT ALL + ( + + CAST ( NULL AS FLOAT8 ) ) col0
 ----
 NULL
 
@@ -4245,13 +4223,11 @@ SELECT ALL CAST ( - 71 AS INTEGER )
 ----
 -71
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 72
+# Datafusion - Expected - 5
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(72\) AS col2" at position 0 and "Int64\(5\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT 72 AS col2, + 5 AS col2
-----
-72
-5
 
 query I rowsort
 SELECT ALL 75 * + 43 AS col2
@@ -4267,7 +4243,7 @@ SELECT DISTINCT - CAST ( + 15 AS INTEGER )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-815
-SELECT ALL 34 * + CAST ( NULL AS REAL )
+SELECT ALL 34 * + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -4375,7 +4351,7 @@ SELECT - - 88 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-836
-SELECT + ( - - CAST ( NULL AS REAL ) )
+SELECT + ( - - CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -4779,13 +4755,11 @@ SELECT - 39, 33 AS col1
 -39
 33
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -65
+# Datafusion - Expected - 19
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-65\) AS col1" at position 0 and "Int64\(19\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - 65 AS col1, 19 AS col1
-----
--65
-19
 
 query I rowsort label-916
 SELECT DISTINCT + CAST ( - ( + 64 ) AS INTEGER )
@@ -4927,7 +4901,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-943
-SELECT ALL + 16 * - CAST ( NULL AS REAL ) * COUNT ( DISTINCT + 86 )
+SELECT ALL + 16 * - CAST ( NULL AS FLOAT8 ) * COUNT ( DISTINCT + 86 )
 ----
 NULL
 
@@ -5122,13 +5096,11 @@ SELECT DISTINCT + COUNT ( * ) * - 4 AS col1
 ----
 -4
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-982
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\)" at position 0 and "count\(\*\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + COUNT ( * ), + COUNT ( * )
-----
-1
-1
 
 query I rowsort
 SELECT DISTINCT + 48 col1
@@ -5281,7 +5253,7 @@ SELECT + - 12
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1012
-SELECT CAST ( NULL AS REAL ) + - 22 AS col0
+SELECT CAST ( NULL AS FLOAT8 ) + - 22 AS col0
 ----
 NULL
 
@@ -5915,7 +5887,7 @@ SELECT + - ( - - ( 63 ) )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1136
-SELECT DISTINCT - ( + CAST ( NULL AS REAL ) ) * CAST ( NULL AS INTEGER )
+SELECT DISTINCT - ( + CAST ( NULL AS FLOAT8 ) ) * CAST ( NULL AS INTEGER )
 ----
 NULL
 
@@ -6103,7 +6075,7 @@ SELECT DISTINCT + - 75 / + - 82
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1173
-SELECT ALL + - CAST ( NULL AS REAL ) * + - CAST ( NULL AS REAL )
+SELECT ALL + - CAST ( NULL AS FLOAT8 ) * + - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -6191,7 +6163,7 @@ SELECT 61 / + COUNT ( * )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1190
-SELECT DISTINCT - - ( + + CAST ( NULL AS REAL ) )
+SELECT DISTINCT - - ( + + CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -6535,7 +6507,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1257
-SELECT ALL - CAST ( NULL AS REAL ) * - COUNT ( * ) AS col0
+SELECT ALL - CAST ( NULL AS FLOAT8 ) * - COUNT ( * ) AS col0
 ----
 NULL
 
@@ -6574,7 +6546,7 @@ SELECT DISTINCT + + 68 AS col0
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-1264
-SELECT DISTINCT 9 * - CAST ( NULL AS REAL ) AS col2, COUNT ( * )
+SELECT DISTINCT 9 * - CAST ( NULL AS FLOAT8 ) AS col2, COUNT ( * )
 ----
 NULL
 1
@@ -6738,7 +6710,7 @@ SELECT - ( 83 ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1295
-SELECT DISTINCT ( + CAST ( NULL AS REAL ) ) AS col1
+SELECT DISTINCT ( + CAST ( NULL AS FLOAT8 ) ) AS col1
 ----
 NULL
 
@@ -6951,7 +6923,7 @@ SELECT ALL - + 24 / + - COUNT ( * ) + + ( + - 46 ) col0
 -22
 
 query I rowsort label-1337
-SELECT ALL 91 * CAST ( + CAST ( NULL AS REAL ) AS INTEGER )
+SELECT ALL 91 * CAST ( + CAST ( NULL AS FLOAT8 ) AS INTEGER )
 ----
 NULL
 
@@ -6975,13 +6947,11 @@ SELECT DISTINCT - 62 col0
 ----
 -62
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-1342
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(NULL AS Int32\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + CAST ( NULL AS INTEGER ) AS col1, + COUNT ( * ) AS col1
-----
-NULL
-1
 
 query I rowsort label-1343
 SELECT ALL + SUM ( - 60 ) AS col1
@@ -7548,7 +7518,7 @@ SELECT DISTINCT 47 + + SUM ( DISTINCT - 76 ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1453
-SELECT CAST ( NULL AS REAL ) * + 42 + - COUNT ( * )
+SELECT CAST ( NULL AS FLOAT8 ) * + 42 + - COUNT ( * )
 ----
 NULL
 
@@ -7572,12 +7542,10 @@ SELECT + 38 - + - COUNT ( * ) col2
 ----
 39
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-1458
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT AVG ( DISTINCT + CAST ( NULL AS INTEGER ) ) AS col1
-----
-NULL
 
 query I rowsort label-1459
 SELECT DISTINCT CAST ( - 76 AS INTEGER ) AS col2
@@ -7729,7 +7697,7 @@ SELECT DISTINCT - 55 AS col2, 6
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1488
-SELECT - 46 * ( - CAST ( NULL AS REAL ) ) + 25
+SELECT - 46 * ( - CAST ( NULL AS FLOAT8 ) ) + 25
 ----
 NULL
 
@@ -7836,7 +7804,7 @@ SELECT DISTINCT CAST ( - 44 AS INTEGER ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1508
-SELECT - ( - + CAST ( NULL AS REAL ) ) AS col0
+SELECT - ( - + CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -7849,7 +7817,7 @@ SELECT ALL 52 * 17 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1510
-SELECT DISTINCT - 8 * - + CAST ( NULL AS REAL ) col2
+SELECT DISTINCT - 8 * - + CAST ( NULL AS FLOAT8 ) col2
 ----
 NULL
 
@@ -7874,13 +7842,11 @@ SELECT DISTINCT - COALESCE ( - - COUNT ( * ), + 84 ) col2
 ----
 -1
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-1515
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -98
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-98\) AS col2" at position 0 and "CAST\(NULL AS Int32\) / max\(DISTINCT \(\- Int64\(87\)\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 98 AS col2, CAST ( NULL AS INTEGER ) / MAX ( DISTINCT - + 87 ) AS col2
-----
--98
-NULL
 
 query I rowsort label-1516
 SELECT + COUNT ( DISTINCT - ( 88 ) ) AS col2
@@ -7978,13 +7944,11 @@ SELECT - 16 * 64 AS col2
 ----
 -1024
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-1535
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\)" at position 0 and "count\(\*\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + + COUNT ( * ), + COUNT ( * )
-----
-1
-1
 
 query I rowsort label-1536
 SELECT - CAST ( MIN ( ALL 60 ) AS INTEGER )
@@ -8130,7 +8094,7 @@ SELECT + NULLIF ( + + 50, + CAST ( NULL AS INTEGER ) )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1564
-SELECT ALL - CAST ( NULL AS REAL ) / - - 80 AS col1
+SELECT ALL - CAST ( NULL AS FLOAT8 ) / - - 80 AS col1
 ----
 NULL
 
@@ -8638,7 +8602,7 @@ SELECT - ( + CAST ( 47 AS INTEGER ) ) col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1664
-SELECT + CAST ( + + CAST ( NULL AS INTEGER ) AS REAL )
+SELECT + CAST ( + + CAST ( NULL AS INTEGER ) AS FLOAT8 )
 ----
 NULL
 
@@ -8849,13 +8813,11 @@ SELECT DISTINCT + COUNT ( * ) / + 74
 ----
 0
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-1706
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 16
+# Datafusion - Expected - -52
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(10\) \+ Int64\(6\) AS col2" at position 0 and "Int64\(\-48\) / Int64\(34\) \+ Int64\(\-51\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 10 + + 6 AS col2, - 48 / 34 + + - 51 AS col2
-----
-16
--52
 
 query I rowsort
 SELECT - + 90 col1
@@ -9117,7 +9079,7 @@ SELECT + CAST ( NULL AS INTEGER ) + 32 AS col0
 NULL
 
 query I rowsort label-1758
-SELECT DISTINCT + COUNT ( + - CAST ( NULL AS REAL ) )
+SELECT DISTINCT + COUNT ( + - CAST ( NULL AS FLOAT8 ) )
 ----
 0
 
@@ -9156,7 +9118,7 @@ SELECT + 63 * - + COUNT ( * )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1765
-SELECT DISTINCT + ( + + CASE + + ( ( - + 61 ) ) WHEN 31 THEN NULL ELSE - NULLIF ( + - CAST ( NULL AS REAL ), - 22 * - 52 ) END )
+SELECT DISTINCT + ( + + CASE + + ( ( - + 61 ) ) WHEN 31 THEN NULL ELSE - NULLIF ( + - CAST ( NULL AS FLOAT8 ), - 22 * - 52 ) END )
 ----
 NULL
 
@@ -9773,7 +9735,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1887
-SELECT DISTINCT + CAST ( NULL AS REAL ) * + COUNT ( * )
+SELECT DISTINCT + CAST ( NULL AS FLOAT8 ) * + COUNT ( * )
 ----
 NULL
 
@@ -9786,7 +9748,7 @@ SELECT DISTINCT - 57 * - 76
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1889
-SELECT ALL + - CAST ( CAST ( NULL AS INTEGER ) AS REAL ) * + CAST ( NULL AS INTEGER ) * - + 65 AS col1
+SELECT ALL + - CAST ( CAST ( NULL AS INTEGER ) AS FLOAT8 ) * + CAST ( NULL AS INTEGER ) * - + 65 AS col1
 ----
 NULL
 
@@ -10041,7 +10003,7 @@ SELECT 20 / + ( 20 ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1939
-SELECT ALL - CAST ( + CAST ( NULL AS REAL ) AS REAL ) col2
+SELECT ALL - CAST ( + CAST ( NULL AS FLOAT8 ) AS FLOAT8 ) col2
 ----
 NULL
 
@@ -10095,7 +10057,7 @@ SELECT + MIN ( 5 ) * - COUNT ( * ) + - 85 AS col0, 21 * - 76
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1949
-SELECT MAX ( - CAST ( NULL AS REAL ) ) AS col2
+SELECT MAX ( - CAST ( NULL AS FLOAT8 ) ) AS col2
 ----
 NULL
 
@@ -10279,13 +10241,11 @@ SELECT + COUNT ( * ) - 3 + - 42
 ----
 -44
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 0
+# Datafusion - Expected - 26
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(0\) AS col1" at position 0 and "Int64\(26\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 0 AS col1, 26 AS col1
-----
-0
-26
 
 query I rowsort label-1987
 SELECT DISTINCT + + MAX ( DISTINCT + 93 ) AS col1
@@ -10312,7 +10272,7 @@ SELECT MIN ( DISTINCT - + 56 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-1991
-SELECT ALL 64 + + - CAST ( NULL AS REAL )
+SELECT ALL 64 + + - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -10425,13 +10385,11 @@ SELECT 18 * + + ( + 91 ) + - 87 AS col0
 ----
 1551
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-2013
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 99
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col2" at position 0 and "Int64\(99\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + + COUNT ( * ) AS col2, + 99 AS col2
-----
-1
-99
 
 query I rowsort
 SELECT DISTINCT + + ( - - 68 ) AS col1
@@ -10521,7 +10479,7 @@ SELECT ALL + COUNT ( * ) + + 38 AS col2
 39
 
 query I rowsort label-2031
-SELECT - CASE - 75 WHEN + - 37 * CAST ( NULL AS REAL ) THEN NULL ELSE + 24 + COUNT ( * ) END
+SELECT - CASE - 75 WHEN + - 37 * CAST ( NULL AS FLOAT8 ) THEN NULL ELSE + 24 + COUNT ( * ) END
 ----
 -25
 
@@ -10860,13 +10818,11 @@ SELECT ALL 10 * - - 80
 ----
 800
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-2099
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - -1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col0" at position 0 and "\(\- count\(\*\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - COUNT ( * ) col0, - COUNT ( * ) AS col0
-----
--1
--1
 
 query I rowsort label-2100
 SELECT COUNT ( * ) + + - COUNT ( * )
@@ -11078,7 +11034,7 @@ SELECT - 18 * + - 54
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2139
-SELECT DISTINCT CAST ( NULL AS REAL ) col2
+SELECT DISTINCT CAST ( NULL AS FLOAT8 ) col2
 ----
 NULL
 
@@ -11086,7 +11042,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2140
-SELECT ALL + ( + COUNT ( * ) ) * CAST ( NULL AS REAL )
+SELECT ALL + ( + COUNT ( * ) ) * CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -11373,12 +11329,10 @@ SELECT - + 88 AS col1
 ----
 -88
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-2197
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT ALL + + AVG ( DISTINCT - + CAST ( NULL AS INTEGER ) )
-----
-NULL
 
 query I rowsort
 SELECT DISTINCT + 95 + 46 col0
@@ -11736,7 +11690,7 @@ SELECT + CAST ( + 12 AS INTEGER ) + + + 69
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2266
-SELECT DISTINCT CAST ( NULL AS REAL ) * + + 60
+SELECT DISTINCT CAST ( NULL AS FLOAT8 ) * + + 60
 ----
 NULL
 
@@ -12086,13 +12040,11 @@ SELECT ALL - ( - + 65 ) + - 42
 ----
 23
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-2334
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 77
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- CAST\(NULL AS Int32\)\) AS col1" at position 0 and "Int64\(22\) \+ Int64\(55\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - CAST ( NULL AS INTEGER ) AS col1, 22 + + 55 AS col1
-----
-NULL
-77
 
 query I rowsort label-2335
 SELECT COUNT ( * ) * 95
@@ -12236,7 +12188,7 @@ SELECT ALL 72 col0, SUM ( DISTINCT + 13 )
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-2362
-SELECT 69 col1, + CAST ( NULL AS REAL ) * + 49 AS col2
+SELECT 69 col1, + CAST ( NULL AS FLOAT8 ) * + 49 AS col2
 ----
 69
 NULL
@@ -12312,7 +12264,7 @@ SELECT + CAST ( + 98 AS INTEGER )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2376
-SELECT CAST ( NULL AS REAL ) * - COUNT ( * ) + - 28 AS col0
+SELECT CAST ( NULL AS FLOAT8 ) * - COUNT ( * ) + - 28 AS col0
 ----
 NULL
 
@@ -12573,7 +12525,7 @@ SELECT 75 - - - 25 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2427
-SELECT DISTINCT CAST ( NULL AS REAL ) / 69 col1
+SELECT DISTINCT CAST ( NULL AS FLOAT8 ) / 69 col1
 ----
 NULL
 
@@ -13249,7 +13201,7 @@ SELECT ALL + - 59 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2560
-SELECT DISTINCT + + CAST ( NULL AS REAL )
+SELECT DISTINCT + + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -13488,13 +13440,11 @@ SELECT COUNT ( * ) * + + 66 AS col0
 ----
 66
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-2607
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(1\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 1 AS col1, COUNT ( * ) AS col1
-----
-1
-1
 
 query II rowsort
 SELECT ALL 35 AS col1, 51
@@ -13526,7 +13476,7 @@ SELECT MAX ( ALL 51 ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2613
-SELECT SUM ( - - CAST ( NULL AS REAL ) )
+SELECT SUM ( - - CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -13721,7 +13671,7 @@ SELECT ALL 31 * + COUNT ( * ) AS col0
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-2651
-SELECT - COUNT ( * ), + 72 / - CAST ( NULL AS REAL ) AS col2
+SELECT - COUNT ( * ), + 72 / - CAST ( NULL AS FLOAT8 ) AS col2
 ----
 -1
 NULL
@@ -14236,7 +14186,7 @@ SELECT + - COUNT ( DISTINCT 37 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2752
-SELECT - 46 * + COUNT ( * ) / + CAST ( NULL AS REAL ) AS col0
+SELECT - 46 * + COUNT ( * ) / + CAST ( NULL AS FLOAT8 ) AS col0
 ----
 NULL
 
@@ -14336,7 +14286,7 @@ SELECT ALL + COUNT ( ALL CAST ( NULL AS INTEGER ) )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2771
-SELECT COUNT ( * ) + CAST ( NULL AS REAL )
+SELECT COUNT ( * ) + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -14549,7 +14499,7 @@ SELECT + ( COUNT ( * ) ) col1
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-2813
-SELECT + CAST ( NULL AS REAL ) AS col1, 71 + 15
+SELECT + CAST ( NULL AS FLOAT8 ) AS col1, 71 + 15
 ----
 NULL
 86
@@ -14872,12 +14822,10 @@ SELECT - + 94 col1
 ----
 -94
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-2876
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT - + AVG ( DISTINCT - + CAST ( NULL AS INTEGER ) )
-----
-NULL
 
 query I rowsort label-2877
 SELECT - + COUNT ( * ) + + COUNT ( * ) AS col2
@@ -14974,7 +14922,7 @@ SELECT DISTINCT COUNT ( * ) + - 90
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-2895
-SELECT + 58 * + CAST ( NULL AS REAL )
+SELECT + 58 * + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -15249,13 +15197,11 @@ SELECT ALL 59 col1
 ----
 59
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-2950
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 53
+# Datafusion - Expected - -32
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) \* Int64\(0\) \+ \(\- Int64\(\-53\)\) AS col1" at position 0 and "Int64\(\-32\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) * ( + + 0 ) + - - 53 AS col1, - 32 AS col1
-----
-53
--32
 
 query I rowsort
 SELECT ALL - + 69 AS col2
@@ -15465,13 +15411,11 @@ SELECT ALL + - 88 * + 62
 ----
 -5456
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -2
+# Datafusion - Expected - -79
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-2\) AS col1" at position 0 and "Int64\(\-79\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + - 2 col1, - 79 col1
-----
--2
--79
 
 query I rowsort label-2993
 SELECT DISTINCT + - 66 / - + 14
@@ -15827,19 +15771,17 @@ SELECT DISTINCT 73 * + 78
 ----
 5694
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3063
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 4
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(8\) \+ CAST\(NULL AS Int32\) AS col0" at position 0 and "Int64\(4\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 8 + CAST ( NULL AS INTEGER ) AS col0, ( 4 ) AS col0
-----
-NULL
-4
 
 # Datafusion - Types were automatically converted from:
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3064
-SELECT ( + 87 ) * CAST ( NULL AS REAL ) AS col2
+SELECT ( + 87 ) * CAST ( NULL AS FLOAT8 ) AS col2
 ----
 NULL
 
@@ -16086,7 +16028,7 @@ SELECT + CAST ( + - 5 AS INTEGER ) + + 20
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3112
-SELECT ALL - CAST ( NULL AS REAL ) col1
+SELECT ALL - CAST ( NULL AS FLOAT8 ) col1
 ----
 NULL
 
@@ -16146,13 +16088,11 @@ SELECT ALL ( + ( COUNT ( * ) ) ) AS col2
 ----
 1
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 8
+# Datafusion - Expected - -9
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(8\) AS col1" at position 0 and "Int64\(\-9\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL 8 AS col1, - 9 AS col1
-----
-8
--9
 
 query I rowsort label-3125
 SELECT ALL CAST ( NULL AS INTEGER ) * COUNT ( * ) AS col2
@@ -16303,7 +16243,7 @@ SELECT DISTINCT + 98 * 32 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3154
-SELECT 22 * + SUM ( - CAST ( NULL AS REAL ) ) AS col0
+SELECT 22 * + SUM ( - CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -16392,13 +16332,11 @@ SELECT ALL ( - + CAST ( NULL AS INTEGER ) ) AS col1
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3172
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -35
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "max\(Int64\(\-35\)\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + MAX ( ALL - 35 ) AS col1, COUNT ( * ) AS col1
-----
--35
-1
 
 query I rowsort
 SELECT ( 24 ) AS col0
@@ -16524,7 +16462,7 @@ SELECT ALL + + 91 * + 30
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3197
-SELECT - CAST ( NULL AS REAL ) * + - ( 73 ) AS col0
+SELECT - CAST ( NULL AS FLOAT8 ) * + - ( 73 ) AS col0
 ----
 NULL
 
@@ -16677,13 +16615,11 @@ SELECT - - 24 * - 71 AS col2
 ----
 -1704
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3227
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 32
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col1" at position 0 and "Int64\(32\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + COUNT ( * ) AS col1, 32 col1
-----
-1
-32
 
 query I rowsort
 SELECT + ( + - 63 )
@@ -17247,7 +17183,7 @@ SELECT DISTINCT - ( NULLIF ( + - 5, - - 62 ) ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3337
-SELECT + CAST ( + CAST ( NULL AS INTEGER ) AS REAL )
+SELECT + CAST ( + CAST ( NULL AS INTEGER ) AS FLOAT8 )
 ----
 NULL
 
@@ -17604,13 +17540,11 @@ SELECT ALL CAST ( MAX ( - 50 ) AS INTEGER ) AS col0
 ----
 -50
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 85
+# Datafusion - Expected - -92
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(85\) AS col1" at position 0 and "Int64\(\-92\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL 85 AS col1, - 92 col1
-----
-85
--92
 
 query II rowsort
 SELECT ALL 43 AS col0, + 30 AS col1
@@ -17717,13 +17651,11 @@ SELECT ALL + MIN ( - 12 )
 ----
 -12
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3428
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col0" at position 0 and "CAST\(NULL AS Int32\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + - COUNT ( * ) AS col0, CAST ( NULL AS INTEGER ) AS col0
-----
--1
-NULL
 
 query I rowsort label-3429
 SELECT DISTINCT + + SUM ( DISTINCT - + 14 )
@@ -17780,13 +17712,11 @@ SELECT + + 54 AS col2
 ----
 54
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3440
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\)" at position 0 and "count\(\*\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + COUNT ( * ), COUNT ( * )
-----
-1
-1
 
 query I rowsort
 SELECT ALL 63 + - 76
@@ -18167,13 +18097,11 @@ SELECT - ( - + NULLIF ( - 41, + 4 * + - 38 / 66 ) ) AS col2
 ----
 -41
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 78
+# Datafusion - Expected - -49
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(78\) AS col2" at position 0 and "Int64\(\-49\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + 78 col2, - 49 AS col2
-----
-78
--49
 
 query I rowsort
 SELECT + 98 - + - ( 95 )
@@ -18302,7 +18230,7 @@ SELECT MAX ( DISTINCT - + 54 )
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-3540
-SELECT DISTINCT 87 / CAST ( NULL AS REAL ), COUNT ( * ) - - 14 AS col1
+SELECT DISTINCT 87 / CAST ( NULL AS FLOAT8 ), COUNT ( * ) - - 14 AS col1
 ----
 NULL
 15
@@ -18356,7 +18284,7 @@ SELECT ALL + AVG ( ALL - + 93 ) + + + CAST ( NULL AS INTEGER ) AS col0
 NULL
 
 query I rowsort label-3550
-SELECT ALL - COUNT ( ALL CAST ( NULL AS REAL ) )
+SELECT ALL - COUNT ( ALL CAST ( NULL AS FLOAT8 ) )
 ----
 0
 
@@ -18459,7 +18387,7 @@ SELECT ALL 99 * + COUNT ( * ) AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3570
-SELECT ALL + CAST ( NULL AS REAL ) + - 34 col0
+SELECT ALL + CAST ( NULL AS FLOAT8 ) + - 34 col0
 ----
 NULL
 
@@ -18657,13 +18585,11 @@ SELECT CAST ( - 22 AS INTEGER )
 ----
 -22
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3609
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 0
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col0" at position 0 and "count\(\*\) / Int64\(23\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) AS col0, COUNT ( * ) / + 23 AS col0
-----
-1
-0
 
 query I rowsort label-3610
 SELECT 74 - COUNT ( * ) col0
@@ -18861,13 +18787,11 @@ SELECT ALL - 58 * - + ( - 8 ) + - COUNT ( * )
 ----
 -465
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3649
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 50
+# Datafusion - Expected - -7
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- sum\(Int64\(50\)\)\)\) AS col2" at position 0 and "count\(\*\) \* Int64\(\-7\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - - SUM ( + 50 ) AS col2, + ( + COUNT ( * ) ) * - 7 AS col2
-----
-50
--7
 
 query I rowsort
 SELECT ALL 98 * + + 63
@@ -18884,13 +18808,11 @@ SELECT ALL - 22 * - - 94 AS col1
 ----
 -2068
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3653
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - -47
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col0" at position 0 and "max\(Int64\(\-47\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - COUNT ( * ) AS col0, + MAX ( ALL - 47 ) AS col0
-----
--1
--47
 
 query I rowsort
 SELECT - 76 + - - 47
@@ -19207,7 +19129,7 @@ SELECT - 93 col1
 -93
 
 query I rowsort label-3715
-SELECT COUNT ( CAST ( NULL AS REAL ) )
+SELECT COUNT ( CAST ( NULL AS FLOAT8 ) )
 ----
 0
 
@@ -19706,7 +19628,7 @@ SELECT ALL - - 84 AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3812
-SELECT CAST ( NULL AS REAL ) * 74 AS col2
+SELECT CAST ( NULL AS FLOAT8 ) * 74 AS col2
 ----
 NULL
 
@@ -19745,7 +19667,7 @@ SELECT MAX ( DISTINCT - - 75 ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3819
-SELECT + CAST ( NULL AS REAL ) - 90
+SELECT + CAST ( NULL AS FLOAT8 ) - 90
 ----
 NULL
 
@@ -19931,7 +19853,7 @@ SELECT - - ( - + 91 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3855
-SELECT ALL SUM ( DISTINCT + CAST ( NULL AS REAL ) ) AS col0
+SELECT ALL SUM ( DISTINCT + CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -20091,13 +20013,11 @@ SELECT + 67 AS col0, 91
 67
 91
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-3886
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - 78
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col0" at position 0 and "Int64\(78\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - COUNT ( * ) AS col0, 78 AS col0
-----
--1
-78
 
 query I rowsort
 SELECT + ( - + 88 ) AS col0
@@ -20174,7 +20094,7 @@ SELECT - 53 + - ( - 85 ) col0
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-3901
-SELECT - ( - - CAST ( NULL AS REAL ) ) + + 13 col0, + 96 + - ( + CAST ( + CAST ( NULL AS INTEGER ) AS INTEGER ) ) AS col2
+SELECT - ( - - CAST ( NULL AS FLOAT8 ) ) + + 13 col0, + 96 + - ( + CAST ( + CAST ( NULL AS INTEGER ) AS INTEGER ) ) AS col2
 ----
 NULL
 NULL
@@ -20248,7 +20168,7 @@ SELECT 55 + - 23 + COUNT ( * ) * + 96
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3915
-SELECT ALL - CAST ( NULL AS REAL ) + - CAST ( NULL AS INTEGER ) AS col1
+SELECT ALL - CAST ( NULL AS FLOAT8 ) + - CAST ( NULL AS INTEGER ) AS col1
 ----
 NULL
 
@@ -20500,12 +20420,10 @@ SELECT CAST ( - - ( + 3 ) AS INTEGER )
 ----
 3
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-3965
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT ALL + AVG ( DISTINCT - 61 ) * CAST ( NULL AS INTEGER )
-----
-NULL
 
 query I rowsort label-3966
 SELECT SUM ( DISTINCT - ( - + 74 ) ) AS col0
@@ -20614,7 +20532,7 @@ SELECT ALL MAX ( - 25 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3986
-SELECT MAX ( CAST ( NULL AS REAL ) ) col0
+SELECT MAX ( CAST ( NULL AS FLOAT8 ) ) col0
 ----
 NULL
 
@@ -20642,7 +20560,7 @@ SELECT COUNT ( - - 54 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-3991
-SELECT + ( ( + 78 ) ) * - CAST ( NULL AS REAL ) + + 69 + - + COUNT ( * )
+SELECT + ( ( + 78 ) ) * - CAST ( NULL AS FLOAT8 ) + + 69 + - + COUNT ( * )
 ----
 NULL
 
@@ -20885,7 +20803,7 @@ SELECT ALL - 93 * 71
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4038
-SELECT DISTINCT - COUNT ( * ) - + - ( 24 ) * - 43 / - 65 + + + MIN ( + - CAST ( NULL AS REAL ) ) AS col2
+SELECT DISTINCT - COUNT ( * ) - + - ( 24 ) * - 43 / - 65 + + + MIN ( + - CAST ( NULL AS FLOAT8 ) ) AS col2
 ----
 NULL
 
@@ -21046,7 +20964,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4069
-SELECT ALL + NULLIF ( + CAST ( NULL AS REAL ), 98 ) / - 72 AS col0
+SELECT ALL + NULLIF ( + CAST ( NULL AS FLOAT8 ), 98 ) / - 72 AS col0
 ----
 NULL
 
@@ -21064,7 +20982,7 @@ SELECT DISTINCT 77 + - COUNT ( * )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4072
-SELECT CAST ( NULL AS REAL ) * - + 93
+SELECT CAST ( NULL AS FLOAT8 ) * - + 93
 ----
 NULL
 
@@ -21103,13 +21021,11 @@ SELECT DISTINCT 54 * 70 - + + 98 AS col1
 ----
 3682
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4080
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 95
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col0" at position 0 and "Int64\(95\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) AS col0, + 95 AS col0
-----
-1
-95
 
 query I rowsort label-4081
 SELECT DISTINCT - - 5 * SUM ( + 62 ) * + CAST ( NULL AS INTEGER )
@@ -21372,13 +21288,11 @@ SELECT - 49 + - 74
 ----
 -123
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4132
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(NULL AS Int32\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT CAST ( NULL AS INTEGER ) AS col1, + COUNT ( * ) AS col1
-----
-NULL
-1
 
 query I rowsort label-4133
 SELECT CAST ( + 71 AS INTEGER ) AS col1
@@ -21405,13 +21319,11 @@ SELECT ALL ( + 84 ) * + 99
 ----
 8316
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4138
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -35
+# Datafusion - Expected - 0
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- CAST\(Int64\(35\) AS Int32\)\) AS col2" at position 0 and "Int64\(49\) / \(\- Int64\(68\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - CAST ( + 35 AS INTEGER ) AS col2, 49 / - + 68 AS col2
-----
--35
-0
 
 query I rowsort label-4139
 SELECT DISTINCT + CAST ( NULL AS INTEGER ) * + 20 + 89 AS col2
@@ -21578,7 +21490,7 @@ SELECT ALL - 57 + + + 23
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4171
-SELECT ALL 29 * - CAST ( NULL AS REAL ) + - COUNT ( * )
+SELECT ALL 29 * - CAST ( NULL AS FLOAT8 ) + - COUNT ( * )
 ----
 NULL
 
@@ -21704,13 +21616,11 @@ SELECT + ( - + SUM ( - 59 ) )
 ----
 59
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -71
+# Datafusion - Expected - 87
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-71\) AS col0" at position 0 and "Int64\(87\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 71 AS col0, 87 AS col0
-----
--71
-87
 
 query I rowsort label-4197
 SELECT - + MIN ( DISTINCT + 57 ) col0
@@ -21767,13 +21677,11 @@ SELECT 1 * 78 AS col1
 ----
 78
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4208
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col2" at position 0 and "Int64\(1\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - COUNT ( * ) AS col2, 1 AS col2
-----
--1
-1
 
 query I rowsort
 SELECT DISTINCT - + 24 AS col1
@@ -21789,7 +21697,7 @@ SELECT - 63 * + 51 * 84 AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4211
-SELECT DISTINCT CAST ( NULL AS REAL ) + - COUNT ( * )
+SELECT DISTINCT CAST ( NULL AS FLOAT8 ) + - COUNT ( * )
 ----
 NULL
 
@@ -21995,13 +21903,11 @@ SELECT ALL + CAST ( - COUNT ( * ) AS INTEGER ) * - - ( + 73 ) AS col0
 ----
 -73
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4251
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -92
+# Datafusion - Expected - -89
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) \+ Int64\(\-93\) AS col1" at position 0 and "Int64\(\-89\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) + - 93 AS col1, - 89 AS col1
-----
--92
--89
 
 query I rowsort label-4252
 SELECT DISTINCT 71 + + MIN ( DISTINCT + 20 ) * + 45
@@ -22172,13 +22078,11 @@ SELECT + 34 + + MIN ( + 41 ) AS col1
 ----
 75
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4285
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - -36
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- CAST\(NULL AS Int32\)\) AS col1" at position 0 and "count\(\*\) \* Int64\(\-36\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - CAST ( NULL AS INTEGER ) AS col1, COUNT ( * ) * - 36 AS col1
-----
-NULL
--36
 
 query I rowsort
 SELECT - - 4 AS col0
@@ -22330,7 +22234,7 @@ SELECT + - ( 79 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4314
-SELECT + COUNT ( * ) * + CAST ( NULL AS REAL )
+SELECT + COUNT ( * ) * + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -22754,7 +22658,7 @@ SELECT DISTINCT - ( - 39 ) col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4397
-SELECT DISTINCT - 49 + + CAST ( NULL AS REAL )
+SELECT DISTINCT - 49 + + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -22764,7 +22668,7 @@ SELECT + COUNT ( * ) + - 55 AS col2
 -54
 
 query I rowsort label-4399
-SELECT 54 + + - CAST ( + CAST ( NULL AS REAL ) AS INTEGER ) - 27
+SELECT 54 + + - CAST ( + CAST ( NULL AS FLOAT8 ) AS INTEGER ) - 27
 ----
 NULL
 
@@ -22876,7 +22780,7 @@ SELECT DISTINCT - 4 - + 1
 -5
 
 query II rowsort label-4421
-SELECT ALL - + COUNT ( * ), COUNT ( DISTINCT CAST ( NULL AS REAL ) ) AS col1
+SELECT ALL - + COUNT ( * ), COUNT ( DISTINCT CAST ( NULL AS FLOAT8 ) ) AS col1
 ----
 -1
 0
@@ -23052,7 +22956,7 @@ SELECT - 35 + + MAX ( ALL + - 98 ) * + COUNT ( * )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4455
-SELECT CAST ( NULL AS REAL ) * + - 76
+SELECT CAST ( NULL AS FLOAT8 ) * + - 76
 ----
 NULL
 
@@ -23062,12 +22966,10 @@ SELECT 1, + 38 AS col1
 1
 38
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-4457
-SELECT ALL AVG ( DISTINCT - CAST ( NULL AS REAL ) )
-----
-NULL
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
+SELECT ALL AVG ( DISTINCT - CAST ( NULL AS FLOAT8 ) )
 
 query I rowsort label-4458
 SELECT + COUNT ( * ) + 31
@@ -23272,7 +23174,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4497
-SELECT DISTINCT - + NULLIF ( CAST ( - + AVG ( - - CAST ( NULL AS INTEGER ) ) AS REAL ), - 38 ) AS col1
+SELECT DISTINCT - + NULLIF ( CAST ( - + AVG ( - - CAST ( NULL AS INTEGER ) ) AS FLOAT8 ), - 38 ) AS col1
 ----
 NULL
 
@@ -23306,13 +23208,11 @@ SELECT + 47 * + - 4
 ----
 -188
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -31
+# Datafusion - Expected - -13
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-31\) AS col0" at position 0 and "Int64\(\-13\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + - 31 AS col0, - 13 col0
-----
--31
--13
 
 query I rowsort label-4505
 SELECT + 14 + - MIN ( DISTINCT + 11 )
@@ -23496,13 +23396,11 @@ SELECT ALL 44 - 60
 ----
 -16
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4541
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 87
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(87\) AS col2" at position 0 and "count\(\*\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + 87 col2, + COUNT ( * ) col2
-----
-87
-1
 
 query I rowsort
 SELECT + + 93 * - 70 AS col0
@@ -24036,13 +23934,11 @@ SELECT DISTINCT 46 * + 85
 ----
 3910
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -42
+# Datafusion - Expected - 11
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-42\) AS col2" at position 0 and "Int64\(11\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 42 AS col2, 11 AS col2
-----
--42
-11
 
 query I rowsort label-4647
 SELECT COUNT ( * ) * COUNT ( * ) / + - 61 * - 43 AS col2
@@ -24095,7 +23991,7 @@ SELECT DISTINCT + + 0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4656
-SELECT ALL - CAST ( NULL AS REAL ) / - 28 AS col2
+SELECT ALL - CAST ( NULL AS FLOAT8 ) / - 28 AS col2
 ----
 NULL
 
@@ -24136,7 +24032,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4663
-SELECT ALL CAST ( NULL AS REAL ) * - - 90
+SELECT ALL CAST ( NULL AS FLOAT8 ) * - - 90
 ----
 NULL
 
@@ -24234,7 +24130,7 @@ SELECT ALL + 24 + - 83 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4682
-SELECT ALL + ( + 83 ) * CAST ( NULL AS REAL )
+SELECT ALL + ( + 83 ) * CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -24345,13 +24241,11 @@ SELECT - ( - 87 ) AS col1
 ----
 87
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4704
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - 152
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(95\) / \(\- sum\(Int64\(\-90\)\)\) \* \(\- count\(\*\)\) AS col0" at position 0 and "Int64\(99\) \+ Int64\(53\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL ( 95 ) / - SUM ( - 90 ) * - COUNT ( * ) col0, + 99 + 53 AS col0
-----
--1
-152
 
 query I rowsort
 SELECT DISTINCT 30 col0
@@ -24482,13 +24376,11 @@ SELECT ALL + + 63 * - COUNT ( * ) AS col0
 ----
 -63
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 2310
+# Datafusion - Expected - 59
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(33\) \* Int64\(70\) AS col1" at position 0 and "Int64\(59\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 33 * 70 AS col1, 59 AS col1
-----
-2310
-59
 
 query I rowsort label-4731
 SELECT DISTINCT ( CAST ( + 92 AS INTEGER ) )
@@ -24531,26 +24423,22 @@ SELECT 69 * - 44 AS col2
 ----
 -3036
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4739
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 91
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(91\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT 91 col1, COUNT ( * ) AS col1
-----
-91
-1
 
 query I rowsort label-4740
 SELECT DISTINCT - 89 / + ( + 71 )
 ----
 -1
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4741
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 75
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-75\)\) AS col0" at position 0 and "count\(\*\) \- \(\- CAST\(NULL AS Int32\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - - 75 AS col0, + COUNT ( * ) - - CAST ( NULL AS INTEGER ) AS col0
-----
-75
-NULL
 
 query I rowsort
 SELECT ALL 84 + - - 55 AS col0
@@ -24601,7 +24489,7 @@ SELECT ALL + COUNT ( * ) / 21
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4751
-SELECT 88 * CAST ( NULL AS REAL )
+SELECT 88 * CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -24666,13 +24554,11 @@ SELECT ALL + CAST ( NULL AS INTEGER ) + - - 39 * - COUNT ( * )
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-4764
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 29
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col0" at position 0 and "\(\- Int64\(\-29\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL COUNT ( * ) AS col0, - ( - 29 ) AS col0
-----
-1
-29
 
 query I rowsort label-4765
 SELECT + - COUNT ( * ) * 28 - + - 94
@@ -24750,13 +24636,11 @@ SELECT ALL - ( + + MAX ( - 26 ) )
 ----
 26
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 87
+# Datafusion - Expected - 83
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(87\) AS col2" at position 0 and "Int64\(83\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 87 AS col2, + 83 AS col2
-----
-87
-83
 
 query I rowsort label-4781
 SELECT ALL - SUM ( DISTINCT + 30 )
@@ -24919,7 +24803,7 @@ SELECT COUNT ( ALL - 29 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4812
-SELECT + CAST ( NULL AS REAL ) + + + ( 82 ) AS col1
+SELECT + CAST ( NULL AS FLOAT8 ) + + + ( 82 ) AS col1
 ----
 NULL
 
@@ -24962,7 +24846,7 @@ SELECT DISTINCT - 68 + COUNT ( * ) * - 60
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4820
-SELECT ALL 17 * + + CAST ( NULL AS REAL )
+SELECT ALL 17 * + + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -25145,7 +25029,7 @@ SELECT - ( 49 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4856
-SELECT ALL CAST ( + - CASE - ( + COUNT ( * ) ) WHEN + - COALESCE ( COUNT ( * ), + 97 ) THEN NULL ELSE - COUNT ( * ) END AS REAL ) AS col2
+SELECT ALL CAST ( + - CASE - ( + COUNT ( * ) ) WHEN + - COALESCE ( COUNT ( * ), + 97 ) THEN NULL ELSE - COUNT ( * ) END AS FLOAT8 ) AS col2
 ----
 NULL
 
@@ -25188,7 +25072,7 @@ SELECT - ( + - 44 )
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-4864
-SELECT + 82, + CAST ( NULL AS REAL ) col1
+SELECT + 82, + CAST ( NULL AS FLOAT8 ) col1
 ----
 82
 NULL
@@ -25321,13 +25205,11 @@ SELECT DISTINCT - COUNT ( * ), - 40 AS col2
 -1
 -40
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 52
+# Datafusion - Expected - 96
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(52\) AS col0" at position 0 and "Int64\(96\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + ( + 52 ) AS col0, 96 AS col0
-----
-52
-96
 
 query I rowsort label-4891
 SELECT - + MAX ( ALL - 48 )
@@ -25832,7 +25714,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4988
-SELECT + 61 + + - CAST ( NULL AS REAL )
+SELECT + 61 + + - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -25890,7 +25772,7 @@ SELECT + + COUNT ( + ( + - 19 ) ) AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-4999
-SELECT ALL + ( CAST ( NULL AS REAL ) ) AS col2
+SELECT ALL + ( CAST ( NULL AS FLOAT8 ) ) AS col2
 ----
 NULL
 
@@ -26257,7 +26139,7 @@ SELECT COUNT ( ALL - 82 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5070
-SELECT DISTINCT + 35 * - CAST ( NULL AS REAL ) AS col2
+SELECT DISTINCT + 35 * - CAST ( NULL AS FLOAT8 ) AS col2
 ----
 NULL
 
@@ -26322,13 +26204,11 @@ SELECT + ( + 58 ) / - + COUNT ( * ) * - COUNT ( DISTINCT + - 38 )
 ----
 58
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -68
+# Datafusion - Expected - 52
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-68\) AS col2" at position 0 and "Int64\(52\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - 68 AS col2, 52 AS col2
-----
--68
-52
 
 query II rowsort
 SELECT + 70, + 63 AS col0
@@ -26497,7 +26377,7 @@ SELECT COUNT ( * ) * - + 74 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5116
-SELECT ( CAST ( NULL AS REAL ) ) + + ( - 88 )
+SELECT ( CAST ( NULL AS FLOAT8 ) ) + + ( - 88 )
 ----
 NULL
 
@@ -26588,7 +26468,7 @@ SELECT + + 8 AS col1
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-5133
-SELECT + ( - 47 ) + - COUNT ( * ) AS col1, - CAST ( NULL AS REAL ) AS col2
+SELECT + ( - 47 ) + - COUNT ( * ) AS col1, - CAST ( NULL AS FLOAT8 ) AS col2
 ----
 -48
 NULL
@@ -26695,13 +26575,11 @@ SELECT ALL + 4 col2
 ----
 4
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-5154
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 58
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(Int64\(\-4\)\) AS col2" at position 0 and "Int64\(58\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( - 4 ) AS col2, + ( + 58 ) AS col2
-----
-1
-58
 
 query I rowsort label-5155
 SELECT ALL + COUNT ( * ) + - ( + COUNT ( DISTINCT + + CAST ( NULL AS INTEGER ) ) )
@@ -26774,7 +26652,7 @@ SELECT + 44 + + - MIN ( DISTINCT - 98 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5168
-SELECT + ( - ( + - CAST ( NULL AS REAL ) ) )
+SELECT + ( - ( + - CAST ( NULL AS FLOAT8 ) ) )
 ----
 NULL
 
@@ -26938,7 +26816,7 @@ SELECT - 61 * - + 68 AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5200
-SELECT + CAST ( NULL AS REAL ) + + - COUNT ( * ) AS col1
+SELECT + CAST ( NULL AS FLOAT8 ) + + - COUNT ( * ) AS col1
 ----
 NULL
 
@@ -27308,7 +27186,7 @@ SELECT - 76 / - 86 * - 66
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5272
-SELECT ALL - CAST ( NULL AS REAL ) * 91 AS col2
+SELECT ALL - CAST ( NULL AS FLOAT8 ) * 91 AS col2
 ----
 NULL
 
@@ -27557,7 +27435,7 @@ SELECT DISTINCT + COUNT ( * ) + + COUNT ( * )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5320
-SELECT DISTINCT ( + - 43 ) * CAST ( NULL AS REAL )
+SELECT DISTINCT ( + - 43 ) * CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -27817,7 +27695,7 @@ SELECT - SUM ( + + 96 ) AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5371
-SELECT + 73 * + + AVG ( ALL - 22 ) * - + 43 - - SUM ( DISTINCT - 63 ) - + 18 + CAST ( NULL AS REAL )
+SELECT + 73 * + + AVG ( ALL - 22 ) * - + 43 - - SUM ( DISTINCT - 63 ) - + 18 + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -27845,7 +27723,7 @@ SELECT ALL COUNT ( * ) / + COUNT ( * ) + - COUNT ( * ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5376
-SELECT + CAST ( NULL AS REAL ) + CAST ( NULL AS INTEGER ) AS col0
+SELECT + CAST ( NULL AS FLOAT8 ) + CAST ( NULL AS INTEGER ) AS col0
 ----
 NULL
 
@@ -27884,13 +27762,11 @@ SELECT DISTINCT 92 * + - ( 49 ) col2
 ----
 -4508
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-5384
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 78
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(78\) AS col1" at position 0 and "CAST\(NULL AS Int32\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 78 AS col1, CAST ( NULL AS INTEGER ) AS col1
-----
-78
-NULL
 
 query II rowsort label-5385
 SELECT ALL - COUNT ( * ) AS col1, 37 AS col2
@@ -27898,13 +27774,11 @@ SELECT ALL - COUNT ( * ) AS col1, 37 AS col2
 -1
 37
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -84
+# Datafusion - Expected - 73
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(84\)\) AS col0" at position 0 and "Int64\(73\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - + 84 AS col0, + 73 col0
-----
--84
-73
 
 query I rowsort
 SELECT ALL - 39 * - + 11 AS col1
@@ -28074,13 +27948,11 @@ SELECT ALL - 44 * - 18 AS col0
 ----
 792
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-5420
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL COUNT ( * ) col1, COUNT ( * ) AS col1
-----
-1
-1
 
 query I rowsort label-5421
 SELECT DISTINCT + COUNT ( * ) + + + 40 + - CAST ( + 77 AS INTEGER )
@@ -28330,7 +28202,7 @@ SELECT + - 39 + + 35 + COUNT ( * ) AS col1
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-5469
-SELECT + ( + CAST ( NULL AS REAL ) ) AS col0, - ( + COUNT ( * ) )
+SELECT + ( + CAST ( NULL AS FLOAT8 ) ) AS col0, - ( + COUNT ( * ) )
 ----
 NULL
 -1
@@ -28476,7 +28348,7 @@ SELECT 93 * + 95
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5497
-SELECT 33 + - + 15 - + CAST ( NULL AS REAL )
+SELECT 33 + - + 15 - + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -28959,13 +28831,11 @@ SELECT ALL - + 98 + + CAST ( NULL AS INTEGER ) col1
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 38
+# Datafusion - Expected - -94
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(38\) AS col0" at position 0 and "Int64\(\-94\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 38 AS col0, - 94 AS col0
-----
-38
--94
 
 query I rowsort
 SELECT ALL - 77 * ( - 78 ) AS col0
@@ -29076,13 +28946,11 @@ SELECT + 68 AS col1, + CAST ( NULL AS INTEGER )
 68
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 19
+# Datafusion - Expected - 17
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(19\) AS col0" at position 0 and "\(\- \(\- Int64\(17\)\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 19 col0, - ( - + 17 ) AS col0
-----
-19
-17
 
 query II rowsort label-5615
 SELECT DISTINCT - 59, CAST ( NULL AS INTEGER ) AS col2
@@ -29190,7 +29058,7 @@ SELECT + + ( - 5 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5635
-SELECT + - AVG ( ALL CAST ( NULL AS REAL ) ) AS col2
+SELECT + - AVG ( ALL CAST ( NULL AS FLOAT8 ) ) AS col2
 ----
 NULL
 
@@ -29204,13 +29072,11 @@ SELECT + 39 + - - 44 + + 29 col2
 ----
 112
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-5638
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -90
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col1" at position 0 and "Int64\(\-90\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL COUNT ( * ) col1, - 90 AS col1
-----
-1
--90
 
 query I rowsort label-5639
 SELECT ALL ( + - NULLIF ( COUNT ( 13 ), + COUNT ( * ) ) )
@@ -29552,13 +29418,11 @@ SELECT ALL - 78 + - CAST ( - - COUNT ( * ) AS INTEGER ) - - 70 AS col1
 ----
 -9
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-5706
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 20
+# Datafusion - Expected - -1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(19\) \+ \(\- \(\- count\(\*\)\)\) AS col1" at position 0 and "\(\- count\(DISTINCT Int64\(95\)\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 19 + - - COUNT ( * ) AS col1, - COUNT ( DISTINCT + 95 ) AS col1
-----
-20
--1
 
 query I rowsort label-5707
 SELECT ALL + COALESCE ( + COUNT ( * ), + 88 )
@@ -29803,7 +29667,7 @@ SELECT ALL + COUNT ( * ) + - 15 AS col0
 -14
 
 query I rowsort label-5755
-SELECT CAST ( + - CAST ( NULL AS REAL ) AS INTEGER )
+SELECT CAST ( + - CAST ( NULL AS FLOAT8 ) AS INTEGER )
 ----
 NULL
 
@@ -30012,13 +29876,11 @@ SELECT - 94 / + - MIN ( ALL + ( - + ( + - 32 ) ) )
 ----
 2
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-5796
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + COUNT ( * ) AS col1, + COUNT ( * ) AS col1
-----
-1
-1
 
 query I rowsort
 SELECT ALL 60 + 16 AS col2
@@ -30283,7 +30145,7 @@ SELECT DISTINCT COUNT ( * ) col2, COUNT ( * )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5847
-SELECT DISTINCT CAST ( + CAST ( NULL AS INTEGER ) AS REAL ) / COUNT ( * ) / + SUM ( ALL + 9 ) AS col1
+SELECT DISTINCT CAST ( + CAST ( NULL AS INTEGER ) AS FLOAT8 ) / COUNT ( * ) / + SUM ( ALL + 9 ) AS col1
 ----
 NULL
 
@@ -30460,13 +30322,11 @@ SELECT ALL - 57 + + + ( + 62 ) AS col2
 ----
 5
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-5882
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - -70
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col1" at position 0 and "Int64\(\-70\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - COUNT ( * ) AS col1, - 70 AS col1
-----
--1
--70
 
 query I rowsort label-5883
 SELECT ALL - 96 / ( ( - 61 ) )
@@ -30984,7 +30844,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-5983
-SELECT 46 - MAX ( + CAST ( NULL AS REAL ) ) AS col2
+SELECT 46 - MAX ( + CAST ( NULL AS FLOAT8 ) ) AS col2
 ----
 NULL
 
@@ -31220,7 +31080,7 @@ SELECT ALL - + 73 col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6029
-SELECT ALL + - CAST ( NULL AS REAL ) + + + 19 AS col2
+SELECT ALL + - CAST ( NULL AS FLOAT8 ) + + + 19 AS col2
 ----
 NULL
 
@@ -31321,7 +31181,7 @@ SELECT COUNT ( * ) * - - 12 AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6048
-SELECT ALL CAST ( NULL AS INTEGER ) + CAST ( NULL AS REAL ) * - COUNT ( * ) AS col1
+SELECT ALL CAST ( NULL AS INTEGER ) + CAST ( NULL AS FLOAT8 ) * - COUNT ( * ) AS col1
 ----
 NULL
 
@@ -31456,13 +31316,11 @@ SELECT - 98 + + 30 AS col2
 ----
 -68
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 93
+# Datafusion - Expected - 35
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(93\) AS col2" at position 0 and "Int64\(35\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 93 AS col2, 35 AS col2
-----
-93
-35
 
 query I rowsort
 SELECT DISTINCT + 98 + - - 21
@@ -31676,7 +31534,7 @@ SELECT ALL - CAST ( + + 65 AS INTEGER )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6117
-SELECT + ( + COUNT ( * ) ) / - MAX ( ALL - - CAST ( NULL AS REAL ) )
+SELECT + ( + COUNT ( * ) ) / - MAX ( ALL - - CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -31701,7 +31559,7 @@ SELECT + COALESCE ( - COUNT ( * ), - 15 - - 32 ) AS col2
 -1
 
 query I rowsort label-6122
-SELECT - 56 * - COUNT ( DISTINCT - CAST ( NULL AS REAL ) ) * + 56 * 13 AS col2
+SELECT - 56 * - COUNT ( DISTINCT - CAST ( NULL AS FLOAT8 ) ) * + 56 * 13 AS col2
 ----
 0
 
@@ -31861,7 +31719,7 @@ SELECT ALL - - 77
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6153
-SELECT ALL ( + - COUNT ( * ) ) + - ( + CAST ( NULL AS REAL ) )
+SELECT ALL ( + - COUNT ( * ) ) + - ( + CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -31875,13 +31733,11 @@ SELECT ALL - 38 / + 15
 ----
 -2
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-6156
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 95
+# Datafusion - Expected - -2
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(95\) AS col1" at position 0 and "count\(DISTINCT Int64\(64\)\) \- Int64\(3\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 95 AS col1, + COUNT ( DISTINCT 64 ) - 3 AS col1
-----
-95
--2
 
 query I rowsort
 SELECT + + 4 * + 21 col1
@@ -31993,13 +31849,11 @@ SELECT DISTINCT - COUNT ( * ) + - 72 AS col0
 ----
 -73
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-6178
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -47
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col0" at position 0 and "Int64\(\-47\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) AS col0, - 47 AS col0
-----
-1
--47
 
 query II rowsort label-6179
 SELECT DISTINCT COUNT ( * ) * 84 + + 23, COUNT ( * ) AS col0
@@ -32250,7 +32104,7 @@ SELECT + 17 * + 39
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6227
-SELECT - 37 - + ( + 25 ) / CAST ( NULL AS REAL )
+SELECT - 37 - + ( + 25 ) / CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -32444,13 +32298,11 @@ SELECT DISTINCT + - 80 AS col2
 ----
 -80
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-6265
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 14
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(NULL AS Int32\) AS col2" at position 0 and "CAST\(Int64\(14\) AS Int32\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + CAST ( NULL AS INTEGER ) AS col2, CAST ( + 14 AS INTEGER ) AS col2
-----
-NULL
-14
 
 query I rowsort label-6266
 SELECT + COUNT ( * ) + 83 AS col0
@@ -32680,7 +32532,7 @@ SELECT DISTINCT - 58 - 47 col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6310
-SELECT DISTINCT + CAST ( NULL AS REAL ) + 11 + + - 49 AS col1
+SELECT DISTINCT + CAST ( NULL AS FLOAT8 ) + 11 + + - 49 AS col1
 ----
 NULL
 
@@ -32748,7 +32600,7 @@ SELECT ALL - 46 - - - 86 AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6323
-SELECT 80 + - 45 + - - 33 + + - CAST ( NULL AS REAL ) - + COUNT ( * ) * + COUNT ( * ) * + + 12 AS col1
+SELECT 80 + - 45 + - - 33 + + - CAST ( NULL AS FLOAT8 ) - + COUNT ( * ) * + COUNT ( * ) * + + 12 AS col1
 ----
 NULL
 
@@ -33019,7 +32871,7 @@ SELECT ALL - - 4 col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6376
-SELECT - + COUNT ( * ) * - - CAST ( NULL AS REAL ) + + + CAST ( NULL AS INTEGER ) AS col0
+SELECT - + COUNT ( * ) * - - CAST ( NULL AS FLOAT8 ) + + + CAST ( NULL AS INTEGER ) AS col0
 ----
 NULL
 
@@ -33054,13 +32906,11 @@ SELECT 61 col2
 ----
 61
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-6383
-SELECT ALL + - COUNT ( * ) / + - CAST ( NULL AS REAL ) AS col0, 42 AS col0
-----
-NULL
-42
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 42
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) / \(\- CAST\(NULL AS Float64\)\) AS col0" at position 0 and "Int64\(42\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+SELECT ALL + - COUNT ( * ) / + - CAST ( NULL AS FLOAT8 ) AS col0, 42 AS col0
 
 query I rowsort label-6384
 SELECT ALL + SUM ( ALL 20 ) AS col1
@@ -33115,12 +32965,10 @@ SELECT DISTINCT + ( 78 )
 ----
 78
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-6394
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT AVG ( DISTINCT CAST ( NULL AS INTEGER ) ) col1
-----
-NULL
 
 query I rowsort label-6395
 SELECT - COUNT ( * ) + + 2 col1
@@ -33344,13 +33192,11 @@ SELECT - - 23 / - - 62
 ----
 0
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 0
+# Datafusion - Expected - 14
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(0\) AS col0" at position 0 and "Int64\(14\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + - 0 AS col0, 14 AS col0
-----
-0
-14
 
 query I rowsort
 SELECT ( + 87 ) AS col2
@@ -33414,7 +33260,7 @@ SELECT DISTINCT 26 col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6451
-SELECT + CAST ( NULL AS REAL ) + - CAST ( NULL AS INTEGER )
+SELECT + CAST ( NULL AS FLOAT8 ) + - CAST ( NULL AS INTEGER )
 ----
 NULL
 
@@ -33601,7 +33447,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6487
-SELECT - + CAST ( NULL AS REAL ) AS col1
+SELECT - + CAST ( NULL AS FLOAT8 ) AS col1
 ----
 NULL
 
@@ -33791,13 +33637,11 @@ SELECT 48 AS col1, ( + + 72 ) AS col0
 48
 72
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 65
+# Datafusion - Expected - 15
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-65\)\) AS col0" at position 0 and "Int64\(15\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - - 65 AS col0, 15 AS col0
-----
-65
-15
 
 query I rowsort label-6525
 SELECT ALL 57 / 21 AS col0
@@ -34022,13 +33866,11 @@ SELECT DISTINCT 89 * - COUNT ( * ) AS col0
 ----
 -89
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-6569
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col2" at position 0 and "count\(\*\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) AS col2, COUNT ( * ) AS col2
-----
-1
-1
 
 query II rowsort
 SELECT - 78, 17 AS col2
@@ -34090,7 +33932,7 @@ SELECT ALL ( - + 12 ) + - 51 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6581
-SELECT ( + CAST ( NULL AS REAL ) ) * + 41 + - + CAST ( NULL AS REAL ) col0
+SELECT ( + CAST ( NULL AS FLOAT8 ) ) * + 41 + - + CAST ( NULL AS FLOAT8 ) col0
 ----
 NULL
 
@@ -34314,7 +34156,7 @@ SELECT 45 + - 17
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6625
-SELECT DISTINCT + ( 18 ) / - CAST ( NULL AS REAL )
+SELECT DISTINCT + ( 18 ) / - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -34332,7 +34174,7 @@ SELECT ALL 27 + - ( - 12 ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6628
-SELECT CAST ( NULL AS REAL ) * - COUNT ( * )
+SELECT CAST ( NULL AS FLOAT8 ) * - COUNT ( * )
 ----
 NULL
 
@@ -34392,13 +34234,11 @@ SELECT ALL 90 + + COUNT ( * )
 ----
 91
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -40
+# Datafusion - Expected - -55
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-40\) AS col0" at position 0 and "\(\- Int64\(55\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 40 col0, ( - + 55 ) AS col0
-----
--40
--55
 
 query II rowsort
 SELECT ALL - - 31 AS col1, 20 AS col0
@@ -34421,13 +34261,11 @@ SELECT DISTINCT - 73 + - 64
 ----
 -137
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-6645
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -81
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "min\(Int64\(\-81\)\) AS col1" at position 0 and "Int64\(3\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT MIN ( + - 81 ) AS col1, + 3 AS col1
-----
--81
-3
 
 query I rowsort label-6646
 SELECT ALL - CAST ( - MAX ( ALL - + 87 ) AS INTEGER ) AS col0
@@ -34641,13 +34479,11 @@ SELECT DISTINCT + COUNT ( * ), 43 AS col2
 1
 43
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 14
+# Datafusion - Expected - 1340
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(14\) AS col2" at position 0 and "Int64\(20\) \* \(\- Int64\(\-67\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 14 AS col2, + 20 * - - 67 AS col2
-----
-14
-1340
 
 query I rowsort label-6688
 SELECT DISTINCT + 52 + COUNT ( * )
@@ -34750,13 +34586,11 @@ SELECT DISTINCT - - ( 43 )
 ----
 43
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-6708
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - 30
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(\*\)\) AS col0" at position 0 and "Int64\(30\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - COUNT ( * ) AS col0, 30 AS col0
-----
--1
-30
 
 query II rowsort
 SELECT DISTINCT + 86 + - + 0 AS col2, + 17
@@ -34843,7 +34677,7 @@ SELECT DISTINCT - ( - + ( - 33 ) ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6725
-SELECT DISTINCT - MAX ( ALL + + 9 ) * + + CAST ( NULL AS REAL ) + 62 AS col2
+SELECT DISTINCT - MAX ( ALL + + 9 ) * + + CAST ( NULL AS FLOAT8 ) + 62 AS col2
 ----
 NULL
 
@@ -35141,18 +34975,16 @@ SELECT ALL SUM ( - 81 ) - - COUNT ( * )
 ----
 -80
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-6784
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT AVG ( DISTINCT + - CAST ( NULL AS INTEGER ) ) * 2
-----
-NULL
 
 # Datafusion - Types were automatically converted from:
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6785
-SELECT ALL COUNT ( ALL - - COALESCE ( 41, 70 ) ) * + ( - - CAST ( NULL AS REAL ) ) AS col0
+SELECT ALL COUNT ( ALL - - COALESCE ( 41, 70 ) ) * + ( - - CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -35212,13 +35044,11 @@ SELECT COALESCE ( + - 67, + 45 * + 20 )
 ----
 -67
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 19
+# Datafusion - Expected - -81
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(19\) AS col1" at position 0 and "Int64\(\-81\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + 19 AS col1, - 81 col1
-----
-19
--81
 
 query I rowsort
 SELECT COALESCE ( - - 0, + 75, + - 56 )
@@ -35710,13 +35540,11 @@ SELECT - - 60 + - 40
 ----
 20
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 62
+# Datafusion - Expected - 91
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-62\)\) AS col1" at position 0 and "Int64\(91\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + ( - - 62 ) AS col1, + 91 AS col1
-----
-62
-91
 
 query I rowsort
 SELECT ALL ( 99 )
@@ -35737,7 +35565,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6898
-SELECT CAST ( NULL AS REAL ) + - - COUNT ( * ) AS col2
+SELECT CAST ( NULL AS FLOAT8 ) + - - COUNT ( * ) AS col2
 ----
 NULL
 
@@ -35927,7 +35755,7 @@ SELECT + 38 / COUNT ( * ) AS col1
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-6934
-SELECT ALL + CAST ( NULL AS REAL ) AS col0, ( - - 30 )
+SELECT ALL + CAST ( NULL AS FLOAT8 ) AS col0, ( - - 30 )
 ----
 NULL
 30
@@ -35941,7 +35769,7 @@ SELECT + 48 * 86
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-6936
-SELECT ALL 18 AS col0, - CAST ( NULL AS REAL )
+SELECT ALL 18 AS col0, - CAST ( NULL AS FLOAT8 )
 ----
 18
 NULL
@@ -36201,7 +36029,7 @@ SELECT + 47 + COUNT ( * ) AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-6986
-SELECT - - 91 + - CAST ( NULL AS REAL )
+SELECT - - 91 + - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -36295,7 +36123,7 @@ SELECT - + SUM ( DISTINCT 5 )
 -5
 
 query I rowsort label-7004
-SELECT DISTINCT 8 / + CAST ( COALESCE ( 75, - CAST ( NULL AS REAL ) ) AS INTEGER )
+SELECT DISTINCT 8 / + CAST ( COALESCE ( 75, - CAST ( NULL AS FLOAT8 ) ) AS INTEGER )
 ----
 0
 
@@ -36339,7 +36167,7 @@ SELECT + 20 * - 17 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7012
-SELECT ( - CAST ( NULL AS REAL ) ) AS col0
+SELECT ( - CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -36384,13 +36212,11 @@ SELECT + 20 * + + ( 23 ) AS col1
 ----
 460
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-7021
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -95
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "max\(\(\- Int64\(95\)\)\) AS col0" at position 0 and "Int64\(91\) \+ CAST\(NULL AS Int32\) \+ count\(\*\) / Int64\(67\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT MAX ( + ( - + 95 ) ) AS col0, 91 + + CAST ( NULL AS INTEGER ) + COUNT ( * ) / + + 67 AS col0
-----
--95
-NULL
 
 query II rowsort
 SELECT ALL + 5, 4 AS col1
@@ -36514,7 +36340,7 @@ SELECT DISTINCT + CAST ( - ( 41 ) AS INTEGER ) AS col2, 99
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7045
-SELECT + CAST ( NULL AS REAL ) + - + 50
+SELECT + CAST ( NULL AS FLOAT8 ) + - + 50
 ----
 NULL
 
@@ -36874,13 +36700,11 @@ SELECT - - CAST ( + - 5 AS INTEGER )
 ----
 -5
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 57
+# Datafusion - Expected - -70
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-57\)\) AS col1" at position 0 and "Int64\(\-70\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - - 57 AS col1, - 70 AS col1
-----
-57
--70
 
 query I rowsort label-7118
 SELECT ALL + COUNT ( + 37 )
@@ -36973,13 +36797,11 @@ SELECT ALL + - 28 AS col1
 ----
 -28
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-7136
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 96
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col1" at position 0 and "Int64\(96\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL COUNT ( * ) AS col1, 96 AS col1
-----
-1
-96
 
 query I rowsort
 SELECT ALL 0 + + 6 AS col2
@@ -37105,7 +36927,7 @@ SELECT ALL + ( + MIN ( ALL - 22 ) ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7160
-SELECT ( + - CAST ( NULL AS REAL ) ) col0
+SELECT ( + - CAST ( NULL AS FLOAT8 ) ) col0
 ----
 NULL
 
@@ -37390,7 +37212,7 @@ SELECT COUNT ( * ) * 59 col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7216
-SELECT DISTINCT CAST ( NULL AS REAL ) * - + ( 25 )
+SELECT DISTINCT CAST ( NULL AS FLOAT8 ) * - + ( 25 )
 ----
 NULL
 
@@ -37546,7 +37368,7 @@ SELECT DISTINCT - ( + 82 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7246
-SELECT SUM ( - CAST ( NULL AS REAL ) ) AS col0
+SELECT SUM ( - CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -37559,7 +37381,7 @@ SELECT ALL + CAST ( 35 AS INTEGER ) * + - MIN ( - 84 ) * 48 + - - 28
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7248
-SELECT - CAST ( NULL AS INTEGER ) * CAST ( + COUNT ( * ) AS REAL ) AS col0
+SELECT - CAST ( NULL AS INTEGER ) * CAST ( + COUNT ( * ) AS FLOAT8 ) AS col0
 ----
 NULL
 
@@ -38380,7 +38202,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7408
-SELECT DISTINCT + COUNT ( * ) * CAST ( NULL AS REAL ) AS col1
+SELECT DISTINCT + COUNT ( * ) * CAST ( NULL AS FLOAT8 ) AS col1
 ----
 NULL
 
@@ -38418,7 +38240,7 @@ SELECT + + 50 - - + COALESCE ( COUNT ( * ), - + 64, - 75 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7415
-SELECT + 56 + ( + - CAST ( NULL AS REAL ) ) + - - 86 col1
+SELECT + 56 + ( + - CAST ( NULL AS FLOAT8 ) ) + - - 86 col1
 ----
 NULL
 
@@ -38427,13 +38249,11 @@ SELECT DISTINCT 30 * + + 1 AS col2
 ----
 30
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-7417
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -34
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-34\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - 34 col1, COUNT ( * ) AS col1
-----
--34
-1
 
 query II rowsort
 SELECT - ( - 34 ), 13 AS col0
@@ -38471,13 +38291,11 @@ SELECT ALL - CAST ( + - 5 AS INTEGER )
 ----
 5
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-7425
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -4
+# Datafusion - Expected - -4
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(Int64\(\-4\) AS Int32\)" at position 0 and "Int64\(\-4\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT CAST ( - 4 AS INTEGER ), - 4
-----
--4
--4
 
 query I rowsort
 SELECT ALL - 87 AS col2
@@ -38568,7 +38386,7 @@ SELECT - ( - + 17 ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7443
-SELECT CAST ( NULL AS REAL ) + + - COUNT ( * ) col2
+SELECT CAST ( NULL AS FLOAT8 ) + + - COUNT ( * ) col2
 ----
 NULL
 
@@ -38598,7 +38416,7 @@ SELECT 21 AS col0, 2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7448
-SELECT ALL + 72 * - - CAST ( NULL AS REAL ) AS col1
+SELECT ALL + 72 * - - CAST ( NULL AS FLOAT8 ) AS col1
 ----
 NULL
 
@@ -38611,7 +38429,7 @@ SELECT DISTINCT 33 * + + 76
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7450
-SELECT + ( - CAST ( NULL AS REAL ) )
+SELECT + ( - CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -38969,7 +38787,7 @@ SELECT ALL + ( + CAST ( + ( + + ( - 77 ) ) AS INTEGER ) ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7520
-SELECT - CAST ( NULL AS REAL ) * 14 AS col0
+SELECT - CAST ( NULL AS FLOAT8 ) * 14 AS col0
 ----
 NULL
 
@@ -39169,13 +38987,11 @@ SELECT - COUNT ( + + ( 10 ) ) AS col2
 ----
 -1
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-7559
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 35
+# Datafusion - Expected - -1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- Int64\(35\)\)\) AS col1" at position 0 and "\(\- count\(\*\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - - ( + 35 ) AS col1, - COUNT ( * ) AS col1
-----
-35
--1
 
 query I rowsort label-7560
 SELECT DISTINCT 24 * + + COUNT ( * ) * - CAST ( NULL AS INTEGER ) AS col1
@@ -39227,7 +39043,7 @@ SELECT DISTINCT + MAX ( ALL - 20 ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7569
-SELECT 99 * - + CAST ( NULL AS REAL )
+SELECT 99 * - + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -39337,7 +39153,7 @@ SELECT MAX ( 40 ) AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7590
-SELECT - COUNT ( * ) * + CAST ( NULL AS REAL )
+SELECT - COUNT ( * ) * + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -39469,7 +39285,7 @@ SELECT - - COUNT ( * ) + 85
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7615
-SELECT DISTINCT + CAST ( NULL AS REAL ) + - 81 - + 99 AS col1
+SELECT DISTINCT + CAST ( NULL AS FLOAT8 ) + - 81 - + 99 AS col1
 ----
 NULL
 
@@ -39494,13 +39310,11 @@ SELECT ALL + MIN ( - + 17 ) AS col1
 ----
 -17
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-7620
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 19
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col1" at position 0 and "\(\- count\(\*\)\) \+ Int64\(20\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + COUNT ( * ) AS col1, - COUNT ( * ) + + 20 AS col1
-----
-1
-19
 
 query I rowsort
 SELECT ( - 42 )
@@ -39582,13 +39396,11 @@ SELECT + 66 / + + 21
 ----
 3
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-7637
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 23
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col0" at position 0 and "\(\- sum\(Int64\(\-23\)\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT COUNT ( * ) AS col0, - SUM ( - 23 ) AS col0
-----
-1
-23
 
 query I rowsort label-7638
 SELECT DISTINCT MAX ( + 51 )
@@ -39632,7 +39444,7 @@ SELECT 53 AS col2, 29
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7645
-SELECT ALL - ( - + CAST ( NULL AS REAL ) ) AS col0
+SELECT ALL - ( - + CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -39640,7 +39452,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7646
-SELECT ALL - + CAST ( NULL AS REAL ) * - 92
+SELECT ALL - + CAST ( NULL AS FLOAT8 ) * - 92
 ----
 NULL
 
@@ -39787,7 +39599,7 @@ SELECT COUNT ( * ) * + 62 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7674
-SELECT ALL - CAST ( NULL AS REAL ) col0
+SELECT ALL - CAST ( NULL AS FLOAT8 ) col0
 ----
 NULL
 
@@ -40415,7 +40227,7 @@ SELECT ( 44 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7796
-SELECT - + CAST ( NULL AS REAL ) col2
+SELECT - + CAST ( NULL AS FLOAT8 ) col2
 ----
 NULL
 
@@ -40904,13 +40716,11 @@ SELECT ALL + 50 * - 41 AS col1
 ----
 -2050
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 75
+# Datafusion - Expected - 76
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(75\) AS col0" at position 0 and "Int64\(76\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + 75 col0, 76 AS col0
-----
-75
-76
 
 query I rowsort
 SELECT - 72 * + + 21 col1
@@ -41393,17 +41203,15 @@ SELECT 39 * 17
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-7987
-SELECT 29 * + + CAST ( NULL AS REAL )
+SELECT 29 * + + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -5
+# Datafusion - Expected - 70
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-5\) AS col1" at position 0 and "Int64\(70\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 5 AS col1, 70 AS col1
-----
--5
-70
 
 query I rowsort label-7989
 SELECT ALL COUNT ( ( - + 83 ) )
@@ -41610,7 +41418,7 @@ SELECT COUNT ( * ) * 25 col2, 12 * 96 AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8028
-SELECT 73 + - - MIN ( + + CAST ( NULL AS REAL ) )
+SELECT 73 + - - MIN ( + + CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -41911,13 +41719,11 @@ SELECT 72, + 98 col0
 72
 98
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-8088
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 45
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(45\) AS col0" at position 0 and "count\(\*\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 45 AS col0, + COUNT ( * ) AS col0
-----
-45
-1
 
 query I rowsort label-8089
 SELECT COUNT ( * ) * - 8 AS col1
@@ -42005,7 +41811,7 @@ SELECT ALL - COUNT ( * ), ( - 45 ) col1
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-8105
-SELECT ALL - CAST ( NULL AS REAL ) AS col1, 40 AS col2
+SELECT ALL - CAST ( NULL AS FLOAT8 ) AS col1, 40 AS col2
 ----
 NULL
 40
@@ -42034,7 +41840,7 @@ SELECT 9 + + COUNT ( * )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8110
-SELECT - - CAST ( NULL AS REAL ) * COUNT ( * ) AS col2
+SELECT - - CAST ( NULL AS FLOAT8 ) * COUNT ( * ) AS col2
 ----
 NULL
 
@@ -42495,7 +42301,7 @@ SELECT + COUNT ( * ) + + 28
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8199
-SELECT ( - CAST ( + + CAST ( NULL AS INTEGER ) AS REAL ) ) AS col0
+SELECT ( - CAST ( + + CAST ( NULL AS INTEGER ) AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -42548,7 +42354,7 @@ SELECT ALL NULLIF ( + COUNT ( * ), - + 16 ) + - COUNT ( * ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8209
-SELECT DISTINCT COUNT ( * ) * + CAST ( NULL AS REAL )
+SELECT DISTINCT COUNT ( * ) * + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -42591,7 +42397,7 @@ SELECT DISTINCT 48 * - + 33
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8217
-SELECT - 95 + + 97 + - CAST ( NULL AS REAL ) AS col1
+SELECT - 95 + + 97 + - CAST ( NULL AS FLOAT8 ) AS col1
 ----
 NULL
 
@@ -42626,7 +42432,7 @@ SELECT 22 * - + MIN ( + 96 ) AS col1, - 67 col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8223
-SELECT - COUNT ( * ) * CAST ( NULL AS REAL ) - + - 45
+SELECT - COUNT ( * ) * CAST ( NULL AS FLOAT8 ) - + - 45
 ----
 NULL
 
@@ -42827,7 +42633,7 @@ SELECT + COUNT ( * ) + + 75
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8261
-SELECT - ( - CAST ( NULL AS REAL ) ) - - COUNT ( * )
+SELECT - ( - CAST ( NULL AS FLOAT8 ) ) - - COUNT ( * )
 ----
 NULL
 
@@ -43370,7 +43176,7 @@ SELECT 16 / + 37 col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8367
-SELECT ALL COUNT ( * ) + + - CAST ( NULL AS REAL )
+SELECT ALL COUNT ( * ) + + - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -43396,7 +43202,7 @@ SELECT - 87 * + 41
 -3567
 
 query I rowsort label-8372
-SELECT DISTINCT 79 + 85 + + COUNT ( - + CAST ( NULL AS REAL ) ) AS col1
+SELECT DISTINCT 79 + 85 + + COUNT ( - + CAST ( NULL AS FLOAT8 ) ) AS col1
 ----
 164
 
@@ -43546,12 +43352,10 @@ SELECT DISTINCT SUM ( + 10 )
 ----
 10
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-8402
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT + CAST ( NULL AS INTEGER ) * + AVG ( DISTINCT 61 ) AS col2
-----
-NULL
 
 query I rowsort
 SELECT - 17 + - 20
@@ -43703,7 +43507,7 @@ SELECT 78 * 70
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8432
-SELECT + - CAST ( CAST ( NULL AS INTEGER ) AS REAL )
+SELECT + - CAST ( CAST ( NULL AS INTEGER ) AS FLOAT8 )
 ----
 NULL
 
@@ -43721,7 +43525,7 @@ SELECT MAX ( - 65 ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8435
-SELECT - CAST ( NULL AS REAL ) * - 12
+SELECT - CAST ( NULL AS FLOAT8 ) * - 12
 ----
 NULL
 
@@ -44201,7 +44005,7 @@ SELECT ALL 68 * - 73 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8529
-SELECT CAST ( NULL AS INTEGER ) + CAST ( NULL AS REAL ) - - + CAST ( NULL AS INTEGER ) AS col0
+SELECT CAST ( NULL AS INTEGER ) + CAST ( NULL AS FLOAT8 ) - - + CAST ( NULL AS INTEGER ) AS col0
 ----
 NULL
 
@@ -44402,7 +44206,7 @@ SELECT DISTINCT 28 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8568
-SELECT + - CAST ( NULL AS REAL ) * - 31 AS col0
+SELECT + - CAST ( NULL AS FLOAT8 ) * - 31 AS col0
 ----
 NULL
 
@@ -44430,7 +44234,7 @@ SELECT ALL - MAX ( ALL - - 41 ) AS col0
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8573
-SELECT 23 + - - CAST ( NULL AS REAL )
+SELECT 23 + - - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -44560,13 +44364,11 @@ SELECT DISTINCT MAX ( 94 ) AS col0
 ----
 94
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-8599
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - -47
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "max\(DISTINCT Int64\(\-11\)\) \- CASE Int64\(5\) WHEN \(\- count\(\*\)\) THEN Int64\(\-22\) ELSE NULL END AS col0" at position 0 and "min\(\(\- Int64\(47\)\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + MAX ( DISTINCT - 11 ) - + CASE 5 WHEN - + COUNT ( * ) THEN + - 22 ELSE NULL END col0, + MIN ( + - ( + 47 ) ) AS col0
-----
-NULL
--47
 
 query I rowsort label-8600
 SELECT ALL + COUNT ( * ) - + 55 AS col0
@@ -44928,7 +44730,7 @@ SELECT ( + 10 ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8671
-SELECT + CAST ( - CAST ( NULL AS INTEGER ) AS REAL )
+SELECT + CAST ( - CAST ( NULL AS INTEGER ) AS FLOAT8 )
 ----
 NULL
 
@@ -45008,13 +44810,11 @@ SELECT ALL 14 col0
 ----
 14
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 75
+# Datafusion - Expected - -42
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(75\) AS col0" at position 0 and "Int64\(\-42\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL 75 col0, - 42 AS col0
-----
-75
--42
 
 query I rowsort label-8688
 SELECT ALL - + 67 + - - COUNT ( * ) AS col2
@@ -45117,7 +44917,7 @@ SELECT DISTINCT - 53 - + + 74
 -127
 
 query I rowsort label-8708
-SELECT DISTINCT COALESCE ( + - 69, 36 / CASE - CAST ( NULL AS REAL ) WHEN 33 * + CAST ( NULL AS INTEGER ) THEN NULL ELSE + + COUNT ( * ) END + + COUNT ( * ) )
+SELECT DISTINCT COALESCE ( + - 69, 36 / CASE - CAST ( NULL AS FLOAT8 ) WHEN 33 * + CAST ( NULL AS INTEGER ) THEN NULL ELSE + + COUNT ( * ) END + + COUNT ( * ) )
 ----
 -69
 
@@ -45155,7 +44955,7 @@ SELECT CAST ( - 85 AS INTEGER ) * - 52
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8715
-SELECT ALL - + 43 / + CAST ( NULL AS REAL ) AS col2
+SELECT ALL - + 43 / + CAST ( NULL AS FLOAT8 ) AS col2
 ----
 NULL
 
@@ -45184,7 +44984,7 @@ SELECT DISTINCT - 12 * - 9
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8720
-SELECT + COUNT ( * ) + + + 19 + - - CAST ( NULL AS REAL )
+SELECT + COUNT ( * ) + + + 19 + - - CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -45393,13 +45193,11 @@ SELECT + COUNT ( * ) + - 55
 ----
 -54
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -261990
+# Datafusion - Expected - -34
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(41\)\) \* Int64\(90\) \* Int64\(71\) AS col1" at position 0 and "Int64\(\-34\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - ( + 41 ) * 90 * + 71 AS col1, - 34 AS col1
-----
--261990
--34
 
 query I rowsort label-8762
 SELECT DISTINCT COUNT ( * ) + - - COUNT ( * ) AS col0
@@ -45450,17 +45248,15 @@ SELECT 84 * + 76
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8771
-SELECT - + CAST ( NULL AS REAL ) AS col2
+SELECT - + CAST ( NULL AS FLOAT8 ) AS col2
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-8772
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -63
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(\*\) AS col2" at position 0 and "Int64\(\-63\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + COUNT ( * ) col2, - 63 AS col2
-----
-1
--63
 
 query I rowsort
 SELECT DISTINCT - + 89 AS col1
@@ -46066,7 +45862,7 @@ SELECT DISTINCT - 61 col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8890
-SELECT ALL CAST ( NULL AS REAL ) + + COUNT ( * ) AS col1
+SELECT ALL CAST ( NULL AS FLOAT8 ) + + COUNT ( * ) AS col1
 ----
 NULL
 
@@ -46091,13 +45887,11 @@ SELECT ALL 30 + - - COUNT ( * ) AS col2
 ----
 31
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 93
+# Datafusion - Expected - 24
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(93\) AS col0" at position 0 and "Int64\(24\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL 93 AS col0, 24 AS col0
-----
-93
-24
 
 query I rowsort
 SELECT - ( - + 60 )
@@ -46113,7 +45907,7 @@ SELECT + 6 * + 51
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8898
-SELECT DISTINCT + AVG ( + CAST ( NULL AS REAL ) )
+SELECT DISTINCT + AVG ( + CAST ( NULL AS FLOAT8 ) )
 ----
 NULL
 
@@ -46508,13 +46302,11 @@ SELECT ALL + + 98 * 69 AS col1
 ----
 6762
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -60
+# Datafusion - Expected - 45
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-60\) AS col2" at position 0 and "Int64\(45\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + - 60 AS col2, + 45 AS col2
-----
--60
-45
 
 query I rowsort label-8977
 SELECT ALL - 68 + + SUM ( - 76 )
@@ -46565,7 +46357,7 @@ NULL
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-8986
-SELECT ALL CAST ( NULL AS REAL ) / 6 AS col1
+SELECT ALL CAST ( NULL AS FLOAT8 ) / 6 AS col1
 ----
 NULL
 
@@ -46773,13 +46565,11 @@ SELECT DISTINCT 83 + - 68
 ----
 15
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -48
+# Datafusion - Expected - -17
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-48\) AS col2" at position 0 and "Int64\(\-17\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - 48 AS col2, - 17 AS col2
-----
--48
--17
 
 query I rowsort
 SELECT ALL - + 72 AS col1
@@ -47183,7 +46973,7 @@ SELECT + NULLIF ( - ( - 66 ), - - 71 ) col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9107
-SELECT DISTINCT + ( + CAST ( NULL AS REAL ) ) AS col0
+SELECT DISTINCT + ( + CAST ( NULL AS FLOAT8 ) ) AS col0
 ----
 NULL
 
@@ -47411,7 +47201,7 @@ SELECT ALL 67, + 16 AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9151
-SELECT ALL CAST ( NULL AS REAL ) * + + COUNT ( * ) * - - 99
+SELECT ALL CAST ( NULL AS FLOAT8 ) * + + COUNT ( * ) * - - 99
 ----
 NULL
 
@@ -47586,13 +47376,11 @@ SELECT + COUNT ( - 50 ) + + - 79
 ----
 -78
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9186
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -68
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-68\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - 68 AS col1, COUNT ( * ) AS col1
-----
--68
-1
 
 query I rowsort
 SELECT - ( - - 35 ) AS col1
@@ -47609,13 +47397,11 @@ SELECT DISTINCT 0 col0
 ----
 0
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9190
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(NULL AS Int32\) AS col0" at position 0 and "count\(\*\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT ( CAST ( NULL AS INTEGER ) ) AS col0, + COUNT ( * ) col0
-----
-NULL
-1
 
 query I rowsort
 SELECT ALL + 60 + - 23
@@ -47673,13 +47459,11 @@ SELECT ALL 45 + - COUNT ( * )
 ----
 44
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 94
+# Datafusion - Expected - 41
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(94\) AS col0" at position 0 and "Int64\(41\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + 94 AS col0, 41 col0
-----
-94
-41
 
 query II rowsort
 SELECT + 71 AS col2, 96
@@ -47703,13 +47487,11 @@ SELECT - 62 * 10 AS col0
 ----
 -620
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9207
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 80
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-80\)\) AS col1" at position 0 and "count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - - 80 AS col1, + COUNT ( * ) AS col1
-----
-80
-1
 
 query I rowsort label-9208
 SELECT ALL + COUNT ( * ) - - 4 + - - ( + ( + 82 ) )
@@ -47880,13 +47662,11 @@ SELECT - 82 * - COUNT ( 36 ) + COUNT ( * )
 ----
 83
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9241
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(NULL AS Int32\)" at position 0 and "CAST\(NULL AS Int32\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT CAST ( NULL AS INTEGER ), CAST ( NULL AS INTEGER )
-----
-NULL
-NULL
 
 query I rowsort
 SELECT ALL - 0 col0
@@ -48056,17 +47836,15 @@ SELECT - ( - 80 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9274
-SELECT ALL + MAX ( - CAST ( NULL AS REAL ) ) AS col1
+SELECT ALL + MAX ( - CAST ( NULL AS FLOAT8 ) ) AS col1
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9275
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 86
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(86\) AS col2" at position 0 and "count\(\*\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + 86 AS col2, COUNT ( * ) AS col2
-----
-86
-1
 
 query II rowsort label-9276
 SELECT CAST ( NULL AS INTEGER ) AS col2, 37
@@ -48507,7 +48285,7 @@ SELECT ALL - COUNT ( * ) * - + 24
 # Datafusion - [Expected] [I]I
 # Datafusion - [Actual  ] [R]I
 query RI rowsort label-9362
-SELECT DISTINCT COUNT ( * ) + 51 * + ( + + CAST ( NULL AS REAL ) ) AS col1, 83 AS col0
+SELECT DISTINCT COUNT ( * ) + 51 * + ( + + CAST ( NULL AS FLOAT8 ) ) AS col1, 83 AS col0
 ----
 NULL
 83
@@ -48825,7 +48603,7 @@ SELECT + COUNT ( * ) + - 80 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9424
-SELECT + CAST ( NULL AS REAL ) * - COUNT ( * ) - + + 31
+SELECT + CAST ( NULL AS FLOAT8 ) * - COUNT ( * ) - + + 31
 ----
 NULL
 
@@ -48979,12 +48757,10 @@ SELECT 87 * ( + COUNT ( * ) ) col2
 ----
 87
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-9455
-SELECT ALL + 87 + - - CAST ( - + AVG ( DISTINCT CAST ( NULL AS INTEGER ) ) AS REAL )
-----
-NULL
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
+SELECT ALL + 87 + - - CAST ( - + AVG ( DISTINCT CAST ( NULL AS INTEGER ) ) AS FLOAT8 )
 
 query I rowsort label-9456
 SELECT - COUNT ( * ) + + + 56
@@ -49066,7 +48842,7 @@ SELECT + 33 + 89 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9471
-SELECT + ( - CAST ( - - CAST ( NULL AS INTEGER ) AS REAL ) )
+SELECT + ( - CAST ( - - CAST ( NULL AS INTEGER ) AS FLOAT8 ) )
 ----
 NULL
 
@@ -49160,13 +48936,11 @@ SELECT ALL - COUNT ( * ) + + - 10 * - + 36 / - - ( + CAST ( + COUNT ( * ) AS INT
 ----
 428
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 12
+# Datafusion - Expected - -19
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(12\) AS col2" at position 0 and "Int64\(1\) \* Int64\(\-19\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 12 AS col2, + 1 * - 19 AS col2
-----
-12
--19
 
 query I rowsort
 SELECT 10 + 2 AS col1
@@ -49522,10 +49296,6 @@ SELECT 89 + + NULLIF ( 87, - 52 )
 ----
 176
 
-# Datafusion - DataFusion error: type_coercion
-# Datafusion - caused by
-# Datafusion - Error during planning: Cannot automatically convert Int64 to Null
-skipif Datafusion
 query I rowsort label-9561
 SELECT ALL 38 + 47 * - + 90 - - CASE WHEN NOT NULL BETWEEN NULL AND 61 THEN + NULLIF ( - 1, - 90 - + COALESCE ( - ( 72 ), - 3, 56 / 75 - 28 ) * COUNT ( * ) ) * - 4 ELSE ( 0 ) END
 ----
@@ -49631,13 +49401,11 @@ SELECT 65 * + - ( + 78 ) AS col2
 ----
 -5070
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 19
+# Datafusion - Expected - 64
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-15\) \+ \(\- Int64\(\-34\)\) AS col2" at position 0 and "Int64\(0\) \+ Int64\(64\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + - 15 + - - 34 AS col2, 0 + + 64 AS col2
-----
-19
-64
 
 query I rowsort
 SELECT DISTINCT NULLIF ( - + 9, + + 61 ) AS col1
@@ -49787,7 +49555,7 @@ SELECT NULLIF ( + 10, COUNT ( * ) )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9611
-SELECT DISTINCT + 90 * - COUNT ( * ) + + CAST ( NULL AS REAL ) * - + CAST ( - + 48 AS INTEGER )
+SELECT DISTINCT + 90 * - COUNT ( * ) + + CAST ( NULL AS FLOAT8 ) * - + CAST ( - + 48 AS INTEGER )
 ----
 NULL
 
@@ -49827,12 +49595,10 @@ SELECT ALL + - COUNT ( * ) * + + CAST ( NULL AS INTEGER )
 ----
 NULL
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT CASE + AVG ( DISTINCT + - 26 ) WHEN + ( 68 ) THEN NULL WHEN 78 THEN - 85 END
-----
-NULL
 
 query I rowsort
 SELECT - 91 * - 24 + - - 17
@@ -50007,13 +49773,11 @@ SELECT + 74 * - + 70 AS col1
 ----
 -5180
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 48
+# Datafusion - Expected - 21
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "coalesce\(Int64\(48\), Int64\(26\)\) AS col2" at position 0 and "Int64\(21\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + + ( COALESCE ( + 48, + 26 ) ) AS col2, 21 AS col2
-----
-48
-21
 
 query II rowsort
 SELECT + 86 AS col2, + 41 AS col0
@@ -50174,20 +49938,16 @@ SELECT 40 + 48 + 12 / + - 62 AS col1
 ----
 88
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1458
+# Datafusion - Expected - 14
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-54\)\) \* Int64\(27\) AS col0" at position 0 and "Int64\(14\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - ( - 54 ) * 27 AS col0, 14 AS col0
-----
-1458
-14
 
-# Datafusion - DataFusion error: Execution error: avg(DISTINCT) aggregations are not available
-skipif Datafusion
-query I rowsort label-9685
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT + - CASE + + COALESCE ( - 74, COUNT ( * ) / + 85, - + 22 ) WHEN 6 THEN NULL WHEN ( 69 ) / - 44 THEN - ( 1 ) * 84 + 40 * - 9 END + 15 / AVG ( DISTINCT 56 )
-----
-NULL
 
 query I rowsort label-9686
 SELECT ALL ( - + 22 ) / + 81 AS col0
@@ -50304,7 +50064,7 @@ SELECT ALL 90 + - 46
 # Datafusion - [Expected] I[I]
 # Datafusion - [Actual  ] I[R]
 query IR rowsort label-9708
-SELECT 0 AS col2, CASE - - 18 WHEN + 92 + - 47 * + 47 * 77 + 18 THEN COALESCE ( + 42, - 16 * - ( NULLIF ( 41, 1 / 48 ) ) ) + - 79 WHEN COUNT ( * ) THEN - 85 ELSE NULL END * - CASE + 86 + CAST ( NULL AS INTEGER ) * + 74 WHEN 48 * - 92 THEN NULL WHEN 63 * 13 THEN - NULLIF ( - 92, - 31 ) - COALESCE ( - 91, 83, + CAST ( NULL AS REAL ) * CAST ( - COUNT ( * ) AS REAL ) + 88 * - CAST ( NULL AS REAL ) ) ELSE - 77 * 10 + ( 8 ) END
+SELECT 0 AS col2, CASE - - 18 WHEN + 92 + - 47 * + 47 * 77 + 18 THEN COALESCE ( + 42, - 16 * - ( NULLIF ( 41, 1 / 48 ) ) ) + - 79 WHEN COUNT ( * ) THEN - 85 ELSE NULL END * - CASE + 86 + CAST ( NULL AS INTEGER ) * + 74 WHEN 48 * - 92 THEN NULL WHEN 63 * 13 THEN - NULLIF ( - 92, - 31 ) - COALESCE ( - 91, 83, + CAST ( NULL AS FLOAT8 ) * CAST ( - COUNT ( * ) AS FLOAT8 ) + 88 * - CAST ( NULL AS FLOAT8 ) ) ELSE - 77 * 10 + ( 8 ) END
 ----
 0
 NULL
@@ -50395,13 +50155,11 @@ SELECT + 83 * + ( - CASE + 8 WHEN - - SUM ( ALL + 29 ) THEN - - ( - 32 ) END ) *
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9726
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 81
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(NULL AS Int32\) / \(\- Int64\(\-87\)\) \+ \(\- Int64\(43\)\) AS col1" at position 0 and "Int64\(23\) \+ Int64\(58\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + + CAST ( NULL AS INTEGER ) / - - 87 + - + 43 AS col1, + 23 + 58 AS col1
-----
-NULL
-81
 
 query I rowsort
 SELECT ALL + 77 * + + 65 AS col0
@@ -50524,7 +50282,7 @@ SELECT NULLIF ( 47, - SUM ( + 71 ) ) AS col1
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9750
-SELECT + - COUNT ( * ) + + CAST ( NULL AS REAL )
+SELECT + - COUNT ( * ) + + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
@@ -50575,7 +50333,7 @@ SELECT SUM ( ALL 71 ) * + + CAST ( NULL AS INTEGER ) - 59
 NULL
 
 query I rowsort label-9760
-SELECT ALL - 6 * + COUNT ( * ) / - - CASE - 55 WHEN MAX ( ALL 27 ) * CAST ( - - ( - - CASE CAST ( NULL AS INTEGER ) WHEN 75 THEN 17 + 64 / COUNT ( * ) ELSE NULL END ) AS REAL ) - 75 * 1 THEN 4 ELSE NULL END + 0
+SELECT ALL - 6 * + COUNT ( * ) / - - CASE - 55 WHEN MAX ( ALL 27 ) * CAST ( - - ( - - CASE CAST ( NULL AS INTEGER ) WHEN 75 THEN 17 + 64 / COUNT ( * ) ELSE NULL END ) AS FLOAT8 ) - 75 * 1 THEN 4 ELSE NULL END + 0
 ----
 NULL
 
@@ -50931,7 +50689,7 @@ NULL
 -6
 
 query I rowsort label-9827
-SELECT DISTINCT - 52 + - - 12 + - - 74 * - 38 * - 99 * CASE 19 WHEN 94 + - 44 - - - CAST ( + - COUNT ( * ) AS REAL ) + + 20 / CAST ( NULL AS INTEGER ) THEN NULL WHEN - 53 - 71 THEN 44 END AS col1
+SELECT DISTINCT - 52 + - - 12 + - - 74 * - 38 * - 99 * CASE 19 WHEN 94 + - 44 - - - CAST ( + - COUNT ( * ) AS FLOAT8 ) + + 20 / CAST ( NULL AS INTEGER ) THEN NULL WHEN - 53 - 71 THEN 44 END AS col1
 ----
 NULL
 
@@ -50999,7 +50757,7 @@ SELECT 64 - - 89
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9840
-SELECT COUNT ( * ) + + 30 + + + CAST ( + ( - 24 ) AS REAL ) / + CAST ( NULL AS INTEGER )
+SELECT COUNT ( * ) + + 30 + + + CAST ( + ( - 24 ) AS FLOAT8 ) / + CAST ( NULL AS INTEGER )
 ----
 NULL
 
@@ -51077,7 +50835,7 @@ SELECT ALL ( 78 ) AS col1
 78
 
 query II rowsort label-9855
-SELECT - MAX ( - + 63 ), + 50 / - + 62 * + COUNT ( - CAST ( - - 23 AS REAL ) ) AS col0
+SELECT - MAX ( - + 63 ), + 50 / - + 62 * + COUNT ( - CAST ( - - 23 AS FLOAT8 ) ) AS col0
 ----
 63
 0
@@ -51168,13 +50926,11 @@ SELECT DISTINCT + CASE - 0 WHEN - MIN ( + 56 ) + - 8 * 81 * - 32 THEN + 81 END
 ----
 NULL
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9873
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 83
+# Datafusion - Expected - 64
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(83\) AS col0" at position 0 and "Int64\(47\) / Int64\(83\) \+ Int64\(64\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + 83 AS col0, + 47 / + 83 + 64 AS col0
-----
-83
-64
 
 query I rowsort label-9874
 SELECT - 43 / 96 AS col1
@@ -51246,13 +51002,11 @@ SELECT DISTINCT + COUNT ( 50 ) AS col0
 ----
 1
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 64
+# Datafusion - Expected - -4081
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(49\) \- Int64\(\-15\) AS col0" at position 0 and "Int64\(77\) \* Int64\(\-53\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + + ( + 49 ) - - 15 AS col0, 77 * - 53 AS col0
-----
-64
--4081
 
 query I rowsort label-9889
 SELECT ALL - 77 / COUNT ( * ) AS col1
@@ -51334,7 +51088,7 @@ SELECT MAX ( - 22 ) * + 69 * - 38 * 96 - + 18 AS col2
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9904
-SELECT ALL + 73 * + CAST ( NULL AS REAL ) * + 17
+SELECT ALL + 73 * + CAST ( NULL AS FLOAT8 ) * + 17
 ----
 NULL
 
@@ -51343,13 +51097,11 @@ SELECT + NULLIF ( - 4, + 83 ) * - 42
 ----
 168
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort label-9906
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -38
+# Datafusion - Expected - 0
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(Int64\(\-38\) AS Int32\) AS col1" at position 0 and "Int64\(29\) / Int64\(\-33\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT CAST ( - 38 AS INTEGER ) col1, + 29 / - 33 AS col1
-----
--38
-0
 
 query I rowsort label-9907
 SELECT CAST ( + 39 AS INTEGER )
@@ -51450,13 +51202,11 @@ SELECT DISTINCT ( 56 ) * + + 92
 ----
 5152
 
-# Datafusion - Error during planning: Projections require unique expression names
-skipif Datafusion
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 98
+# Datafusion - Expected - 48
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(98\) AS col0" at position 0 and "Int64\(48\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 98 AS col0, + ( 48 ) AS col0
-----
-98
-48
 
 query I rowsort
 SELECT 48 + 83 col0
@@ -51647,7 +51397,7 @@ SELECT - MIN ( ALL - 18 )
 # Datafusion - [Expected] [I]
 # Datafusion - [Actual  ] [R]
 query R rowsort label-9963
-SELECT DISTINCT 54 + ( - - COALESCE ( + - ( - - 81 ), - + ( + 44 ) ) ) + 4 * + CAST ( NULL AS REAL )
+SELECT DISTINCT 54 + ( - - COALESCE ( + - ( - - 81 ), - + ( + 44 ) ) ) + 4 * + CAST ( NULL AS FLOAT8 )
 ----
 NULL
 
