@@ -37,9 +37,9 @@ INSERT INTO tab2 VALUES(75,67,58)
 statement ok
 INSERT INTO tab2 VALUES(46,51,23)
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0 AS col1" at position 0 and "tab1\.col2 \* \(\- tab1\.col2\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col0 AS col1, + col2 * - col2 AS col1 FROM tab1 WHERE ( NOT NULL IS NULL )
-----
 
 query I rowsort
 SELECT + + col0 AS col2 FROM tab2 WHERE NOT + 8 + 26 IS NOT NULL
@@ -144,15 +144,15 @@ SELECT DISTINCT * FROM tab2 cor0 WHERE NOT + col2 IS NULL
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -23
+# Datafusion - Expected - 23
+# Datafusion - Expected - -40
+# Datafusion - Expected - 40
+# Datafusion - Expected - -58
+# Datafusion - Expected - 58
+query error DataFusion error: Schema error: Schema contains qualified field name tab2\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT - col2 AS col2, col2 FROM tab2
-----
--23
-23
--40
-40
--58
-58
 
 query I rowsort label-20
 SELECT DISTINCT - col1 / - + CAST ( col2 AS INTEGER ) col1 FROM tab0
@@ -360,11 +360,11 @@ query III rowsort
 SELECT * FROM tab0 WHERE + - col1 + + col0 IS NULL
 ----
 
-query II rowsort label-53
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -315
+# Datafusion - Expected - 38
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(Int64\(1\)\) AS count\(\*\) \* Int64\(35\) \* \(\- count\(Int64\(1\)\) AS count\(\*\)\) AS col1" at position 0 and "Int64\(38\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + COUNT ( * ) * + 35 * - COUNT ( * ) AS col1, 38 AS col1 FROM tab0
-----
--315
-38
 
 query II rowsort
 SELECT col1 + - col0, + col0 AS col1 FROM tab2
@@ -485,7 +485,10 @@ SELECT col0 * + 29 * + col0 AS col1 FROM tab2
 163125
 61364
 
-query I rowsort label-72
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-72
 SELECT - 19 / - + CAST ( NULL AS FLOAT8 ) FROM tab0
 ----
 NULL
@@ -771,7 +774,10 @@ query III rowsort
 SELECT * FROM tab1 WHERE NOT - 64 NOT BETWEEN 44 AND NULL
 ----
 
-query I rowsort label-119
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-119
 SELECT + CAST ( NULL AS FLOAT8 ) - 75 AS col0 FROM tab2
 ----
 NULL
@@ -821,7 +827,10 @@ SELECT ALL MAX ( col2 ) AS col1 FROM tab1
 ----
 96
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT AVG ( ALL - col1 ) FROM tab2 WHERE col2 + 8 * + col0 < NULL
 ----
 NULL
@@ -991,7 +1000,10 @@ query III rowsort
 SELECT DISTINCT * FROM tab1 WHERE NOT NULL IN ( 19 * col0 )
 ----
 
-query I rowsort label-160
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-160
 SELECT DISTINCT col1 * - CAST ( NULL AS FLOAT8 ) FROM tab2
 ----
 NULL
@@ -1137,7 +1149,10 @@ SELECT - col2 / - col1 + + - ( + ( - CAST ( - col2 AS INTEGER ) ) ) / col1 AS co
 0
 0
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT AVG ( - col1 ) FROM tab2 AS cor0 WHERE + col0 + + col0 / 49 IS NULL
 ----
 NULL
@@ -1371,25 +1386,25 @@ SELECT DISTINCT - col2 * + col0 * col2 AS col2 FROM tab1
 -420784
 -470016
 
-query II rowsort label-225
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 55
+# Datafusion - Expected - -1
+# Datafusion - Expected - 55
+# Datafusion - Expected - -1
+# Datafusion - Expected - 55
+# Datafusion - Expected - -2
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(55\) AS col1" at position 0 and "tab2\.col1 / \(\- tab2\.col2\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 55 AS col1, col1 / - col2 AS col1 FROM tab2
-----
-55
--1
-55
--1
-55
--2
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1655
+# Datafusion - Expected - 51
+# Datafusion - Expected - -2161
+# Datafusion - Expected - 67
+# Datafusion - Expected - -2488
+# Datafusion - Expected - 77
+query error DataFusion error: Schema error: Schema contains qualified field name tab2\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL - col0 + + col2 + + + col1 * - + 32 col1, col1 FROM tab2
-----
--1655
-51
--2161
-67
--2488
-77
 
 query II rowsort
 SELECT - - 53 AS col0, - col1 AS col1 FROM tab0 AS cor0
@@ -1401,15 +1416,15 @@ SELECT - - 53 AS col0, - col1 AS col1 FROM tab0 AS cor0
 53
 -81
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 81
+# Datafusion - Expected - 87
+# Datafusion - Expected - 21
+# Datafusion - Expected - 97
+# Datafusion - Expected - 1
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT + ( col0 ) AS col1, col1 FROM tab0 cor0
-----
-15
-81
-87
-21
-97
-1
 
 query I rowsort label-229
 SELECT DISTINCT MAX ( - 9 ) AS col1 FROM tab2 AS cor0
@@ -1457,7 +1472,10 @@ SELECT col0 - 20 + col0 * 61 AS col2 FROM tab1 AS cor0
 5250
 5622
 
-query I rowsort label-237
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-237
 SELECT + MIN ( - - col0 ) - - CAST ( NULL AS FLOAT8 ) col0 FROM tab2 AS cor0
 ----
 NULL
@@ -1519,7 +1537,10 @@ SELECT DISTINCT + ( - + col0 ) AS col0 FROM tab2 AS cor0
 -64
 -75
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT 52 * + AVG ( ALL - - col1 ) - 76 AS col2 FROM tab1 AS cor0 WHERE NOT col2 <= NULL
 ----
 NULL
@@ -2405,15 +2426,15 @@ SELECT DISTINCT + SUM ( DISTINCT col0 ) FROM tab0 AS cor0
 ----
 199
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 23
+# Datafusion - Expected - 67
+# Datafusion - Expected - 58
+# Datafusion - Expected - 77
+# Datafusion - Expected - 40
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT ALL + col1 AS col2, col2 FROM tab2 AS cor0
-----
-51
-23
-67
-58
-77
-40
 
 query II rowsort label-390
 SELECT - CAST ( NULL AS INTEGER ) col0, col1 FROM tab1 AS cor0
@@ -2664,7 +2685,10 @@ SELECT - MAX ( ALL - 74 ) FROM tab1
 ----
 74
 
-query II rowsort label-431
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] I[I]
+# Datafusion - [Actual  ] I[R]
+query IR rowsort label-431
 SELECT + col2, CAST ( NULL AS FLOAT8 ) col0 FROM tab2
 ----
 23
@@ -2767,7 +2791,10 @@ SELECT col1 + + col1 + ( col0 ) * + 39, 42 * col1 AS col1 FROM tab1
 3643
 1974
 
-query I rowsort label-448
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-448
 SELECT + CAST ( NULL AS FLOAT8 ) + - 73 FROM tab0
 ----
 NULL
@@ -2946,7 +2973,10 @@ SELECT ALL - col2 + + col1 * - - ( + 66 ) AS col1 FROM tab1 AS cor0
 3034
 828
 
-query I rowsort label-476
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-476
 SELECT ALL SUM ( ALL - col2 ) - - CAST ( NULL AS INTEGER ) * + AVG ( DISTINCT + 79 ) AS col1 FROM tab0 AS cor0
 ----
 NULL
@@ -3049,15 +3079,15 @@ SELECT - col1 / col2 + - 4 + - col2 * + + col0 * - + 42 FROM tab0 AS cor0
 36534
 403322
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -99
+# Datafusion - Expected - 21
+# Datafusion - Expected - -10
+# Datafusion - Expected - 81
+# Datafusion - Expected - -47
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL col1, - col2 AS col1 FROM tab0
-----
-1
--99
-21
--10
-81
--47
 
 query II rowsort label-494
 SELECT CAST ( NULL AS INTEGER ) AS col0, 31 + - 7 FROM tab2
@@ -3147,7 +3177,10 @@ SELECT DISTINCT + col2 * + 0 / + col1 FROM tab2 AS cor0
 ----
 0
 
-query II rowsort label-509
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-509
 SELECT ALL + 49 * + CAST ( NULL AS FLOAT8 ) AS col2, 40 FROM tab2 AS cor0
 ----
 NULL
@@ -3326,15 +3359,15 @@ SELECT + col2 + + 36 col1 FROM tab1 AS cor0
 132
 95
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - -3132
+# Datafusion - Expected - 47
+# Datafusion - Expected - -540
+# Datafusion - Expected - 99
+# Datafusion - Expected - -3492
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT + col2 AS col2, 36 * + - col0 AS col2 FROM tab0
-----
-10
--3132
-47
--540
-99
--3492
 
 query I rowsort
 SELECT ALL ( col2 ) col0 FROM tab0
@@ -3409,7 +3442,10 @@ SELECT ALL + - COUNT ( * ) - - COUNT ( * ) + + ( + 27 ) * - + COUNT ( * ) col1 F
 ----
 -81
 
-query I rowsort label-549
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-549
 SELECT DISTINCT - 32 + + AVG ( ALL col0 ) / - SUM ( + col1 ) FROM tab2 WHERE - 66 * - - 62 IS NULL
 ----
 NULL
@@ -3690,7 +3726,10 @@ SELECT ALL + + 9 AS col0 FROM tab0 AS cor0
 9
 9
 
-query I rowsort label-595
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-595
 SELECT - + COUNT ( * ) / - AVG ( CAST ( NULL AS FLOAT8 ) ) FROM tab1 AS cor0
 ----
 NULL
@@ -4027,7 +4066,10 @@ SELECT - 92 + col1 * col0 FROM tab0 AS cor0
 1735
 5
 
-query I rowsort label-658
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-658
 SELECT + + 50 * CAST ( NULL AS FLOAT8 ) + COUNT ( * ) AS col0 FROM tab1 AS cor0
 ----
 NULL
@@ -4294,11 +4336,11 @@ SELECT - ( - col2 ) * - col0 AS col2 FROM tab1
 -5015
 -6188
 
-query II rowsort label-706
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 40
+# Datafusion - Expected - 2460
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "max\(Int64\(40\)\) AS col2" at position 0 and "Int64\(20\) \* sum\(Int64\(41\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + + MAX ( ALL 40 ) AS col2, 20 * SUM ( ALL + 41 ) AS col2 FROM tab2 AS cor0
-----
-40
-2460
 
 query I rowsort
 SELECT ALL + col2 / + 73 - col0 AS col0 FROM tab0 cor0 WHERE NOT ( NOT ( NULL NOT BETWEEN + col1 AND - col0 ) )
@@ -4515,7 +4557,10 @@ SELECT - 64 / + 86 * + col1 AS col1 FROM tab0
 0
 0
 
-query I rowsort label-742
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-742
 SELECT DISTINCT - col0 + - CAST ( NULL AS FLOAT8 ) - + + col1 + - ( + + col2 ) AS col2 FROM tab1
 ----
 NULL
@@ -4838,7 +4883,10 @@ SELECT + col2 AS col1 FROM tab0 WHERE NOT + col2 IS NULL
 47
 99
 
-query II rowsort label-797
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-797
 SELECT ALL - CAST ( NULL AS FLOAT8 ) AS col1, col1 * + + col0 FROM tab1
 ----
 NULL
@@ -4872,15 +4920,15 @@ SELECT 72 + + col2 FROM tab0
 171
 82
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - 21
+# Datafusion - Expected - 47
+# Datafusion - Expected - 81
+# Datafusion - Expected - 99
+# Datafusion - Expected - 1
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT + col2 AS col1, col1 FROM tab0
-----
-10
-21
-47
-81
-99
-1
 
 query III rowsort
 SELECT DISTINCT * FROM tab2 WHERE + col1 * col0 IS NOT NULL
@@ -4943,7 +4991,10 @@ SELECT DISTINCT - - COUNT ( * ) + 82 + - 17 AS col0 FROM tab0 AS cor0
 ----
 68
 
-query I rowsort label-812
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-812
 SELECT DISTINCT + + CAST ( NULL AS FLOAT8 ) + 65 FROM tab2 AS cor0
 ----
 NULL
@@ -4953,15 +5004,15 @@ SELECT ALL + MIN ( 60 ) FROM tab1 AS cor0
 ----
 60
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -37
+# Datafusion - Expected - 59
+# Datafusion - Expected - -46
+# Datafusion - Expected - 96
+# Datafusion - Expected - -79
+# Datafusion - Expected - 68
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\) \- Int64\(32\) AS col1" at position 0 and "cor0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - col1 - 32 AS col1, col2 AS col1 FROM tab1 AS cor0
-----
--37
-59
--46
-96
--79
-68
 
 query I rowsort label-815
 SELECT - SUM ( - - col1 ) col2 FROM tab0
@@ -5068,10 +5119,10 @@ SELECT + ( + - 12 ) + - ( - 42 ), COUNT ( * ) * 72 AS col1 FROM tab0 AS cor0
 30
 216
 
-query I rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT - AVG ( DISTINCT 16 ) FROM tab1 cor0 WHERE NOT NULL NOT BETWEEN NULL AND NULL
-----
-NULL
 
 query I rowsort
 SELECT 15 * col1 * + - 83 + col1 * ( + + col0 ) + - + col1 col0 FROM tab0 AS cor0
@@ -5206,15 +5257,15 @@ SELECT - - 46 * col1 AS col2 FROM tab0 AS cor0
 46
 966
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 14
+# Datafusion - Expected - -96
+# Datafusion - Expected - 47
+# Datafusion - Expected - -68
+# Datafusion - Expected - 5
+# Datafusion - Expected - -59
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col0" at position 0 and "\(\- cor0\.col2\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col1 col0, - col2 AS col0 FROM tab1 AS cor0
-----
-14
--96
-47
--68
-5
--59
 
 query III rowsort
 SELECT DISTINCT * FROM tab1 AS cor0 WHERE + col2 BETWEEN NULL AND NULL
@@ -5774,11 +5825,11 @@ query III rowsort
 SELECT * FROM tab1 cor0 WHERE NOT - col0 <> NULL
 ----
 
-query II rowsort label-946
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT - 60 + + ( + MAX ( - col0 ) ), AVG ( DISTINCT col1 ) * COUNT ( * ) * - 86 + COUNT ( * ) col1 FROM tab0 WHERE NULL IS NOT NULL
-----
-NULL
-NULL
 
 query II rowsort label-947
 SELECT - 3, - COUNT ( * ) FROM tab2
@@ -6221,7 +6272,10 @@ SELECT DISTINCT + 80 + col0 * + 54 AS col0 FROM tab2 AS cor0
 3536
 4130
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT ALL + + AVG ( DISTINCT - col2 ) FROM tab1 AS cor0 WHERE - col1 / - - col0 IS NULL
 ----
 NULL
@@ -6402,15 +6456,15 @@ SELECT - SUM ( DISTINCT - col0 ) AS col2 FROM tab0 cor0
 ----
 199
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 14
+# Datafusion - Expected - -14
+# Datafusion - Expected - 47
+# Datafusion - Expected - -47
+# Datafusion - Expected - 5
+# Datafusion - Expected - -5
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col0" at position 0 and "\(\- cor0\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col1 AS col0, - col1 AS col0 FROM tab1 AS cor0
-----
-14
--14
-47
--47
-5
--5
 
 query I rowsort label-1045
 SELECT ALL + - MAX ( DISTINCT - CAST ( NULL AS INTEGER ) ) AS col1 FROM tab2 AS cor0 WHERE + ( col1 ) IS NOT NULL
@@ -6643,7 +6697,10 @@ SELECT - 80 * - + col2 AS col0 FROM tab2
 3200
 4640
 
-query I rowsort label-1086
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1086
 SELECT ALL - CAST ( NULL AS FLOAT8 ) * - COUNT ( * ) FROM tab0
 ----
 NULL
@@ -6670,15 +6727,15 @@ SELECT col0 / - ( + col1 ) col1 FROM tab2 AS cor0
 0
 0
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 46
+# Datafusion - Expected - 1173
+# Datafusion - Expected - 64
+# Datafusion - Expected - 3080
+# Datafusion - Expected - 75
+# Datafusion - Expected - 3886
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT col0, + col2 * + col1 AS col0 FROM tab2 AS cor0
-----
-46
-1173
-64
-3080
-75
-3886
 
 query I rowsort
 SELECT col1 * + - col2 col1 FROM tab0 cor0
@@ -7345,7 +7402,10 @@ query III rowsort
 SELECT DISTINCT * FROM tab2 AS cor0 WHERE - col0 >= 33 + + + 17
 ----
 
-query I rowsort label-1211
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1211
 SELECT DISTINCT col1 * CAST ( NULL AS FLOAT8 ) FROM tab2
 ----
 NULL
@@ -7875,7 +7935,10 @@ SELECT - ( 41 ) FROM tab0 AS cor0
 -41
 -41
 
-query I rowsort label-1299
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1299
 SELECT DISTINCT col1 + col2 - + col1 / - 20 * + CAST ( NULL AS FLOAT8 ) FROM tab1 AS cor0
 ----
 NULL
@@ -8144,11 +8207,11 @@ SELECT * FROM tab2 AS cor0 WHERE NOT col2 * col0 < ( 7 + + ( - 48 ) )
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query II rowsort label-1344
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 58
+# Datafusion - Expected - 77
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "max\(tab2\.col2\) AS col1" at position 0 and "max\(tab2\.col1\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + MAX ( ALL col2 ) AS col1, ( + MAX ( + col1 ) ) AS col1 FROM tab2
-----
-58
-77
 
 query II rowsort label-1345
 SELECT 11 * COUNT ( * ) / - + MAX ( - 84 ) AS col2, CAST ( - 70 AS INTEGER ) FROM tab1
@@ -8190,7 +8253,10 @@ query I rowsort
 SELECT col1 + + + 23 AS col0 FROM tab2 AS cor0 WHERE NULL <= NULL
 ----
 
-query II rowsort label-1352
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-1352
 SELECT ALL 62 / - 81 / CAST ( + 25 AS FLOAT8 ) AS col1, 48 * + 97 FROM tab0 AS cor0 WHERE NOT NULL IS NULL
 ----
 
@@ -8237,7 +8303,10 @@ SELECT ALL - SUM ( DISTINCT col1 ) * + - COUNT ( * ) FROM tab1
 ----
 198
 
-query I rowsort label-1361
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1361
 SELECT + 37 * - + CAST ( NULL AS FLOAT8 ) + - + col0 FROM tab2
 ----
 NULL
@@ -8280,7 +8349,10 @@ query IIIIII rowsort
 SELECT DISTINCT * FROM tab0 AS cor0 CROSS JOIN tab2 cor1 WHERE NOT NULL > NULL
 ----
 
-query I rowsort label-1367
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1367
 SELECT - COUNT ( * ) * - 15 + + + 61 * - - AVG ( - col0 ) + - + CAST ( NULL AS INTEGER ) AS col2 FROM tab1 AS cor0 WHERE NOT + 18 IS NULL
 ----
 NULL
@@ -8309,7 +8381,10 @@ SELECT col2 AS col1, - col1 + 60 AS col2 FROM tab0
 99
 59
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT - + AVG ( ALL - col2 ) FROM tab1 WHERE NOT col0 * + 63 <> NULL
 ----
 NULL
@@ -8504,15 +8579,15 @@ SELECT - + col1 * + + col0 + - col0 / col2 * + + col0 + + - ( col2 ) + - 10, - c
 -820
 -45
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 93
+# Datafusion - Expected - -3717
+# Datafusion - Expected - 93
+# Datafusion - Expected - -4284
+# Datafusion - Expected - 93
+# Datafusion - Expected - -6048
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(93\) AS col1" at position 0 and "Int64\(\-63\) \* tab1\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + 93 AS col1, - 63 * col2 AS col1 FROM tab1
-----
-93
--3717
-93
--4284
-93
--6048
 
 query I rowsort
 SELECT 43 * - 13 * 10 + - + ( - + 67 ) AS col0 FROM tab2 AS cor0 CROSS JOIN tab0 AS cor1
@@ -8541,15 +8616,15 @@ SELECT ALL + - COUNT ( * ) col0 FROM tab0 AS cor0 CROSS JOIN tab0 AS cor1
 ----
 -9
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - 11
+# Datafusion - Expected - 47
+# Datafusion - Expected - 11
+# Datafusion - Expected - 99
+# Datafusion - Expected - 11
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT col2, 11 AS col2 FROM tab0 AS cor0
-----
-10
-11
-47
-11
-99
-11
 
 query I rowsort label-1410
 SELECT ALL - SUM ( DISTINCT + col2 ) AS col1 FROM tab0 AS cor0
@@ -8640,7 +8715,10 @@ SELECT - + SUM ( - ( 51 ) ) AS col2, + 46 / + 35 FROM tab2 WHERE + - 42 IS NULL
 NULL
 1
 
-query II rowsort label-1426
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-1426
 SELECT + CAST ( NULL AS FLOAT8 ) AS col0, COUNT ( * ) * - CAST ( NULL AS INTEGER ) * + COUNT ( * ) FROM tab2
 ----
 NULL
@@ -8727,19 +8805,22 @@ SELECT DISTINCT + col1 * + ( + 39 ) - CAST ( NULL AS INTEGER ) AS col2 FROM tab1
 ----
 NULL
 
-query II rowsort label-1439
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] I[I]
+# Datafusion - [Actual  ] I[R]
+query IR rowsort label-1439
 SELECT DISTINCT + col1 * col2, ( - - 99 ) + + CAST ( NULL AS FLOAT8 ) + - col0 FROM tab1 AS cor0 WHERE NOT ( NULL ) > + + col2
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - 10
+# Datafusion - Expected - 47
+# Datafusion - Expected - 47
+# Datafusion - Expected - 99
+# Datafusion - Expected - 99
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col2, + col2 FROM tab0 AS cor0
-----
-10
-10
-47
-47
-99
-99
 
 query I rowsort label-1441
 SELECT MAX ( ALL 42 ) AS col2 FROM tab0 AS cor0
@@ -9193,7 +9274,10 @@ SELECT DISTINCT + CAST ( - + col1 AS INTEGER ) col2 FROM tab2 AS cor0
 -67
 -77
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT DISTINCT - AVG ( + + 61 ) FROM tab0 AS cor0 CROSS JOIN tab2 AS cor1 WHERE 91 * - 48 >= + ( + 35 )
 ----
 NULL
@@ -9659,7 +9743,10 @@ SELECT DISTINCT + col0 * 41 AS col2 FROM tab2 AS cor0
 2624
 3075
 
-query I rowsort label-1599
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1599
 SELECT ALL AVG ( CAST ( NULL AS INTEGER ) ) AS col0 FROM tab1 AS cor0
 ----
 NULL
@@ -10084,10 +10171,10 @@ query III rowsort
 SELECT * FROM tab1 AS cor0 WHERE - 9 NOT BETWEEN ( - col2 ) AND NULL
 ----
 
-query III rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to 34b473dd1664c8d5e3315db597ad98d1
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT - col0 AS col1, col1 AS col1, - + col0 AS col0 FROM tab2 AS cor0
-----
-9 values hashing to 34b473dd1664c8d5e3315db597ad98d1
 
 query III rowsort
 SELECT * FROM tab0 AS cor0 WHERE NOT col1 * + - 21 + + - col0 BETWEEN + - col2 + + col1 + + col1 + col0 AND ( + 81 )
@@ -10205,15 +10292,15 @@ SELECT + ( - + ( + - col0 ) ) FROM tab0 AS cor0
 87
 97
 
-query II rowsort label-1696
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 63
+# Datafusion - Expected - 67
+# Datafusion - Expected - 63
+# Datafusion - Expected - 77
+# Datafusion - Expected - 63
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- CAST\(\(\- cor0\.col1\) AS Int32\)\) AS col2" at position 0 and "Int64\(63\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - CAST ( - col1 AS INTEGER ) AS col2, 63 col2 FROM tab2 AS cor0
-----
-51
-63
-67
-63
-77
-63
 
 query I rowsort
 SELECT DISTINCT + + ( + col1 ) * + col1 - col1 AS col2 FROM tab0 cor0
@@ -10316,13 +10403,16 @@ SELECT + col0 * + col2 * col2 col1 FROM tab0 AS cor0
 8700
 950697
 
-query II rowsort label-1713
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 53
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT ALL + 53 AS col1, COUNT ( * ) / - ( - AVG ( DISTINCT CAST ( col1 AS INTEGER ) ) ) * + 71 / - 28 - + CAST ( NULL AS INTEGER ) - - 55 + - MAX ( + col1 ) FROM tab0 AS cor0
-----
-53
-NULL
 
-query I rowsort label-1714
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1714
 SELECT + CAST ( - - col0 AS INTEGER ) * - ( + CAST ( NULL AS FLOAT8 ) ) * + 53 AS col1 FROM tab1 cor0
 ----
 NULL
@@ -10605,15 +10695,15 @@ SELECT DISTINCT - COUNT ( * ) + 49 AS col1 FROM tab1
 ----
 46
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 14
+# Datafusion - Expected - -51
+# Datafusion - Expected - 47
+# Datafusion - Expected - -91
+# Datafusion - Expected - 5
+# Datafusion - Expected - -85
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT col1, - col0 AS col1 FROM tab1 WHERE - col2 IS NOT NULL
-----
-14
--51
-47
--91
-5
--85
 
 query I rowsort
 SELECT + col2 + - col0 + col1 FROM tab2 AS cor0
@@ -10809,10 +10899,10 @@ SELECT DISTINCT + - col2 / col2 + col2 FROM tab2 AS cor0
 39
 57
 
-query I rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT - AVG ( ALL + col0 ) + 60 / - - AVG ( DISTINCT + col0 ) AS col1 FROM tab1 AS cor0 WHERE NULL IS NOT NULL
-----
-NULL
 
 query I rowsort
 SELECT ALL - - 61 AS col0 FROM tab0 cor0
@@ -11302,15 +11392,15 @@ SELECT - col2 AS col1, 15 FROM tab1
 -96
 15
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 47
+# Datafusion - Expected - 87
+# Datafusion - Expected - 10
+# Datafusion - Expected - 97
+# Datafusion - Expected - 99
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT + + col0 AS col0, col2 col0 FROM tab0 AS cor0
-----
-15
-47
-87
-10
-97
-99
 
 query I rowsort
 SELECT ALL + - col2 - - - 91 + - col2 FROM tab2 AS cor0
@@ -11679,15 +11769,15 @@ SELECT + MIN ( ALL + - col1 ) AS col2 FROM tab1 WHERE - col2 IS NOT NULL
 ----
 -47
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 14
+# Datafusion - Expected - 37
+# Datafusion - Expected - 47
+# Datafusion - Expected - 37
+# Datafusion - Expected - 5
+# Datafusion - Expected - 37
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col1 AS col2" at position 0 and "Int64\(37\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col1 AS col2, + ( 37 ) AS col2 FROM tab1
-----
-14
-37
-47
-37
-5
-37
 
 query I rowsort label-1930
 SELECT - SUM ( + - col0 ) FROM tab0 WHERE + col0 * 71 + + 98 + - 28 / + col0 IS NOT NULL
@@ -11808,7 +11898,10 @@ SELECT ALL * FROM tab2 AS cor0 WHERE NOT 9 + - col2 IS NULL
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query I rowsort label-1953
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-1953
 SELECT 21 + CAST ( NULL AS FLOAT8 ) AS col2 FROM tab2
 ----
 NULL
@@ -12174,7 +12267,10 @@ SELECT DISTINCT col2 + + - 48 * - + 6 + - 50 AS col1 FROM tab0
 285
 337
 
-query I rowsort label-2007
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2007
 SELECT CAST ( + CAST ( NULL AS FLOAT8 ) AS FLOAT8 ) FROM tab2
 ----
 NULL
@@ -12340,7 +12436,10 @@ query I rowsort
 SELECT DISTINCT - 64 AS col1 FROM tab0 WHERE NOT - col0 <= ( col2 * ( col0 * + col1 ) )
 ----
 
-query I rowsort label-2036
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2036
 SELECT COUNT ( * ) * - AVG ( ALL 98 ) AS col1 FROM tab2 WHERE NOT NULL IS NULL
 ----
 NULL
@@ -12947,10 +13046,10 @@ SELECT ALL 35 * - COUNT ( * ) AS col0 FROM tab0
 ----
 -105
 
-query I rowsort label-2150
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT - AVG ( DISTINCT ( + CAST ( NULL AS INTEGER ) ) ) AS col1 FROM tab2
-----
-NULL
 
 query I rowsort label-2151
 SELECT - COUNT ( * ) * - - 57 + - COUNT ( * ) FROM ( tab2 AS cor0 CROSS JOIN tab2 AS cor1 )
@@ -13013,15 +13112,15 @@ SELECT MIN ( - 37 ) AS col2 FROM tab1
 ----
 -37
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 36
+# Datafusion - Expected - 87
+# Datafusion - Expected - 36
+# Datafusion - Expected - 97
+# Datafusion - Expected - 36
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT col0 col0, + 36 AS col0 FROM tab0
-----
-15
-36
-87
-36
-97
-36
 
 query I rowsort label-2162
 SELECT col2 AS col2 FROM tab2 WHERE NOT - CAST ( - + col2 AS FLOAT8 ) <> - col2
@@ -13067,32 +13166,35 @@ SELECT - col2 + - 70 FROM tab2 AS cor0
 -128
 -93
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 59
+# Datafusion - Expected - -82
+# Datafusion - Expected - 68
+# Datafusion - Expected - -133
+# Datafusion - Expected - 96
+# Datafusion - Expected - -128
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col0" at position 0 and "\(\- cor0\.col2\) \- Int64\(18\) \+ \(\- cor0\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT col2 AS col0, - col2 - + 18 + - col1 col0 FROM tab1 AS cor0
-----
-59
--82
-68
--133
-96
--128
 
-query I rowsort label-2170
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2170
 SELECT + col0 + + CAST ( NULL AS FLOAT8 ) AS col2 FROM tab0 AS cor0
 ----
 NULL
 NULL
 NULL
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 111
+# Datafusion - Expected - -15
+# Datafusion - Expected - 111
+# Datafusion - Expected - -87
+# Datafusion - Expected - 111
+# Datafusion - Expected - -97
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(69\) \+ Int64\(42\) AS col0" at position 0 and "\(\- tab0\.col0\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + 69 + 42 AS col0, - col0 AS col0 FROM tab0
-----
-111
--15
-111
--87
-111
--97
 
 query II rowsort
 SELECT col2, + col2 * + 46 FROM tab2
@@ -13288,7 +13390,10 @@ SELECT col0 * col2 + - col0 AS col1 FROM tab1 WHERE + ( + - col1 ) * col1 IS NOT
 4930
 6097
 
-query I rowsort label-2206
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2206
 SELECT - MIN ( + + col1 ) + + MAX ( + CAST ( NULL AS FLOAT8 ) ) FROM tab0 AS cor0
 ----
 NULL
@@ -13878,7 +13983,10 @@ SELECT DISTINCT - col0 * - - col2 + - 72 AS col0 FROM tab2 AS cor0
 -2632
 -4422
 
-query I rowsort label-2301
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2301
 SELECT CAST ( NULL AS FLOAT8 ) + 69 * col2 * - + 70 AS col0 FROM tab0
 ----
 NULL
@@ -13893,21 +14001,24 @@ query I rowsort
 SELECT DISTINCT - - col0 FROM tab0 WHERE NOT ( ( NULL ) >= + col1 )
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 59
+# Datafusion - Expected - 5
+# Datafusion - Expected - 68
+# Datafusion - Expected - 47
+# Datafusion - Expected - 96
+# Datafusion - Expected - 14
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col1 and unqualified field name col1 which would be ambiguous
 SELECT col2 AS col1, + col1 AS col1 FROM tab1
-----
-59
-5
-68
-47
-96
-14
 
 query III rowsort label-2305
 SELECT DISTINCT * FROM tab1 WHERE + CAST ( NULL AS INTEGER ) NOT BETWEEN + 46 AND - col1 + + 46
 ----
 
-query I rowsort label-2306
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2306
 SELECT DISTINCT col1 * - - CAST ( NULL AS FLOAT8 ) + col1 AS col0 FROM tab0 AS cor0
 ----
 NULL
@@ -13942,15 +14053,15 @@ NULL
 NULL
 NULL
 
-query II rowsort label-2312
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -2773
+# Datafusion - Expected - NULL
+# Datafusion - Expected - -3196
+# Datafusion - Expected - NULL
+# Datafusion - Expected - -4512
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col2 \* Int64\(\-47\) AS col2" at position 0 and "\(\- CAST\(NULL AS Int32\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col2 * - 47 AS col2, - CAST ( NULL AS INTEGER ) AS col2 FROM tab1
-----
--2773
-NULL
--3196
-NULL
--4512
-NULL
 
 query II rowsort label-2313
 SELECT DISTINCT col2 / 85, + col0 AS col0 FROM tab1
@@ -14143,7 +14254,10 @@ SELECT DISTINCT col2 * CAST ( NULL AS INTEGER ) * - + 18 + + + col1 + + col0 AS 
 ----
 NULL
 
-query II rowsort label-2343
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-2343
 SELECT ALL CAST ( NULL AS INTEGER ) * + COUNT ( * ) + - AVG ( DISTINCT col1 ) AS col2, - 1 FROM tab2
 ----
 NULL
@@ -14331,10 +14445,10 @@ SELECT DISTINCT + COUNT ( * ) * 99 - CAST ( NULL AS INTEGER ) FROM tab0 cor0
 ----
 NULL
 
-query I rowsort label-2374
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT AVG ( DISTINCT - 94 ) / - + CAST ( NULL AS INTEGER ) FROM tab2 AS cor0
-----
-NULL
 
 query I rowsort label-2375
 SELECT ALL + + ( - 74 ) / col0 - - col0 FROM tab2 AS cor0
@@ -14772,7 +14886,10 @@ SELECT DISTINCT + ( + - 91 ), col0 AS col2 FROM tab0 cor0
 -91
 97
 
-query I rowsort label-2448
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2448
 SELECT col1 * + CAST ( NULL AS FLOAT8 ) - col0 + + col2 AS col1 FROM tab2
 ----
 NULL
@@ -15120,7 +15237,10 @@ SELECT col0 AS col0 FROM tab2 AS cor0 WHERE col1 <> ( 76 )
 64
 75
 
-query I rowsort label-2509
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2509
 SELECT ALL + CAST ( NULL AS FLOAT8 ) AS col2 FROM tab2 AS cor0 WHERE NOT ( NULL ) IN ( + col1 )
 ----
 
@@ -15604,7 +15724,10 @@ SELECT - 60 + + col0 / - col1 FROM tab2 AS cor0
 -60
 -61
 
-query I rowsort label-2595
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2595
 SELECT col0 + - CAST ( NULL AS FLOAT8 ) AS col0 FROM tab1 AS cor0
 ----
 NULL
@@ -15853,15 +15976,15 @@ SELECT + col1 - - col2 FROM tab1 cor0
 115
 64
 
-query II rowsort label-2636
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -188
+# Datafusion - Expected - -28
+# Datafusion - Expected - -205
+# Datafusion - Expected - -53
+# Datafusion - Expected - -223
+# Datafusion - Expected - -50
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-99\) \- \(\- \(\- CAST\(cor0\.col2 AS Int32\)\)\) \+ Int64\(\-66\) AS col0" at position 0 and "cor0\.col0 \+ \(\- cor0\.col2\) \+ \(\- cor0\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - 99 - - - CAST ( col2 AS INTEGER ) + - 66 AS col0, col0 + - col2 + - col1 AS col0 FROM tab2 AS cor0
-----
--188
--28
--205
--53
--223
--50
 
 query I rowsort
 SELECT + + col0 FROM tab2 WHERE - col0 <> col2
@@ -16038,7 +16161,10 @@ SELECT col2 * - 23 + 31 AS col0 FROM tab1 AS cor0
 -1533
 -2177
 
-query I rowsort label-2664
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2664
 SELECT DISTINCT - + col1 - + CAST ( - - CAST ( NULL AS INTEGER ) AS FLOAT8 ) FROM tab2 AS cor0
 ----
 NULL
@@ -16380,7 +16506,10 @@ SELECT col0, 25 + col2 FROM tab1 AS cor0
 91
 93
 
-query I rowsort label-2724
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2724
 SELECT - ( - + CAST ( NULL AS FLOAT8 ) ) / - col1 FROM tab1 AS cor0
 ----
 NULL
@@ -17230,7 +17359,10 @@ SELECT DISTINCT col0 AS col0, - col2 + + col0 AS col2 FROM tab2 AS cor0
 75
 17
 
-query I rowsort label-2861
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2861
 SELECT + + AVG ( + col1 ) FROM tab0 cor0 WHERE NOT NULL <= - CAST ( NULL AS INTEGER ) - - col1 * + 62 * 40
 ----
 NULL
@@ -17552,15 +17684,15 @@ SELECT 53 + - col1 FROM tab2
 -24
 2
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -59
+# Datafusion - Expected - 96
+# Datafusion - Expected - -68
+# Datafusion - Expected - 96
+# Datafusion - Expected - -96
+# Datafusion - Expected - 96
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab1\.col2\) AS col0" at position 0 and "Int64\(96\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL ( + - col2 ) AS col0, 96 AS col0 FROM tab1
-----
--59
-96
--68
-96
--96
-96
 
 query I rowsort label-2913
 SELECT - SUM ( - + 79 ) + 11 col0 FROM tab1
@@ -17679,7 +17811,10 @@ SELECT COUNT ( * ) * 71 FROM tab1
 ----
 213
 
-query I rowsort label-2933
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-2933
 SELECT - col2 * + CAST ( NULL AS FLOAT8 ) + 3 FROM tab2 WHERE NOT 15 IS NOT NULL
 ----
 
@@ -17868,7 +18003,10 @@ SELECT DISTINCT MIN ( DISTINCT + col1 ) AS col2 FROM tab1 AS cor0
 ----
 5
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT DISTINCT - AVG ( 27 ) FROM tab1 AS cor0 WHERE col1 + + col1 NOT BETWEEN ( NULL ) AND 26 * col1
 ----
 NULL
@@ -18052,15 +18190,15 @@ query III rowsort
 SELECT * FROM tab2 WHERE ( + + col1 + + col2 ) BETWEEN ( 26 ) AND ( NULL )
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 13
+# Datafusion - Expected - 51
+# Datafusion - Expected - 13
+# Datafusion - Expected - 67
+# Datafusion - Expected - 13
+# Datafusion - Expected - 77
+query error DataFusion error: Schema error: Schema contains qualified field name tab2\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ( - - 13 ) AS col1, col1 FROM tab2
-----
-13
-51
-13
-67
-13
-77
 
 query I rowsort
 SELECT DISTINCT - col1 * + - col1 FROM tab1
@@ -18123,15 +18261,15 @@ SELECT col2 + - - 8 + col1 AS col2 FROM tab1
 123
 72
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 79
+# Datafusion - Expected - 89
+# Datafusion - Expected - 79
+# Datafusion - Expected - 89
+# Datafusion - Expected - 79
+# Datafusion - Expected - 89
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(79\) AS col2" at position 0 and "Int64\(89\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 79 AS col2, + 89 col2 FROM tab2
-----
-79
-89
-79
-89
-79
-89
 
 query I rowsort
 SELECT DISTINCT col0 FROM tab1 WHERE NOT col1 <= NULL
@@ -18245,7 +18383,10 @@ SELECT DISTINCT col0 * 59 + - col0 AS col2 FROM tab1 AS cor0
 4930
 5278
 
-query I rowsort label-3031
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3031
 SELECT - - CAST ( NULL AS FLOAT8 ) + ( + col2 ) AS col2 FROM tab0 AS cor0
 ----
 NULL
@@ -18271,15 +18412,15 @@ SELECT ALL - col1 FROM tab1 WHERE + col1 NOT BETWEEN + col2 AND ( + col1 )
 -47
 -5
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 82
+# Datafusion - Expected - 18
+# Datafusion - Expected - 82
+# Datafusion - Expected - 36
+# Datafusion - Expected - 82
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-22\) \+ cor0\.col2 AS col2" at position 0 and "Int64\(82\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 22 + + col2 AS col2, ( 82 ) AS col2 FROM tab2 cor0
-----
-1
-82
-18
-82
-36
-82
 
 query I rowsort
 SELECT - + col0 * - - 7 + + 97 FROM tab2 cor0 WHERE + col0 * + col1 + col2 <= col1
@@ -18296,17 +18437,20 @@ SELECT ALL 42 * - 33 + + col2 FROM tab0 AS cor0
 -1339
 -1376
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -162
+# Datafusion - Expected - 69
+# Datafusion - Expected - -2
+# Datafusion - Expected - 69
+# Datafusion - Expected - -42
+# Datafusion - Expected - 69
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(2\) \* \(\- cor0\.col1\) AS col1" at position 0 and "Int64\(69\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 2 * - col1 AS col1, 69 AS col1 FROM tab0 cor0
-----
--162
-69
--2
-69
--42
-69
 
-query I rowsort label-3040
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3040
 SELECT DISTINCT - MIN ( DISTINCT - - col0 ) / - CAST ( NULL AS FLOAT8 ) AS col1 FROM tab0 AS cor0
 ----
 NULL
@@ -18464,7 +18608,10 @@ SELECT ALL 0, - col2 * - col0 + - - col2 AS col1 FROM tab1
 0
 6256
 
-query I rowsort label-3064
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3064
 SELECT + col0 + - - col0 / + CAST ( + col2 AS INTEGER ) * - CAST ( NULL AS FLOAT8 ) + + ( - col0 ) + + col0 AS col0 FROM tab2
 ----
 NULL
@@ -18648,11 +18795,11 @@ SELECT + - col0 AS col1, + ( 79 ) * - CAST ( 78 AS INTEGER ) * col1 - + - col0 F
 -97
 -6065
 
-query II rowsort label-3091
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 3
+# Datafusion - Expected - NULL
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- count\(Int64\(1\)\) AS count\(\*\)\)\) AS col1" at position 0 and "\(\- CAST\(NULL AS Int32\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - - COUNT ( * ) AS col1, - CAST ( NULL AS INTEGER ) AS col1 FROM tab1 AS cor0
-----
-3
-NULL
 
 query I rowsort
 SELECT DISTINCT ( + ( - col2 ) ) + - col0 AS col2 FROM tab0
@@ -18759,7 +18906,10 @@ SELECT ALL - 83 * - col2 + + col2 AS col2, + col1 FROM tab2
 4872
 67
 
-query I rowsort label-3109
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3109
 SELECT DISTINCT CAST ( NULL AS FLOAT8 ) - COUNT ( - col0 ) * + 29 FROM tab1 cor0
 ----
 NULL
@@ -18858,15 +19008,15 @@ SELECT ALL col1 AS col1 FROM tab1 WHERE ( NOT NULL IS NOT NULL )
 47
 5
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 41
+# Datafusion - Expected - -7
+# Datafusion - Expected - 51
+# Datafusion - Expected - -7
+# Datafusion - Expected - 83
+# Datafusion - Expected - -7
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col0 \+ tab2\.col0 \+ \(\- tab2\.col1\) AS col1" at position 0 and "Int64\(\-7\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col0 + + col0 + + - col1 AS col1, - 7 AS col1 FROM tab2
-----
-41
--7
-51
--7
-83
--7
 
 query I rowsort label-3126
 SELECT DISTINCT 69 * - + CAST ( - - col0 AS INTEGER ) + - ( 78 ) FROM tab1
@@ -18886,15 +19036,15 @@ SELECT DISTINCT + col2 + - + col1 * col0 AS col1 FROM tab0
 -1817
 2
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - -87
+# Datafusion - Expected - 47
+# Datafusion - Expected - -15
+# Datafusion - Expected - 99
+# Datafusion - Expected - -97
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT col2, - col0 AS col2 FROM tab0
-----
-10
--87
-47
--15
-99
--97
 
 query I rowsort label-3130
 SELECT ALL COUNT ( * ) * + - 4 * 15 + - SUM ( ALL - + col2 ) AS col1 FROM tab2
@@ -18962,7 +19112,10 @@ SELECT + col0 + + col1 * col2 FROM tab2 AS cor0 WHERE col1 + + 22 IS NOT NULL
 3144
 3961
 
-query I rowsort label-3141
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3141
 SELECT ALL 75 * CAST ( NULL AS INTEGER ) - AVG ( ( - + col0 ) ) FROM tab2 AS cor0
 ----
 NULL
@@ -19133,15 +19286,15 @@ SELECT - col2 col2, 98 AS col1 FROM tab2 AS cor0
 -58
 98
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 51
+# Datafusion - Expected - 85
+# Datafusion - Expected - 85
+# Datafusion - Expected - 91
+# Datafusion - Expected - 91
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col0, + col0 FROM tab1 AS cor0
-----
-51
-51
-85
-85
-91
-91
 
 query I rowsort
 SELECT DISTINCT + col0 * - - ( - col1 ) FROM tab0 AS cor0
@@ -19248,7 +19401,10 @@ SELECT + 7, + col2 AS col2 FROM tab1
 7
 96
 
-query I rowsort label-3185
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3185
 SELECT ALL + 44 + - CAST ( NULL AS FLOAT8 ) FROM tab2
 ----
 NULL
@@ -19262,7 +19418,10 @@ SELECT DISTINCT 87 + col0 - - col1 FROM tab2
 228
 229
 
-query II rowsort label-3187
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] I[I]
+# Datafusion - [Actual  ] I[R]
+query IR rowsort label-3187
 SELECT - 80 AS col1, CAST ( NULL AS FLOAT8 ) FROM tab0
 ----
 -80
@@ -19333,15 +19492,15 @@ SELECT ALL + 64 * - MAX ( ALL 84 ) + 52 + COUNT ( * ) AS col0 FROM tab1 AS cor0
 ----
 -5321
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -91
+# Datafusion - Expected - 32
+# Datafusion - Expected - -91
+# Datafusion - Expected - 32
+# Datafusion - Expected - -91
+# Datafusion - Expected - 32
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- Int64\(\-91\)\)\) AS col0" at position 0 and "Int64\(32\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + - ( - - 91 ) AS col0, 32 AS col0 FROM tab0 cor0
-----
--91
-32
--91
-32
--91
-32
 
 query II rowsort
 SELECT DISTINCT + - col2, col0 * col0 FROM tab2 WHERE NOT NULL IS NULL
@@ -19379,15 +19538,15 @@ SELECT DISTINCT col1 AS col2, - col2 * - col0 + col2 + + CAST ( - col1 AS INTEGE
 5
 2949
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 69
+# Datafusion - Expected - 85
+# Datafusion - Expected - 69
+# Datafusion - Expected - 91
+# Datafusion - Expected - 69
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col0 and unqualified field name col0 which would be ambiguous
 SELECT ALL col0, 69 AS col0 FROM tab1
-----
-51
-69
-85
-69
-91
-69
 
 query II rowsort
 SELECT ALL - - 60, - col0 AS col1 FROM tab2 AS cor0
@@ -19758,7 +19917,10 @@ SELECT - 18 * 51 + - col2 + - - col2 col0 FROM tab1 AS cor0
 -918
 -918
 
-query I rowsort label-3264
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3264
 SELECT DISTINCT + AVG ( ALL + CAST ( NULL AS INTEGER ) ) FROM tab0 AS cor0
 ----
 NULL
@@ -19805,15 +19967,15 @@ query I rowsort
 SELECT ALL + col0 AS col0 FROM tab2 AS cor0 WHERE NOT + col1 + + col1 + + col0 IS NOT NULL
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -2116
+# Datafusion - Expected - -51
+# Datafusion - Expected - -3680
+# Datafusion - Expected - -77
+# Datafusion - Expected - -5336
+# Datafusion - Expected - -67
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col2\) \* Int64\(92\) AS col2" at position 0 and "\(\- cor0\.col1\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - col2 * + + 92 col2, - col1 AS col2 FROM tab2 AS cor0
-----
--2116
--51
--3680
--77
--5336
--67
 
 query I rowsort label-3274
 SELECT COUNT ( * ) FROM tab0 WHERE + col2 BETWEEN NULL AND - + col0 * + + col2 - col0 * col1 * + + col2 * - col1
@@ -20447,7 +20609,10 @@ SELECT 71 * - 0 AS col2 FROM tab2
 0
 0
 
-query I rowsort label-3372
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3372
 SELECT DISTINCT 42 * + CAST ( NULL AS FLOAT8 ) AS col2 FROM tab0
 ----
 NULL
@@ -21197,15 +21362,15 @@ SELECT DISTINCT + - ( ( - 24 ) ) AS col2 FROM tab0 AS cor0
 ----
 24
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 0
+# Datafusion - Expected - 99
+# Datafusion - Expected - 0
+# Datafusion - Expected - 99
+# Datafusion - Expected - 0
+# Datafusion - Expected - 99
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 \* Int64\(0\) AS col0" at position 0 and "Int64\(99\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col1 * + + 0 AS col0, + 99 AS col0 FROM tab0 AS cor0
-----
-0
-99
-0
-99
-0
-99
 
 query II rowsort
 SELECT DISTINCT 53 AS col1, ( + - col1 ) + - + col0 FROM tab0 AS cor0
@@ -21235,11 +21400,11 @@ SELECT DISTINCT + col2 * - - col2 AS col2 FROM tab2 AS cor0
 3364
 529
 
-query II rowsort label-3508
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -74
+# Datafusion - Expected - -3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-74\) AS col0" at position 0 and "\(\- count\(Int64\(1\)\) AS count\(\*\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - 74 col0, - COUNT ( * ) AS col0 FROM tab0 AS cor0
-----
--74
--3
 
 query I rowsort
 SELECT ALL col2 AS col2 FROM tab1 cor0 WHERE ( NULL ) > ( + 58 )
@@ -21318,7 +21483,10 @@ SELECT DISTINCT col2 + 58 FROM tab1
 126
 154
 
-query I rowsort label-3523
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3523
 SELECT - col1 / - CAST ( NULL AS FLOAT8 ) AS col2 FROM tab0
 ----
 NULL
@@ -21338,15 +21506,15 @@ SELECT - ( + col0 ) / + - 80 - + ( + col1 ) AS col1 FROM tab2
 -67
 -77
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - -35
+# Datafusion - Expected - 47
+# Datafusion - Expected - -95
+# Datafusion - Expected - 99
+# Datafusion - Expected - -15
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col2 AS col0" at position 0 and "\(\- tab0\.col1\) \- \(\- Int64\(\-14\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + ( + col2 ) AS col0, - ( + col1 ) - - - 14 AS col0 FROM tab0
-----
-10
--35
-47
--95
-99
--15
 
 query I rowsort label-3527
 SELECT COUNT ( * ) - + - SUM ( + 4 ) col2 FROM tab2
@@ -21426,15 +21594,15 @@ SELECT DISTINCT - + col2 FROM tab0 WHERE - col2 IS NOT NULL
 -47
 -99
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 138
+# Datafusion - Expected - 47
+# Datafusion - Expected - 65
+# Datafusion - Expected - 14
+# Datafusion - Expected - 90
+# Datafusion - Expected - 5
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT col1 + + + col0 AS col1, col1 FROM tab1
-----
-138
-47
-65
-14
-90
-5
 
 query I rowsort
 SELECT DISTINCT - 1 * - col2 FROM tab2 AS cor0
@@ -21880,7 +22048,10 @@ query III rowsort
 SELECT DISTINCT * FROM tab0 WHERE NOT - + col2 * col2 - - + col2 IS NOT NULL
 ----
 
-query I rowsort label-3613
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3613
 SELECT AVG ( ALL + + col0 ) + 6 * CAST ( NULL AS INTEGER ) AS col0 FROM tab1
 ----
 NULL
@@ -21944,10 +22115,10 @@ SELECT DISTINCT + - col1 + + ( col1 ) col1 FROM tab0 AS cor0
 ----
 0
 
-query I rowsort label-3625
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT + COUNT ( * ) - CAST ( NULL AS FLOAT8 ) + - COUNT ( * ) * - CAST ( - AVG ( DISTINCT CAST ( NULL AS INTEGER ) ) AS INTEGER ) AS col0 FROM tab0 AS cor0
-----
-NULL
 
 query I rowsort
 SELECT DISTINCT + + ( - + col0 ) FROM tab2 AS cor0
@@ -22303,7 +22474,10 @@ SELECT MIN ( DISTINCT + col2 ) AS col1 FROM tab0 AS cor0
 ----
 10
 
-query I rowsort label-3686
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3686
 SELECT + - CAST ( NULL AS FLOAT8 ) * - col0 + - 49 AS col1 FROM tab2 AS cor0
 ----
 NULL
@@ -22506,15 +22680,15 @@ SELECT ALL - ( + 1 ) + + - col1 FROM tab0
 -22
 -82
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -10
+# Datafusion - Expected - 20
+# Datafusion - Expected - -47
+# Datafusion - Expected - 94
+# Datafusion - Expected - -99
+# Datafusion - Expected - 198
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col2\) AS col2" at position 0 and "cor0\.col2 \+ cor0\.col2 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + - col2 AS col2, + col2 + col2 AS col2 FROM tab0 AS cor0
-----
--10
-20
--47
-94
--99
-198
 
 query I rowsort
 SELECT + col0 FROM tab1 AS cor0 WHERE NOT + col0 IS NOT NULL
@@ -22532,15 +22706,15 @@ SELECT DISTINCT + 95 / + - CAST ( 86 AS INTEGER ) - col2 + - col2 * + col1 FROM 
 -221
 -3855
 
-query II rowsort label-3721
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - -15
+# Datafusion - Expected - -1
+# Datafusion - Expected - -87
+# Datafusion - Expected - -1
+# Datafusion - Expected - -97
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col2\) / cor0\.col2 AS col1" at position 0 and "\(\- cor0\.col0\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + - col2 / + col2 AS col1, - col0 col1 FROM tab0 AS cor0
-----
--1
--15
--1
--87
--1
--97
 
 query I rowsort label-3722
 SELECT ALL + col0 / + + col0 AS col0 FROM tab2 AS cor0
@@ -23264,12 +23438,18 @@ SELECT DISTINCT - 94 - col1 AS col2 FROM tab1
 -141
 -99
 
-query I rowsort label-3833
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3833
 SELECT DISTINCT ( ( CAST ( NULL AS INTEGER ) ) ) * - AVG ( - 77 * CAST ( NULL AS INTEGER ) ) FROM tab2
 ----
 NULL
 
-query I rowsort label-3834
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3834
 SELECT AVG ( DISTINCT col2 ) AS col2 FROM tab1 WHERE col2 + ( - CAST ( NULL AS INTEGER ) - 69 ) * + 45 < + 68 * - 8
 ----
 NULL
@@ -24104,7 +24284,10 @@ SELECT ALL - col0 col2 FROM tab0 AS cor0 WHERE col1 IS NOT NULL
 -87
 -97
 
-query I rowsort label-3975
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-3975
 SELECT - CAST ( NULL AS FLOAT8 ) + + 95 FROM tab0 AS cor0 CROSS JOIN tab2 AS cor1
 ----
 9 values hashing to cd7a7901e47c15155404aff0d216fe0b
@@ -24332,15 +24515,15 @@ SELECT DISTINCT + 76 + + col0 AS col0 FROM tab0
 173
 91
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - 85
+# Datafusion - Expected - 47
+# Datafusion - Expected - 85
+# Datafusion - Expected - 99
+# Datafusion - Expected - 85
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col2 AS col0" at position 0 and "Int64\(85\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + col2 AS col0, + 85 col0 FROM tab0 WHERE NULL IS NULL
-----
-10
-85
-47
-85
-99
-85
 
 query I rowsort
 SELECT DISTINCT 13 * col2 + ( col1 ) AS col0 FROM tab0 AS cor0
@@ -24778,7 +24961,10 @@ SELECT 28 + - col2 AS col0 FROM tab0
 -71
 18
 
-query I rowsort label-4084
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4084
 SELECT + + 74 * col0 + col1 - 15 * - + 55 * - CAST ( NULL AS FLOAT8 ) FROM tab2 WHERE + col0 + - col1 IS NULL
 ----
 
@@ -24799,15 +24985,15 @@ SELECT DISTINCT col1 * + 7 + - 13 FROM tab2
 456
 526
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 15
+# Datafusion - Expected - 87
+# Datafusion - Expected - 87
+# Datafusion - Expected - 97
+# Datafusion - Expected - 97
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + col0 AS col0, col0 AS col0 FROM tab0 AS cor0
-----
-15
-15
-87
-87
-97
-97
 
 query I rowsort label-4089
 SELECT ALL COUNT ( * ) FROM tab2 AS cor0 WHERE NOT - 18 BETWEEN + 33 * col2 AND NULL
@@ -25256,11 +25442,11 @@ SELECT - 79 + + + 19 AS col2 FROM tab1
 -60
 -60
 
-query II rowsort label-4166
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 73
+# Datafusion - Expected - -3710
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(87\) \+ \(\- Int64\(14\)\) AS col2" at position 0 and "count\(tab2\.col0\) \* Int64\(\-26\) \* Int64\(47\) \+ Int64\(\-44\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 87 + - + 14 AS col2, COUNT ( ALL + col0 ) * + - 26 * 47 + - 44 AS col2 FROM tab2
-----
-73
--3710
 
 query I rowsort label-4167
 SELECT MAX ( DISTINCT + + 43 ) * + MAX ( 46 ) + 79 FROM tab2
@@ -25365,9 +25551,9 @@ SELECT ALL SUM ( - + ( 54 ) ) AS col1 FROM tab0
 ----
 -162
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(24\) AS col2" at position 0 and "tab2\.col2 \+ Int64\(89\) \+ Int64\(\-12\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + 24 AS col2, col2 + 89 + - 12 AS col2 FROM tab2 WHERE + + 24 <= NULL
-----
 
 query I rowsort label-4185
 SELECT DISTINCT COUNT ( - 0 ) FROM tab1
@@ -25614,7 +25800,10 @@ SELECT 32 / - - COUNT ( * ) + + - ( MAX ( col2 ) ) AS col0 FROM tab2 AS cor0
 ----
 -48
 
-query I rowsort label-4228
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4228
 SELECT + 5 + - - CAST ( NULL AS FLOAT8 ) * - + 21 + - 3 - + ( - 22 ) FROM tab0 cor0
 ----
 NULL
@@ -25753,7 +25942,10 @@ SELECT DISTINCT CAST ( + 20 AS INTEGER ), + col1 AS col0 FROM tab0
 20
 81
 
-query II rowsort label-4250
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] I[I]
+# Datafusion - [Actual  ] I[R]
+query IR rowsort label-4250
 SELECT + COUNT ( * ) col1, MIN ( + col1 ) * + MIN ( - CAST ( NULL AS FLOAT8 ) ) FROM tab2 WHERE + col1 IS NOT NULL
 ----
 3
@@ -25814,15 +26006,15 @@ SELECT ALL + col0 * col2 * + + col2 FROM tab2
 24334
 252300
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 59
+# Datafusion - Expected - 41
+# Datafusion - Expected - 68
+# Datafusion - Expected - 41
+# Datafusion - Expected - 96
+# Datafusion - Expected - 41
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col2 AS col0" at position 0 and "Int64\(41\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL col2 AS col0, + 41 AS col0 FROM tab1
-----
-59
-41
-68
-41
-96
-41
 
 query I rowsort label-4260
 SELECT DISTINCT 69 * + - col0 * - col1 / + + col1 AS col0 FROM tab1
@@ -25913,7 +26105,10 @@ SELECT + MAX ( ALL 52 ) / - + COUNT ( * ) FROM tab2 AS cor0
 ----
 -17
 
-query I rowsort label-4276
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4276
 SELECT DISTINCT - col0 * + CAST ( NULL AS FLOAT8 ) AS col2 FROM tab0 AS cor0
 ----
 NULL
@@ -26091,7 +26286,10 @@ SELECT ALL * FROM tab2 WHERE ( - col0 * ( + col1 ) ) NOT BETWEEN ( 89 ) AND + 27
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query I rowsort label-4309
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4309
 SELECT ALL - CAST ( NULL AS FLOAT8 ) * COUNT ( * ) AS col0 FROM tab2 WHERE NOT ( col2 / 31 + col1 ) BETWEEN NULL AND ( - col0 - col0 )
 ----
 NULL
@@ -26127,7 +26325,10 @@ SELECT DISTINCT - col1 + + col1 FROM tab2 WHERE NOT NULL IS NOT NULL
 ----
 0
 
-query I rowsort label-4316
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4316
 SELECT DISTINCT - CAST ( NULL AS FLOAT8 ) - col1 * col2 AS col0 FROM tab0
 ----
 NULL
@@ -26211,7 +26412,10 @@ SELECT ALL col1 * 52 AS col2 FROM tab1 AS cor0
 260
 728
 
-query I rowsort label-4331
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4331
 SELECT + col2 + - CAST ( NULL AS FLOAT8 ) * col1 AS col1 FROM tab1 cor0
 ----
 NULL
@@ -26465,15 +26669,15 @@ SELECT ALL - col0 + + 82 / - + col0 AS col1 FROM tab0
 -87
 -97
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -92
+# Datafusion - Expected - 21
+# Datafusion - Expected - -112
+# Datafusion - Expected - 81
+# Datafusion - Expected - -172
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT col1, - 91 + + - col1 col1 FROM tab0
-----
-1
--92
-21
--112
-81
--172
 
 query I rowsort label-4375
 SELECT DISTINCT - COUNT ( * ) * - 88 + + 14 * - ( + 6 ) AS col2 FROM tab2
@@ -26774,10 +26978,10 @@ SELECT + - ( + MAX ( + 41 ) ) * - MAX ( ALL 89 ) FROM tab1 AS cor0
 ----
 3649
 
-query I rowsort label-4425
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 44
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT ALL + CAST ( - AVG ( DISTINCT - 44 ) AS INTEGER ) AS col0 FROM tab0 cor0
-----
-44
 
 query II rowsort
 SELECT DISTINCT + 89 AS col0, - col0 AS col1 FROM tab2 AS cor0
@@ -26789,15 +26993,15 @@ SELECT DISTINCT + 89 AS col0, - col0 AS col1 FROM tab2 AS cor0
 89
 -75
 
-query II rowsort label-4427
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -46
+# Datafusion - Expected - -1861597
+# Datafusion - Expected - -64
+# Datafusion - Expected - -8500864
+# Datafusion - Expected - -75
+# Datafusion - Expected - -15551846
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\) AS col2" at position 0 and "cor0\.col0 / \(\- \(\- cor0\.col1\)\) \- cor0\.col0 \+ cor0\.col2 \* Int64\(69\) \* \(\- cor0\.col2\) \* cor0\.col1 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - col0 AS col2, col0 / - ( + - col1 ) - + col0 + + col2 * + + 69 * - col2 * col1 AS col2 FROM tab2 AS cor0
-----
--46
--1861597
--64
--8500864
--75
--15551846
 
 query II rowsort
 SELECT - + col1 * - - col1 + + col2 - + col1 AS col0, col1 + - col1 + + + 49 col1 FROM tab0 AS cor0
@@ -27256,7 +27460,10 @@ SELECT * FROM tab1 AS cor0 WHERE + col0 NOT BETWEEN col2 AND + col1 + - - 24
 ----
 9 values hashing to c6c0a4111b36d04dbc811a11e4d54cad
 
-query I rowsort label-4507
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4507
 SELECT + AVG ( - + col2 ) FROM tab0 AS cor0 WHERE - 8 + CAST ( NULL AS INTEGER ) IS NOT NULL
 ----
 NULL
@@ -27355,15 +27562,15 @@ query I rowsort label-4521
 SELECT ALL - col2 FROM tab2 WHERE NOT CAST ( NULL AS INTEGER ) IS NULL
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -15
+# Datafusion - Expected - -15
+# Datafusion - Expected - -87
+# Datafusion - Expected - -87
+# Datafusion - Expected - -97
+# Datafusion - Expected - -97
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab0\.col0\)" at position 0 and "\(\- tab0\.col0\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - ( + col0 ), - col0 FROM tab0
-----
--15
--15
--87
--87
--97
--97
 
 query I rowsort
 SELECT ALL - + col1 FROM tab2 WHERE NOT - col2 BETWEEN + 11 AND - + col0
@@ -27580,15 +27787,15 @@ SELECT ALL - - CAST ( NULL AS INTEGER ), - SUM ( - 4 ) FROM tab2 AS cor0 WHERE +
 NULL
 NULL
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 36
+# Datafusion - Expected - 59
+# Datafusion - Expected - 36
+# Datafusion - Expected - 68
+# Datafusion - Expected - 36
+# Datafusion - Expected - 96
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(36\) AS col1" at position 0 and "cor0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL 36 AS col1, col2 AS col1 FROM tab1 AS cor0
-----
-36
-59
-36
-68
-36
-96
 
 query I rowsort
 SELECT - 44 FROM tab2 AS cor0 WHERE NULL IS NULL
@@ -27892,7 +28099,10 @@ SELECT - 82 / - - 79 AS col1 FROM tab2 AS cor0
 -1
 -1
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT AVG ( + + col2 ) AS col2 FROM tab1 cor0 WHERE NOT NULL <> - 84
 ----
 NULL
@@ -28324,7 +28534,10 @@ query III rowsort
 SELECT * FROM tab1 WHERE NOT ( + col1 ) >= ( NULL )
 ----
 
-query I rowsort label-4680
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4680
 SELECT col1 / + CAST ( NULL AS FLOAT8 ) FROM tab0
 ----
 NULL
@@ -28343,15 +28556,15 @@ SELECT DISTINCT - MIN ( + col1 ) col0 FROM tab1 AS cor0
 ----
 -5
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 80
+# Datafusion - Expected - 21
+# Datafusion - Expected - 80
+# Datafusion - Expected - 81
+# Datafusion - Expected - 80
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL col1, 80 AS col1 FROM tab0 cor0
-----
-1
-80
-21
-80
-81
-80
 
 query I rowsort label-4684
 SELECT DISTINCT + - col2 * - CAST ( NULL AS INTEGER ) FROM tab2 AS cor0
@@ -28379,11 +28592,11 @@ SELECT + 92 AS col1, col1 AS col0 FROM tab1 AS cor0
 92
 5
 
-query II rowsort label-4688
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 199
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "sum\(tab0\.col0\) AS col2" at position 0 and "count\(Int64\(1\)\) AS count\(\*\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL SUM ( + col0 ) AS col2, COUNT ( * ) AS col2 FROM tab0
-----
-199
-3
 
 query II rowsort
 SELECT col0 * + + 88 + - 35 col0, - 31 FROM tab2 WHERE NOT + col0 < + col0
@@ -29046,25 +29259,25 @@ SELECT * FROM tab1 WHERE + + col1 + + - 25 <> ( col2 - 36 * + col1 )
 ----
 9 values hashing to c6c0a4111b36d04dbc811a11e4d54cad
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 43
+# Datafusion - Expected - 46
+# Datafusion - Expected - 43
+# Datafusion - Expected - 64
+# Datafusion - Expected - 43
+# Datafusion - Expected - 75
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-15\) \+ Int64\(58\) AS col1" at position 0 and "tab2\.col0 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 15 + 58 AS col1, col0 AS col1 FROM tab2
-----
-43
-46
-43
-64
-43
-75
 
-query II rowsort label-4803
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -3481
+# Datafusion - Expected - 66
+# Datafusion - Expected - -4624
+# Datafusion - Expected - 24
+# Datafusion - Expected - -9216
+# Datafusion - Expected - 57
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col2 \* \(\- tab1\.col2\) AS col2" at position 0 and "Int64\(71\) \+ \(\- CAST\(tab1\.col1 AS Int32\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col2 * - col2 AS col2, 71 + - + CAST ( col1 AS INTEGER ) AS col2 FROM tab1
-----
--3481
-66
--4624
-24
--9216
-57
 
 query I rowsort
 SELECT ALL col1 - - 32 FROM tab2 AS cor0
@@ -29196,11 +29409,11 @@ query I rowsort
 SELECT 24 AS col2 FROM tab1 AS cor0 WHERE NOT NULL = + col2
 ----
 
-query II rowsort label-4825
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -3
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(Int64\(1\)\) AS count\(\*\)\) AS col1" at position 0 and "count\(Int64\(1\)\) AS count\(\*\) \+ \(\- count\(Int64\(1\)\) AS count\(\*\)\) / min\(cor0\.col2\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - COUNT ( * ) col1, + COUNT ( * ) + - COUNT ( * ) / + MIN ( col2 ) AS col1 FROM tab2 AS cor0
-----
--3
-3
 
 query I rowsort
 SELECT - 28 col0 FROM tab2
@@ -29346,7 +29559,10 @@ SELECT 97 - + col1 FROM tab0 WHERE + ( - 82 ) < + + ( col1 ) / + col0
 76
 96
 
-query I rowsort label-4849
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4849
 SELECT ALL - CAST ( NULL AS FLOAT8 ) + - col2 FROM tab2
 ----
 NULL
@@ -29541,10 +29757,10 @@ SELECT col0 - 32 col1 FROM tab1
 53
 59
 
-query III rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to eabf339375b5a0fb308f3885251decf1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(88\) \- tab0\.col0 AS col2" at position 0 and "Int64\(94\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT 88 - + col0 col2, + 94 col2, 90 AS col2 FROM tab0
-----
-9 values hashing to eabf339375b5a0fb308f3885251decf1
 
 query I rowsort label-4882
 SELECT 97 + COUNT ( * ) FROM tab1
@@ -29722,15 +29938,15 @@ SELECT DISTINCT col0 * col1 * + col0 + col1 FROM tab1
 36428
 389254
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - -1659
+# Datafusion - Expected - 47
+# Datafusion - Expected - -6399
+# Datafusion - Expected - 99
+# Datafusion - Expected - -79
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT col2, + col1 * + - 79 AS col2 FROM tab0
-----
-10
--1659
-47
--6399
-99
--79
 
 query I rowsort label-4913
 SELECT ALL + MIN ( 64 ) AS col0 FROM tab0 AS cor0
@@ -29770,25 +29986,25 @@ query II rowsort
 SELECT + + col2, - col2 * + col0 AS col1 FROM tab1 AS cor0 WHERE NOT NULL BETWEEN + col2 AND - - col0
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - -68
+# Datafusion - Expected - 87
+# Datafusion - Expected - -68
+# Datafusion - Expected - 97
+# Datafusion - Expected - -68
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT col0, - 68 AS col0 FROM tab0 AS cor0
-----
-15
--68
-87
--68
-97
--68
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 59
+# Datafusion - Expected - 59
+# Datafusion - Expected - 68
+# Datafusion - Expected - 68
+# Datafusion - Expected - 96
+# Datafusion - Expected - 96
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col0" at position 0 and "cor0\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col2 AS col0, col2 col0 FROM tab1 AS cor0
-----
-59
-59
-68
-68
-96
-96
 
 query I rowsort label-4921
 SELECT ALL + 48 * + COUNT ( ALL col1 ) + 23 FROM tab0 cor0 WHERE NOT 58 + - 66 + + + CAST ( NULL AS INTEGER ) IS NULL
@@ -29842,15 +30058,15 @@ SELECT DISTINCT - 59 * 63 * col1 FROM tab0
 -3717
 -78057
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - 10
+# Datafusion - Expected - 47
+# Datafusion - Expected - 47
+# Datafusion - Expected - 99
+# Datafusion - Expected - 99
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col2" at position 0 and "tab0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col2, col2 FROM tab0
-----
-10
-10
-47
-47
-99
-99
 
 query I rowsort
 SELECT + col0 * + 95 FROM tab1
@@ -29881,15 +30097,15 @@ SELECT DISTINCT + COUNT ( * ) * 24 FROM tab0
 ----
 72
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 46
+# Datafusion - Expected - 75
+# Datafusion - Expected - 64
+# Datafusion - Expected - 75
+# Datafusion - Expected - 75
+# Datafusion - Expected - 75
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- cor0\.col0\)\) AS col1" at position 0 and "Int64\(75\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - - col0 AS col1, 75 AS col1 FROM tab2 AS cor0
-----
-46
-75
-64
-75
-75
-75
 
 query II rowsort
 SELECT col2, + 64 AS col0 FROM tab0 AS cor0
@@ -29929,7 +30145,10 @@ SELECT ALL col0 * + 73 + - col2 AS col2 FROM tab1
 6146
 6575
 
-query I rowsort label-4942
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4942
 SELECT 10 * + COUNT ( * ) + - - SUM ( CAST ( NULL AS FLOAT8 ) ) FROM tab1
 ----
 NULL
@@ -29979,9 +30198,9 @@ SELECT DISTINCT CAST ( + - col0 AS INTEGER ) FROM tab1 AS cor0
 -85
 -91
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0 AS col2" at position 0 and "cor0\.col0 \+ \(\- cor0\.col2\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + col0 AS col2, col0 + - + col2 AS col2 FROM tab1 AS cor0 WHERE NOT NULL = NULL
-----
 
 query III rowsort
 SELECT * FROM tab0 WHERE + col0 IN ( - col2 )
@@ -30041,7 +30260,10 @@ SELECT ALL + COUNT ( * ) AS col1 FROM tab2 AS cor0 CROSS JOIN tab1 AS cor1
 ----
 9
 
-query I rowsort label-4962
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4962
 SELECT - + 27 + CAST ( NULL AS FLOAT8 ) FROM tab2, tab1 AS cor0 WHERE NULL IS NULL
 ----
 9 values hashing to cd7a7901e47c15155404aff0d216fe0b
@@ -30183,7 +30405,10 @@ SELECT ALL - col1 + - - 55 AS col2 FROM tab2 AS cor0
 -22
 4
 
-query I rowsort label-4985
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-4985
 SELECT CAST ( NULL AS FLOAT8 ) + - + col1 AS col2 FROM tab0 AS cor0 WHERE ( NULL ) NOT IN ( col2 + - - col1 / 49 )
 ----
 
@@ -30615,11 +30840,11 @@ query III rowsort
 SELECT DISTINCT * FROM tab0 AS cor0 WHERE NOT 67 - + col1 IS NULL AND NULL <> ( NULL )
 ----
 
-query II rowsort label-5055
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -195
+# Datafusion - Expected - -12
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- sum\(DISTINCT cor0\.col1\)\) AS col1" at position 0 and "\(\- count\(Int64\(1\)\) AS count\(\*\)\) \* Int64\(\-4\) / \(\- count\(DISTINCT \(\- Int64\(58\)\)\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - SUM ( DISTINCT col1 ) AS col1, - COUNT ( * ) * - 4 / + - COUNT ( DISTINCT - + 58 ) col1 FROM tab2 AS cor0
-----
--195
--12
 
 query I rowsort label-5056
 SELECT + 62 / + 34 + col1 + col0 + col0 * + - col2 AS col2 FROM tab1 AS cor0
@@ -30681,15 +30906,15 @@ SELECT + + col1 * + col2 + + + 78 AS col2 FROM tab0 AS cor0
 288
 3885
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 15
+# Datafusion - Expected - 87
+# Datafusion - Expected - 87
+# Datafusion - Expected - 97
+# Datafusion - Expected - 97
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT col0, + ( col0 ) FROM tab0
-----
-15
-15
-87
-87
-97
-97
 
 query I rowsort
 SELECT + 25 - + - 81 AS col2 FROM tab0
@@ -30916,22 +31141,25 @@ SELECT ALL col2 AS col1, 75 AS col2 FROM tab0
 99
 75
 
-query I rowsort label-5102
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5102
 SELECT + 93 * + CAST ( NULL AS FLOAT8 ) FROM tab2
 ----
 NULL
 NULL
 NULL
 
-query II rowsort label-5103
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 21
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 81
+# Datafusion - Expected - NULL
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT col1, col2 + - 64 + - - CAST ( NULL AS INTEGER ) AS col1 FROM tab0
-----
-1
-NULL
-21
-NULL
-81
-NULL
 
 query I rowsort
 SELECT ( col0 ) * + - 12 FROM tab2
@@ -31070,7 +31298,10 @@ SELECT ALL col0, - col2 - + 24 FROM tab0
 97
 -123
 
-query I rowsort label-5125
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5125
 SELECT DISTINCT + 97 * COUNT ( * ) + CAST ( NULL AS FLOAT8 ) + + AVG ( + 33 ) AS col1 FROM tab1
 ----
 NULL
@@ -31309,7 +31540,10 @@ SELECT DISTINCT + col2, col0 AS col0 FROM tab0 cor0
 99
 97
 
-query I rowsort label-5163
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5163
 SELECT MIN ( + col1 ) - - - AVG ( + col2 ) FROM tab2 AS cor0 WHERE col1 * - + 33 + - - col2 * + col0 IS NULL
 ----
 NULL
@@ -31647,15 +31881,15 @@ query I rowsort label-5219
 SELECT ALL - col1 AS col0 FROM tab2 WHERE - ( + CAST ( NULL AS FLOAT8 ) ) + + - col0 = + col0 * 76 * + + col2
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - -1702
+# Datafusion - Expected - 67
+# Datafusion - Expected - -2775
+# Datafusion - Expected - 77
+# Datafusion - Expected - -2368
+query error DataFusion error: Schema error: Schema contains qualified field name tab2\.col1 and unqualified field name col1 which would be ambiguous
 SELECT DISTINCT col1 col1, - col0 * 37 AS col1 FROM tab2
-----
-51
--1702
-67
--2775
-77
--2368
 
 query I rowsort
 SELECT ALL + col1 + 61 AS col2 FROM tab2
@@ -31933,7 +32167,10 @@ SELECT ALL + SUM ( DISTINCT + 32 ) + + 58 AS col0 FROM tab0
 ----
 90
 
-query I rowsort label-5270
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5270
 SELECT ALL col2 + - CAST ( NULL AS FLOAT8 ) + - col2 FROM tab2
 ----
 NULL
@@ -32014,15 +32251,15 @@ SELECT ALL * FROM tab2 AS cor0 WHERE - col1 / - 71 >= NULL OR + 80 * - col1 IS N
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 23
+# Datafusion - Expected - 92667
+# Datafusion - Expected - 40
+# Datafusion - Expected - 243320
+# Datafusion - Expected - 58
+# Datafusion - Expected - 306994
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT col2, - col1 * - + col2 * 79 AS col2 FROM tab2 AS cor0
-----
-23
-92667
-40
-243320
-58
-306994
 
 query II rowsort label-5284
 SELECT 57 AS col2, CAST ( NULL AS INTEGER ) col1 FROM tab0 cor0
@@ -32142,7 +32379,10 @@ query I rowsort
 SELECT col2 * + 33 FROM tab2 AS cor0 WHERE NULL NOT BETWEEN col1 AND ( NULL )
 ----
 
-query I rowsort label-5303
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5303
 SELECT DISTINCT - + CAST ( NULL AS FLOAT8 ) / - col0 FROM tab1 AS cor0
 ----
 NULL
@@ -32393,15 +32633,15 @@ query I rowsort
 SELECT col1 AS col1 FROM tab1 AS cor0 WHERE NULL NOT BETWEEN NULL AND NULL
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 105270
+# Datafusion - Expected - 4234
+# Datafusion - Expected - 41745
+# Datafusion - Expected - 1679
+# Datafusion - Expected - 72600
+# Datafusion - Expected - 2920
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(55\) \* cor0\.col2 \* Int64\(33\) AS col0" at position 0 and "cor0\.col2 \* Int64\(73\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 55 * col2 * 33 AS col0, col2 * + 73 col0 FROM tab2 cor0 WHERE NULL IS NULL
-----
-105270
-4234
-41745
-1679
-72600
-2920
 
 query I rowsort label-5345
 SELECT ALL + CAST ( NULL AS INTEGER ) * + + col0 AS col2 FROM tab1 AS cor0
@@ -32507,7 +32747,10 @@ SELECT ALL COUNT ( * ) * - - 5 FROM tab2 AS cor0
 ----
 15
 
-query I rowsort label-5360
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5360
 SELECT DISTINCT - col1 / + + CAST ( NULL AS FLOAT8 ) FROM tab1 AS cor0
 ----
 NULL
@@ -32525,15 +32768,15 @@ SELECT - 31 col1 FROM tab2 cor0
 -31
 -31
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 14
+# Datafusion - Expected - 51
+# Datafusion - Expected - 47
+# Datafusion - Expected - 91
+# Datafusion - Expected - 5
+# Datafusion - Expected - 85
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL + col1 AS col1, col0 AS col1 FROM tab1 AS cor0
-----
-14
-51
-47
-91
-5
-85
 
 query I rowsort
 SELECT DISTINCT + 59 col0 FROM tab0 AS cor0
@@ -32547,15 +32790,15 @@ SELECT ALL col1 AS col0 FROM tab2 cor0 WHERE + ( + 74 ) <> ( + col2 )
 67
 77
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 94
+# Datafusion - Expected - 46
+# Datafusion - Expected - 94
+# Datafusion - Expected - 64
+# Datafusion - Expected - 94
+# Datafusion - Expected - 75
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT + 94 AS col0, col0 FROM tab2 AS cor0
-----
-94
-46
-94
-64
-94
-75
 
 query II rowsort
 SELECT - col1 AS col1, - col1 FROM tab2 AS cor0
@@ -33149,15 +33392,15 @@ SELECT ALL + col2 - - col1 AS col0 FROM tab2 cor0
 125
 74
 
-query II rowsort label-5464
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 1887
+# Datafusion - Expected - 85
+# Datafusion - Expected - 1887
+# Datafusion - Expected - 91
+# Datafusion - Expected - 1887
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT DISTINCT col0 AS col0, CAST ( - - 51 AS INTEGER ) * 37 AS col0 FROM tab1 AS cor0
-----
-51
-1887
-85
-1887
-91
-1887
 
 query III rowsort
 SELECT * FROM tab0 AS cor0 WHERE NULL <= 15
@@ -33419,11 +33662,11 @@ query III rowsort label-5505
 SELECT * FROM tab1 WHERE NOT ( - + 92 * - ( + - 26 ) + - col0 * + CAST ( - 69 AS INTEGER ) + + ( col2 ) * ( + + col0 ) ) >= col2
 ----
 
-query II rowsort label-5506
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -96
+# Datafusion - Expected - -3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- max\(tab1\.col2\)\) AS col2" at position 0 and "\(\- count\(Int64\(1\)\) AS count\(\*\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - MAX ( col2 ) AS col2, - COUNT ( * ) AS col2 FROM tab1
-----
--96
--3
 
 query I rowsort label-5507
 SELECT - - COUNT ( * ) AS col0 FROM tab1 cor0 CROSS JOIN tab2 AS cor1
@@ -33511,7 +33754,10 @@ SELECT COUNT ( * ) FROM tab0 WHERE NOT col0 + - + 88 <= ( - col1 )
 ----
 3
 
-query I rowsort label-5523
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5523
 SELECT + CAST ( NULL AS FLOAT8 ) * - + COUNT ( * ) FROM tab1
 ----
 NULL
@@ -33528,7 +33774,10 @@ SELECT CAST ( - - COUNT ( * ) AS INTEGER ) / - SUM ( + 35 ) FROM tab0
 ----
 0
 
-query I rowsort label-5526
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5526
 SELECT DISTINCT 60 / + CAST ( NULL AS FLOAT8 ) * - + COUNT ( * ) * + 11 * - ( - COUNT ( * ) ) AS col0 FROM tab2
 ----
 NULL
@@ -33605,7 +33854,10 @@ SELECT DISTINCT 36 + + + col0 AS col1 FROM tab1
 127
 87
 
-query I rowsort label-5540
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5540
 SELECT ALL - 18 - + AVG ( - CAST ( NULL AS INTEGER ) ) FROM tab2 AS cor0 WHERE + col1 IS NULL
 ----
 NULL
@@ -33791,15 +34043,15 @@ SELECT DISTINCT ( + ( + + col1 ) ), - col2 FROM tab0 AS cor0
 81
 -47
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 4827
+# Datafusion - Expected - -25
+# Datafusion - Expected - 6302
+# Datafusion - Expected - -25
+# Datafusion - Expected - 7253
+# Datafusion - Expected - -25
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(79\) \+ \(\- tab2\.col1\) \* Int64\(\-94\) \+ \(\- tab2\.col0\) AS col0" at position 0 and "Int64\(\-25\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT 79 + - col1 * + - 94 + - col0 AS col0, - 25 col0 FROM tab2
-----
-4827
--25
-6302
--25
-7253
--25
 
 query I rowsort
 SELECT col0 * col1 - + + 0 FROM tab1
@@ -33822,7 +34074,10 @@ SELECT col1 + - col0 + - - ( col2 ) / + col2 FROM tab2
 14
 6
 
-query I rowsort label-5576
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5576
 SELECT ALL CAST ( NULL AS FLOAT8 ) + - col0 AS col0 FROM tab0
 ----
 NULL
@@ -34115,15 +34370,15 @@ SELECT + + col2 * - col2 * ( + 96 ) FROM tab2 AS cor0
 -322944
 -50784
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 44
+# Datafusion - Expected - 21
+# Datafusion - Expected - 44
+# Datafusion - Expected - 81
+# Datafusion - Expected - 44
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL col1, + 44 AS col1 FROM tab0
-----
-1
-44
-21
-44
-81
-44
 
 query II rowsort
 SELECT 39, ( + + 2 ) AS col1 FROM tab2 AS cor0
@@ -34482,7 +34737,10 @@ SELECT ALL + col2 * + + 43 + + + 87 AS col0 FROM tab2
 1807
 2581
 
-query I rowsort label-5685
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5685
 SELECT 18 + col2 + - CAST ( NULL AS FLOAT8 ) AS col0 FROM tab0
 ----
 NULL
@@ -34670,7 +34928,10 @@ SELECT DISTINCT - COUNT ( * ) + COUNT ( * ) * SUM ( ALL CAST ( NULL AS INTEGER )
 ----
 NULL
 
-query I rowsort label-5715
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5715
 SELECT DISTINCT COUNT ( * ) * CAST ( NULL AS FLOAT8 ) col2 FROM tab0
 ----
 NULL
@@ -35007,7 +35268,10 @@ SELECT col1 + + - col1 * - 22 * 89 FROM tab1
 92073
 9795
 
-query I rowsort label-5775
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5775
 SELECT DISTINCT CAST ( - CAST ( NULL AS INTEGER ) AS FLOAT8 ) / - col0 + col1 * 8 AS col0 FROM tab2 WHERE NOT NULL IS NULL
 ----
 
@@ -35380,11 +35644,11 @@ SELECT + - 35 * CAST ( 70 AS INTEGER ) col2 FROM tab0 AS cor0 CROSS JOIN tab0 co
 ----
 9 values hashing to 470ab9baf37206f6896a77857b8ec9f0
 
-query II rowsort label-5835
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "max\(CAST\(NULL AS Int32\)\) AS col2" at position 0 and "count\(Int64\(1\)\) AS count\(\*\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT MAX ( CAST ( NULL AS INTEGER ) ) AS col2, COUNT ( * ) col2 FROM tab0
-----
-NULL
-3
 
 query I rowsort
 SELECT + - col0 * ( col2 ) col1 FROM tab2 AS cor0
@@ -35668,15 +35932,15 @@ SELECT + + col0, - col0 AS col1 FROM tab0 cor0
 97
 -97
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 4012
+# Datafusion - Expected - 51
+# Datafusion - Expected - 5564
+# Datafusion - Expected - 67
+# Datafusion - Expected - 6534
+# Datafusion - Expected - 77
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT + - col1 * + - 97 - - - ( - + 85 ) * - 11 AS col1, col1 FROM tab2 AS cor0
-----
-4012
-51
-5564
-67
-6534
-77
 
 query I rowsort
 SELECT DISTINCT ( - - 76 ) FROM tab2 AS cor0
@@ -36105,7 +36369,10 @@ query I rowsort label-5954
 SELECT - 26 FROM tab1 AS cor0 WHERE - col1 = - 64 + CAST ( NULL AS INTEGER )
 ----
 
-query I rowsort label-5955
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-5955
 SELECT + AVG ( 90 ) - MIN ( ALL - + CAST ( NULL AS INTEGER ) ) AS col1 FROM tab1 AS cor0
 ----
 NULL
@@ -36408,7 +36675,10 @@ SELECT DISTINCT * FROM tab2 AS cor0 WHERE ( 0 IS NOT NULL )
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query I rowsort label-6005
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6005
 SELECT + CAST ( NULL AS FLOAT8 ) - - - 32 AS col0 FROM tab2 AS cor0 WHERE NOT ( NOT ( NULL ) = NULL )
 ----
 
@@ -36785,15 +37055,15 @@ NULL
 NULL
 NULL
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - -13
+# Datafusion - Expected - 67
+# Datafusion - Expected - -13
+# Datafusion - Expected - 77
+# Datafusion - Expected - -13
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1 AS col0" at position 0 and "Int64\(\-13\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col1 col0, - 13 col0 FROM tab2
-----
-51
--13
-67
--13
-77
--13
 
 query III rowsort
 SELECT ALL * FROM tab0 WHERE NOT ( NOT col2 + + + col2 + col2 / col2 IS NULL )
@@ -36880,7 +37150,10 @@ SELECT ALL + col2 + col1 + 30 * col2 FROM tab1 AS cor0
 2155
 2990
 
-query II rowsort label-6084
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-6084
 SELECT SUM ( - col0 ) + + AVG ( ALL - - 30 ) AS col0, 17 FROM tab1 AS cor0 WHERE ( NOT ( - col1 * + 45 * + col0 < + + 1 ) )
 ----
 NULL
@@ -37090,7 +37363,10 @@ SELECT DISTINCT + + 88 + - col1 col1 FROM tab0 AS cor0
 7
 87
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT + ( + AVG ( + + 61 ) ) AS col1 FROM tab0 AS cor0 WHERE NULL IS NOT NULL
 ----
 NULL
@@ -37160,13 +37436,13 @@ SELECT 13 * - - col0 * + - col0 AS col1 FROM tab1
 -33813
 -93925
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -10
+# Datafusion - Expected - 67
+# Datafusion - Expected - -99
+# Datafusion - Expected - 156
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col2\) AS col2" at position 0 and "\(\- Int64\(\-57\)\) \+ cor0\.col2 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - + col2 AS col2, - ( - 57 ) + + col2 AS col2 FROM tab0 AS cor0 WHERE NOT 47 < + col1 - col0 / + + col1
-----
--10
-67
--99
-156
 
 query I rowsort label-6132
 SELECT + COUNT ( - 26 ) AS col2 FROM tab0 AS cor0
@@ -37908,11 +38184,11 @@ SELECT ALL + 47 / 84 * + + 92 + + COUNT ( * ) / + COUNT ( * ) FROM tab2
 ----
 1
 
-query II rowsort label-6259
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 24
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(Int64\(1\)\) AS count\(\*\) \* \(\- count\(Int64\(1\)\) AS count\(\*\)\) \- Int64\(\-11\) \* count\(Int64\(1\)\) AS count\(\*\) AS col1" at position 0 and "\(\- \(\- count\(tab1\.col0\)\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + COUNT ( * ) * - COUNT ( * ) - - 11 * COUNT ( * ) AS col1, - ( - COUNT ( col0 ) ) AS col1 FROM tab1
-----
-24
-3
 
 query I rowsort
 SELECT DISTINCT - 16 + col1 AS col1 FROM tab1 AS cor0
@@ -37990,7 +38266,10 @@ SELECT DISTINCT + col0 AS col2 FROM tab0 AS cor0 WHERE ( NOT CAST ( + CAST ( NUL
 87
 97
 
-query I rowsort label-6273
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6273
 SELECT SUM ( ALL + CAST ( NULL AS FLOAT8 ) ) AS col2 FROM tab1 AS cor0
 ----
 NULL
@@ -38086,7 +38365,10 @@ SELECT DISTINCT 20 * - col1 AS col0 FROM tab0 AS cor0
 -20
 -420
 
-query I rowsort label-6288
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6288
 SELECT - CAST ( NULL AS FLOAT8 ) * + col0 * + col0 + + - col0 AS col0 FROM tab1 AS cor0
 ----
 NULL
@@ -38448,7 +38730,10 @@ SELECT DISTINCT - + 10 col2 FROM tab1 AS cor0
 ----
 -10
 
-query I rowsort label-6344
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6344
 SELECT - - CAST ( NULL AS FLOAT8 ) AS col2 FROM tab2 cor0
 ----
 NULL
@@ -38579,15 +38864,15 @@ query III rowsort
 SELECT * FROM tab1 AS cor0 WHERE NULL NOT BETWEEN - col1 AND col2
 ----
 
-query II rowsort label-6365
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 0
+# Datafusion - Expected - -10
+# Datafusion - Expected - 0
+# Datafusion - Expected - -47
+# Datafusion - Expected - 0
+# Datafusion - Expected - -99
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-35\) / Int64\(\-75\) \* Int64\(93\) \* CAST\(Int64\(\-15\) AS Int32\) AS col0" at position 0 and "\(\- cor0\.col2\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + - 35 / - 75 * + 93 * + + CAST ( - 15 AS INTEGER ) AS col0, - ( col2 ) AS col0 FROM tab0 cor0
-----
-0
--10
-0
--47
-0
--99
 
 query I rowsort
 SELECT ALL - ( - col2 ) * - 81 FROM tab1
@@ -38677,7 +38962,10 @@ SELECT - ( 38 ) * + - col0 * col2 FROM tab2 AS cor0
 40204
 97280
 
-query I rowsort label-6379
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6379
 SELECT CAST ( NULL AS FLOAT8 ) col0 FROM tab0 AS cor0 WHERE NOT - 44 + + col1 IS NULL
 ----
 NULL
@@ -38729,10 +39017,10 @@ SELECT 18 + - 28 + - col2 AS col2 FROM tab2
 -50
 -68
 
-query III rowsort label-6388
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to 2e910e4b6926507de098c59c2f039fd2
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL col1, - ( + + col0 ) AS col1, + - 72 * - col2 + - 70 * - CAST ( NULL AS INTEGER ) AS col2 FROM tab1
-----
-9 values hashing to 2e910e4b6926507de098c59c2f039fd2
 
 query I rowsort label-6389
 SELECT - - CAST ( NULL AS INTEGER ) + - col0 FROM tab1 AS cor0
@@ -38787,10 +39075,10 @@ SELECT ALL col2 + + col2, - col2 col2 FROM tab2
 80
 -40
 
-query III rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to 456608ed453e6d3fbdddb7a32fe0998f
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1 \* \(\- Int64\(34\)\) AS col2" at position 0 and "Int64\(66\) AS col2" at position 2 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col1 * - + 34 col2, + col0, + 66 AS col2 FROM tab0
-----
-9 values hashing to 456608ed453e6d3fbdddb7a32fe0998f
 
 query I rowsort
 SELECT DISTINCT + 15 col2 FROM tab2
@@ -38891,7 +39179,10 @@ SELECT DISTINCT col0 * + - 69 AS col0 FROM tab1 AS cor0
 -5865
 -6279
 
-query I rowsort label-6415
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6415
 SELECT ALL - - AVG ( ALL + CAST ( NULL AS INTEGER ) ) FROM tab2 AS cor0
 ----
 NULL
@@ -38965,7 +39256,10 @@ query I rowsort
 SELECT col0 AS col0 FROM tab1 AS cor0 WHERE 42 * col2 <= + col2
 ----
 
-query I rowsort label-6429
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6429
 SELECT col2 + + CAST ( NULL AS FLOAT8 ) - CAST ( 36 AS INTEGER ) * + ( + col1 ) AS col0 FROM tab1 AS cor0 WHERE - col2 >= + + 79
 ----
 
@@ -39342,15 +39636,15 @@ SELECT + ( + col0 ) / + + 41 FROM tab1 AS cor0
 2
 2
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -83
+# Datafusion - Expected - 21
+# Datafusion - Expected - -63
+# Datafusion - Expected - 81
+# Datafusion - Expected - -3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- cor0\.col1\)\) AS col0" at position 0 and "Int64\(\-84\) \+ cor0\.col1 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - - col1 AS col0, - 84 + col1 col0 FROM tab0 AS cor0
-----
-1
--83
-21
--63
-81
--3
 
 query I rowsort
 SELECT ALL - col2 * + col2 - + col1 * + col2 AS col1 FROM tab0 AS cor0
@@ -39419,7 +39713,10 @@ SELECT - SUM ( DISTINCT 94 ) + 35 - - + 61 + - COUNT ( * ) FROM tab2 AS cor0
 ----
 -1
 
-query I rowsort label-6501
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6501
 SELECT ALL CAST ( NULL AS FLOAT8 ) - + - 13 * - - COUNT ( * ) FROM tab0 AS cor0
 ----
 NULL
@@ -39448,15 +39745,15 @@ SELECT ALL col2 AS col2, + col0 + + col0 FROM tab1 AS cor0
 96
 102
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - -21
+# Datafusion - Expected - 47
+# Datafusion - Expected - -81
+# Datafusion - Expected - 99
+# Datafusion - Expected - -1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col0" at position 0 and "\(\- cor0\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col2 AS col0, - col1 AS col0 FROM tab0 AS cor0
-----
-10
--21
-47
--81
-99
--1
 
 query I rowsort
 SELECT + col1 * - + 64 + col2 AS col0 FROM tab1 AS cor0 WHERE NOT NULL IS NOT NULL
@@ -39508,7 +39805,10 @@ SELECT DISTINCT - CAST ( NULL AS INTEGER ) AS col0 FROM tab0 AS cor0 WHERE col0 
 ----
 NULL
 
-query II rowsort label-6515
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] I[I]
+# Datafusion - [Actual  ] I[R]
+query IR rowsort label-6515
 SELECT CAST ( 46 AS INTEGER ) / col0 * + - col0, col1 + - col1 + CAST ( NULL AS FLOAT8 ) AS col1 FROM tab1 cor0
 ----
 0
@@ -39573,11 +39873,11 @@ SELECT + col2, - ( + col0 ) FROM tab1
 96
 -51
 
-query II rowsort label-6526
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 3
+# Datafusion - Expected - -1639
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(Int64\(1\)\) AS count\(\*\) AS col0" at position 0 and "Int64\(23\) \* Int64\(\-75\) \+ Int64\(86\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + COUNT ( * ) AS col0, 23 * - 75 + 86 AS col0 FROM tab1
-----
-3
--1639
 
 query II rowsort
 SELECT ( col1 ) AS col1, 12 FROM tab0
@@ -39594,7 +39894,10 @@ SELECT 52 AS col2, 80 col1 FROM tab1, tab1 cor0
 ----
 18 values hashing to 224b7b5aed1e322f4dd8038e634746f8
 
-query I rowsort label-6529
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6529
 SELECT ALL + 52 / - - col0 + + 94 + + - CAST ( + - CAST ( NULL AS INTEGER ) AS FLOAT8 ) AS col0 FROM tab1
 ----
 NULL
@@ -39690,15 +39993,15 @@ SELECT - - 2 AS col1 FROM tab1 cor0
 2
 2
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 79
+# Datafusion - Expected - 24
+# Datafusion - Expected - 79
+# Datafusion - Expected - 58
+# Datafusion - Expected - 79
+# Datafusion - Expected - 64
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(79\) AS col0" at position 0 and "Int64\(\-27\) \- \(\- tab1\.col0\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT 79 col0, - 27 - - ( col0 ) AS col0 FROM tab1
-----
-79
-24
-79
-58
-79
-64
 
 query I rowsort
 SELECT 14 * + col2 FROM tab1
@@ -39747,7 +40050,10 @@ SELECT 28 AS col1 FROM tab2 cor0 CROSS JOIN tab1 AS cor1 WHERE NOT NULL IS NOT N
 ----
 9 values hashing to aad32232c428b3ecb5ada63f7e9b0a97
 
-query I rowsort label-6554
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6554
 SELECT DISTINCT CAST ( NULL AS FLOAT8 ) / - col1 + + col1 FROM tab1 AS cor0
 ----
 NULL
@@ -40633,7 +40939,10 @@ SELECT DISTINCT MAX ( ALL + 91 ) AS col1 FROM tab1 AS cor0
 ----
 91
 
-query I rowsort label-6708
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6708
 SELECT DISTINCT + col1 * + CAST ( NULL AS FLOAT8 ) * - + 46 AS col0 FROM tab0 cor0
 ----
 NULL
@@ -40650,15 +40959,15 @@ SELECT + MAX ( + 53 ) FROM tab1
 ----
 53
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 1050
+# Datafusion - Expected - 85
+# Datafusion - Expected - 375
+# Datafusion - Expected - 91
+# Datafusion - Expected - 3525
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col0 and unqualified field name col0 which would be ambiguous
 SELECT col0, + 75 * - - col1 col0 FROM tab1
-----
-51
-1050
-85
-375
-91
-3525
 
 query I rowsort label-6712
 SELECT col1 * 59 FROM tab2 WHERE NOT NULL >= + + col2 + CAST ( - col1 AS INTEGER )
@@ -40701,7 +41010,10 @@ SELECT col0 * + + CAST ( col1 AS INTEGER ) AS col1 FROM tab1
 4277
 714
 
-query I rowsort label-6719
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6719
 SELECT ALL + CAST ( NULL AS FLOAT8 ) / + - 60 - + col2 AS col2 FROM tab2 AS cor0
 ----
 NULL
@@ -40880,15 +41192,15 @@ SELECT DISTINCT + + col0 * + - 23 AS col2, 28 AS col1 FROM tab1 AS cor0
 -2093
 28
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -2584
+# Datafusion - Expected - 23
+# Datafusion - Expected - -2584
+# Datafusion - Expected - 40
+# Datafusion - Expected - -2584
+# Datafusion - Expected - 58
+query error DataFusion error: Schema error: Schema contains qualified field name tab2\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT + 34 * - + ( + 76 ) AS col2, col2 FROM tab2
-----
--2584
-23
--2584
-40
--2584
-58
 
 query III rowsort
 SELECT * FROM tab2 WHERE NOT - - 39 IS NULL
@@ -40993,20 +41305,20 @@ SELECT - 47 - - col1 * col2 - col0 FROM tab1 AS cor0
 163
 3058
 
-query I rowsort label-6769
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT + + AVG ( DISTINCT + col1 ) + - COUNT ( * ) FROM tab2 WHERE - col2 IS NULL
-----
-NULL
 
 query I rowsort label-6770
 SELECT ALL + + COUNT ( - - col0 ) * + COUNT ( * ) FROM tab2 WHERE NOT ( ( NULL <> - col2 + col1 + - col1 ) )
 ----
 0
 
-query I rowsort label-6771
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT + - COUNT ( * ) * - 34 + - AVG ( DISTINCT 95 ) AS col0 FROM tab1 WHERE NULL BETWEEN 23 + + 48 AND + - 20
-----
-NULL
 
 query I rowsort
 SELECT 4 + - 1 * + - col1 * col2 AS col1 FROM tab0
@@ -41041,7 +41353,10 @@ SELECT CAST ( - 26 AS INTEGER ) FROM tab2 AS cor0
 -26
 -26
 
-query I rowsort label-6778
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6778
 SELECT ALL - CAST ( 44 AS INTEGER ) - + CAST ( NULL AS FLOAT8 ) FROM tab2 cor0
 ----
 NULL
@@ -41072,15 +41387,15 @@ SELECT + col0 * 91 * + col0 AS col0 FROM tab0 WHERE NOT NULL IS NOT NULL
 688779
 856219
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - -1
+# Datafusion - Expected - 21
+# Datafusion - Expected - -21
+# Datafusion - Expected - 81
+# Datafusion - Expected - -81
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1 AS col2" at position 0 and "\(\- tab0\.col1\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col1 col2, - col1 AS col2 FROM tab0
-----
-1
--1
-21
--21
-81
--81
 
 query II rowsort
 SELECT col0 AS col2, col0 * col1 AS col1 FROM tab0 AS cor0
@@ -41096,15 +41411,15 @@ query I rowsort
 SELECT ALL + col1 FROM tab2 AS cor0 WHERE NULL <> NULL
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 23
+# Datafusion - Expected - -529
+# Datafusion - Expected - 40
+# Datafusion - Expected - -1600
+# Datafusion - Expected - 58
+# Datafusion - Expected - -3364
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col0" at position 0 and "cor0\.col2 \* \(\- cor0\.col2\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL col2 AS col0, col2 * - col2 AS col0 FROM tab2 AS cor0
-----
-23
--529
-40
--1600
-58
--3364
 
 query II rowsort
 SELECT col0, + 27 FROM tab1 AS cor0
@@ -41157,15 +41472,15 @@ SELECT - col2 * + col0 AS col1, ( + + 1 ) FROM tab2
 -4350
 1
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1215
+# Datafusion - Expected - 3807
+# Datafusion - Expected - -1827
+# Datafusion - Expected - 210
+# Datafusion - Expected - -97
+# Datafusion - Expected - 99
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1 \* \(\- tab0\.col0\) AS col1" at position 0 and "tab0\.col1 \* tab0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col1 * + - col0 AS col1, + col1 * + col2 AS col1 FROM tab0
-----
--1215
-3807
--1827
-210
--97
-99
 
 query I rowsort
 SELECT DISTINCT - col2 * col0 * col2 AS col2 FROM tab2
@@ -41209,7 +41524,10 @@ query I rowsort
 SELECT + col2 * - col2 FROM tab0 AS cor0 WHERE col2 BETWEEN 31 * 47 AND NULL
 ----
 
-query I rowsort label-6803
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6803
 SELECT DISTINCT - CAST ( NULL AS FLOAT8 ) / - col2 + - ( + 1 ) - 21 AS col2 FROM tab1 cor0
 ----
 NULL
@@ -41514,7 +41832,10 @@ query III rowsort
 SELECT * FROM tab1 WHERE NOT - 32 * - col1 + + + 23 > NULL
 ----
 
-query II rowsort label-6852
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-6852
 SELECT + COUNT ( * ) + CAST ( NULL AS FLOAT8 ) AS col1, - SUM ( + col2 ) / - COUNT ( * ) FROM tab1
 ----
 NULL
@@ -41610,10 +41931,10 @@ NULL
 NULL
 NULL
 
-query I rowsort label-6869
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT AVG ( DISTINCT 45 ) / + + ( - CAST ( NULL AS INTEGER ) ) FROM tab0
-----
-NULL
 
 query III rowsort
 SELECT DISTINCT * FROM tab0 WHERE NOT ( NOT ( NULL IS NOT NULL ) )
@@ -41965,7 +42286,10 @@ query III rowsort
 SELECT * FROM tab1 AS cor0 WHERE 49 <= - + 41 / col0 + 43
 ----
 
-query I rowsort label-6930
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-6930
 SELECT + AVG ( + CAST ( NULL AS INTEGER ) ) - - 54 * + 32 * + 80 FROM tab1 AS cor0
 ----
 NULL
@@ -42005,10 +42329,10 @@ SELECT - col2 + + 0 FROM tab1
 -68
 -96
 
-query III rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to 32623ccaa159383e1d6a8425edfdd7a4
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 2 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + col0, - col0, + col0 col0 FROM tab1 AS cor0
-----
-9 values hashing to 32623ccaa159383e1d6a8425edfdd7a4
 
 query I rowsort label-6938
 SELECT DISTINCT - 70 * COUNT ( * ) AS col2 FROM tab2 cor0
@@ -42312,15 +42636,15 @@ query I rowsort
 SELECT ALL col1 AS col1 FROM tab1 WHERE NOT NULL <> NULL
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -60
+# Datafusion - Expected - 15
+# Datafusion - Expected - -60
+# Datafusion - Expected - 87
+# Datafusion - Expected - -60
+# Datafusion - Expected - 97
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-60\) AS col2" at position 0 and "tab0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - 60 AS col2, + col0 AS col2 FROM tab0
-----
--60
-15
--60
-87
--60
-97
 
 query I rowsort
 SELECT DISTINCT + 11 + + 3 + - 82 AS col0 FROM tab1 AS cor0 WHERE NOT NULL IS NOT NULL
@@ -42432,7 +42756,10 @@ query III rowsort
 SELECT ALL * FROM tab2 WHERE - col1 BETWEEN NULL AND + col0
 ----
 
-query I rowsort label-7007
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7007
 SELECT + CAST ( NULL AS FLOAT8 ) - - col2 AS col2 FROM tab0
 ----
 NULL
@@ -42464,7 +42791,10 @@ query III rowsort
 SELECT DISTINCT * FROM tab2 AS cor0 WHERE NULL BETWEEN col1 AND - + col1
 ----
 
-query I rowsort label-7012
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7012
 SELECT DISTINCT 87 / col1 * ( - ( 46 ) ) * - + 66 * CAST ( NULL AS FLOAT8 ) + + col2 AS col0 FROM tab2 cor0
 ----
 NULL
@@ -42643,15 +42973,15 @@ SELECT ALL + - MIN ( + 83 ) AS col0 FROM tab0 AS cor0
 ----
 -83
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9
+# Datafusion - Expected - 23
+# Datafusion - Expected - 9
+# Datafusion - Expected - 40
+# Datafusion - Expected - 9
+# Datafusion - Expected - 58
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(9\) AS col0" at position 0 and "cor0\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + + ( 9 ) AS col0, + col2 AS col0 FROM tab2 cor0
-----
-9
-23
-9
-40
-9
-58
 
 query I rowsort
 SELECT col1 + + - col1 + - ( - - 76 ) FROM tab1 WHERE NULL <> NULL
@@ -42828,15 +43158,15 @@ query III rowsort
 SELECT * FROM tab1 AS cor0 WHERE + col1 + - 18 + + + col0 / - - 93 + - - 1 <= NULL
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 14
+# Datafusion - Expected - -4947
+# Datafusion - Expected - 47
+# Datafusion - Expected - -8827
+# Datafusion - Expected - 5
+# Datafusion - Expected - -8245
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT col1, + 97 * + - col0 AS col1 FROM tab1 AS cor0
-----
-14
--4947
-47
--8827
-5
--8245
 
 query I rowsort
 SELECT DISTINCT - 77 * + col1 * - 11 col0 FROM tab0 AS cor0
@@ -42891,15 +43221,15 @@ SELECT ALL 50 * - col0 + 64 / + col1 AS col0 FROM tab0
 -4786
 -750
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -46
+# Datafusion - Expected - -4
+# Datafusion - Expected - -64
+# Datafusion - Expected - -4
+# Datafusion - Expected - -75
+# Datafusion - Expected - -4
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab2\.col0\) AS col0" at position 0 and "Int64\(\-4\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - col0 AS col0, - 4 AS col0 FROM tab2
-----
--46
--4
--64
--4
--75
--4
 
 query I rowsort
 SELECT ALL col1 AS col0 FROM tab0 AS cor0 WHERE - col1 + + col1 > + col0 * - 46
@@ -43199,7 +43529,10 @@ SELECT * FROM tab1 WHERE NOT col0 > col0
 ----
 9 values hashing to c6c0a4111b36d04dbc811a11e4d54cad
 
-query I rowsort label-7132
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7132
 SELECT - ( - MIN ( + CAST ( NULL AS FLOAT8 ) ) ) AS col2 FROM tab0
 ----
 NULL
@@ -43551,7 +43884,10 @@ query III rowsort
 SELECT * FROM tab0 WHERE NOT + col1 <= - ( - 85 )
 ----
 
-query I rowsort label-7194
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7194
 SELECT - ( + + COUNT ( col1 ) ) * + CAST ( NULL AS FLOAT8 ) - MAX ( DISTINCT col0 ) FROM tab2
 ----
 NULL
@@ -43738,15 +44074,15 @@ query I rowsort
 SELECT DISTINCT col2 * + col0 AS col2 FROM tab0 AS cor0 WHERE ( + 47 ) <= NULL
 ----
 
-query II rowsort label-7225
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 21528
+# Datafusion - Expected - 87
+# Datafusion - Expected - 97536
+# Datafusion - Expected - 97
+# Datafusion - Expected - 106736
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT col0, col1 * + CAST ( + + 46 AS INTEGER ) + + 87 + + col0 * - - 46 * + 26 - + col0 * col0 AS col0 FROM tab0 AS cor0
-----
-15
-21528
-87
-97536
-97
-106736
 
 query I rowsort
 SELECT ALL - ( - 31 ) * 47 AS col2 FROM tab2 cor0
@@ -43776,25 +44112,25 @@ SELECT COUNT ( + col2 ) col2 FROM tab2 AS cor0
 ----
 3
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 51
+# Datafusion - Expected - 85
+# Datafusion - Expected - 85
+# Datafusion - Expected - 91
+# Datafusion - Expected - 91
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col0 AS col0, + col0 FROM tab1 AS cor0
-----
-51
-51
-85
-85
-91
-91
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - -81
+# Datafusion - Expected - 87
+# Datafusion - Expected - -21
+# Datafusion - Expected - 97
+# Datafusion - Expected - -1
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT col0, - col1 AS col0 FROM tab0 AS cor0
-----
-15
--81
-87
--21
-97
--1
 
 query I rowsort label-7233
 SELECT - - COUNT ( * ) col2 FROM tab0 cor0
@@ -43975,15 +44311,15 @@ SELECT - 45 * + COUNT ( * ) AS col0 FROM tab2 AS cor0
 ----
 -135
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 51
+# Datafusion - Expected - 85
+# Datafusion - Expected - 85
+# Datafusion - Expected - 91
+# Datafusion - Expected - 91
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + col0, + col0 AS col0 FROM tab1 AS cor0
-----
-51
-51
-85
-85
-91
-91
 
 query III rowsort
 SELECT DISTINCT * FROM tab1 AS cor0 WHERE NOT col1 NOT BETWEEN - + col1 / - col1 - col0 * - - 91 * - + col1 / - col0 * - + 7 * col1 * - + col2 AND NULL
@@ -44000,15 +44336,15 @@ SELECT col0 * - ( 44 ) col0 FROM tab2
 -2816
 -3300
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 21
+# Datafusion - Expected - -23
+# Datafusion - Expected - 21
+# Datafusion - Expected - -40
+# Datafusion - Expected - 21
+# Datafusion - Expected - -58
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(21\) AS col1" at position 0 and "\(\- tab2\.col2\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 21 AS col1, - col2 AS col1 FROM tab2
-----
-21
--23
-21
--40
-21
--58
 
 query I rowsort
 SELECT DISTINCT ( + + 29 ) AS col2 FROM tab1
@@ -44020,15 +44356,15 @@ SELECT COUNT ( * ) * - 4 col0 FROM tab0
 ----
 -12
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 47
+# Datafusion - Expected - 87
+# Datafusion - Expected - 10
+# Datafusion - Expected - 97
+# Datafusion - Expected - 99
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT ALL + col0 AS col0, + col2 AS col0 FROM tab0 AS cor0
-----
-15
-47
-87
-10
-97
-99
 
 query I rowsort
 SELECT ALL col0 * + 73 FROM tab1 cor0
@@ -44083,15 +44419,15 @@ query II rowsort
 SELECT + ( + 23 ) + - 87 AS col1, col2 AS col2 FROM tab1 AS cor0 WHERE NULL BETWEEN ( col0 ) AND + col1 - - col0 + + col0
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 3456
+# Datafusion - Expected - 51
+# Datafusion - Expected - 3456
+# Datafusion - Expected - 85
+# Datafusion - Expected - 3456
+# Datafusion - Expected - 91
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col0 and unqualified field name col0 which would be ambiguous
 SELECT ( + 96 ) * 36 col0, col0 FROM tab1
-----
-3456
-51
-3456
-85
-3456
-91
 
 query I rowsort
 SELECT - ( ( - - col1 ) ) AS col2 FROM tab0
@@ -44168,15 +44504,15 @@ query I rowsort
 SELECT + ( + col1 ) * + col2 AS col0 FROM tab1 AS cor0 WHERE NOT ( NULL ) > ( + 44 * + 78 )
 ----
 
-query II rowsort label-7297
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - 64
+# Datafusion - Expected - -1
+# Datafusion - Expected - 75
+# Datafusion - Expected - -2
+# Datafusion - Expected - 46
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 / \(\- cor0\.col2\) AS col1" at position 0 and "cor0\.col0 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col1 / + - col2 AS col1, + col0 AS col1 FROM tab2 AS cor0
-----
--1
-64
--1
-75
--2
-46
 
 query I rowsort label-7298
 SELECT SUM ( DISTINCT + - 54 ) FROM tab2 AS cor0
@@ -44249,7 +44585,10 @@ NULL
 -3886
 NULL
 
-query I rowsort label-7308
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7308
 SELECT + CAST ( + - MAX ( DISTINCT - 91 ) AS FLOAT8 ) + - CAST ( NULL AS INTEGER ) FROM tab0 AS cor0
 ----
 NULL
@@ -44493,7 +44832,10 @@ SELECT 56 * - + col1 * + col1 * - 29, col1 FROM tab0
 716184
 21
 
-query I rowsort label-7347
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7347
 SELECT ALL - CAST ( NULL AS FLOAT8 ) + 84 + - COUNT ( * ) AS col1 FROM tab1 WHERE NOT - + ( + col2 ) + - + col0 IS NULL
 ----
 NULL
@@ -44697,15 +45039,15 @@ SELECT + 26 col2, col2 AS col1 FROM tab1
 26
 96
 
-query II rowsort label-7378
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 0
+# Datafusion - Expected - 65
+# Datafusion - Expected - 0
+# Datafusion - Expected - 65
+# Datafusion - Expected - 0
+# Datafusion - Expected - 65
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "CAST\(\(\- Int64\(\-14\)\) AS Int32\) / tab2\.col1 AS col2" at position 0 and "Int64\(65\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT CAST ( - - 14 AS INTEGER ) / + col1 AS col2, + 65 AS col2 FROM tab2
-----
-0
-65
-0
-65
-0
-65
 
 query II rowsort label-7379
 SELECT - 70, COUNT ( * ) col2 FROM tab1 AS cor0
@@ -44747,9 +45089,9 @@ SELECT DISTINCT - COUNT ( * ) + + CAST ( + - 75 AS INTEGER ) + - CAST ( NULL AS 
 ----
 NULL
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT - + col1 col1, col1 AS col1 FROM tab0 AS cor0 WHERE 84 - + col1 = NULL
-----
 
 query I rowsort
 SELECT DISTINCT col1 * - 75 AS col1 FROM tab1 AS cor0
@@ -44772,12 +45114,18 @@ SELECT ALL * FROM tab1 WHERE 89 IS NOT NULL
 ----
 9 values hashing to c6c0a4111b36d04dbc811a11e4d54cad
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT DISTINCT + - AVG ( + - 42 ) FROM tab1 WHERE + 27 / - + col0 IS NULL
 ----
 NULL
 
-query I rowsort label-7391
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7391
 SELECT ALL + col1 + + CAST ( NULL AS FLOAT8 ) FROM tab2 WHERE - col0 IN ( col0 )
 ----
 
@@ -44845,25 +45193,25 @@ SELECT DISTINCT - + col1 col2, - col1 / col2 AS col1 FROM tab2 AS cor0
 -77
 -1
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 8
+# Datafusion - Expected - 51
+# Datafusion - Expected - 8
+# Datafusion - Expected - 85
+# Datafusion - Expected - 8
+# Datafusion - Expected - 91
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT 8 col0, + col0 AS col0 FROM tab1 cor0
-----
-8
-51
-8
-85
-8
-91
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -27
+# Datafusion - Expected - 59
+# Datafusion - Expected - -27
+# Datafusion - Expected - 68
+# Datafusion - Expected - -27
+# Datafusion - Expected - 96
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT - 27 AS col2, ( col2 ) AS col2 FROM tab1 AS cor0
-----
--27
-59
--27
-68
--27
-96
 
 query I rowsort label-7404
 SELECT ALL + + COUNT ( DISTINCT CAST ( NULL AS INTEGER ) ) AS col0 FROM tab0 AS cor0
@@ -45201,7 +45549,10 @@ SELECT 47 * + - col1 FROM tab1
 -235
 -658
 
-query II rowsort label-7459
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-7459
 SELECT CAST ( NULL AS FLOAT8 ), + col1 FROM tab2
 ----
 NULL
@@ -45256,10 +45607,10 @@ SELECT - MAX ( DISTINCT + - 48 ) FROM tab0 AS cor0
 ----
 48
 
-query III rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to ebe927c58f6b0a53c241d25bbb3564b1
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL + col1 AS col1, + col0 AS col0, 10 + - col2 col1 FROM tab0 AS cor0
-----
-9 values hashing to ebe927c58f6b0a53c241d25bbb3564b1
 
 query II rowsort label-7469
 SELECT + - COUNT ( + 39 ) AS col0, MAX ( col0 ) AS col2 FROM tab1 AS cor0
@@ -45289,7 +45640,10 @@ SELECT + COUNT ( * ) * 19 FROM tab2
 ----
 57
 
-query I rowsort label-7474
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7474
 SELECT DISTINCT - 9 * + + COUNT ( * ) * CAST ( NULL AS FLOAT8 ) AS col1 FROM tab1
 ----
 NULL
@@ -45852,7 +46206,10 @@ SELECT + - 3 + col2 / col1 AS col0 FROM tab0 AS cor0
 -3
 96
 
-query I rowsort label-7576
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7576
 SELECT - AVG ( CAST ( NULL AS INTEGER ) ) FROM tab1 AS cor0 WHERE NOT + col0 + col1 IS NOT NULL
 ----
 NULL
@@ -46031,7 +46388,10 @@ query I rowsort
 SELECT DISTINCT + 37 FROM tab0 WHERE NOT ( + col2 ) = NULL
 ----
 
-query I rowsort label-7610
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7610
 SELECT - 15 * - CAST ( + col1 AS FLOAT8 ) AS col1 FROM tab1 AS cor0 WHERE ( col1 ) = ( - col1 )
 ----
 
@@ -46089,15 +46449,15 @@ SELECT DISTINCT col0, col0 * + col2 * col1 + 33 + + col1 * - col2 FROM tab2 AS c
 75
 287597
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 79
+# Datafusion - Expected - 14
+# Datafusion - Expected - 79
+# Datafusion - Expected - 47
+# Datafusion - Expected - 79
+# Datafusion - Expected - 5
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(79\) AS col0" at position 0 and "cor0\.col1 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + + 79 AS col0, + col1 AS col0 FROM tab1 AS cor0
-----
-79
-14
-79
-47
-79
-5
 
 query II rowsort
 SELECT ALL + col1 AS col1, col1 AS col2 FROM tab1 AS cor0
@@ -46109,7 +46469,10 @@ SELECT ALL + col1 AS col1, col1 AS col2 FROM tab1 AS cor0
 5
 5
 
-query I rowsort label-7623
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7623
 SELECT ALL CAST ( NULL AS FLOAT8 ) * - ( - col0 ) AS col0 FROM tab0
 ----
 NULL
@@ -46144,7 +46507,10 @@ SELECT ALL + col1 AS col1, 46 AS col2 FROM tab2
 77
 46
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT ALL AVG ( - col2 ) FROM tab1 WHERE NOT ( col0 ) IS NOT NULL
 ----
 NULL
@@ -46299,7 +46665,10 @@ SELECT SUM ( + ( - col1 ) ) AS col0 FROM tab2 AS cor0
 ----
 -195
 
-query II rowsort label-7656
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] I[I]
+# Datafusion - [Actual  ] I[R]
+query IR rowsort label-7656
 SELECT DISTINCT 85 / - col2, CAST ( NULL AS FLOAT8 ) AS col2 FROM tab2 AS cor0
 ----
 -1
@@ -46373,7 +46742,10 @@ SELECT - COUNT ( + ( + CAST ( NULL AS INTEGER ) ) ) FROM tab1
 ----
 0
 
-query I rowsort label-7668
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7668
 SELECT DISTINCT - 5 + ( - col2 ) + - col2 - + col1 * + + col1 + ( + col1 ) + - CAST ( NULL AS FLOAT8 ) FROM tab1
 ----
 NULL
@@ -46397,10 +46769,10 @@ query III rowsort label-7671
 SELECT ALL * FROM tab0 WHERE NOT - 39 > ( + CAST ( NULL AS INTEGER ) + - - col0 )
 ----
 
-query III rowsort label-7672
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to c8beef9b5d95032ecdf18cdd53ed129b
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\) AS col2" at position 0 and "CAST\(cor0\.col1 AS Int32\) AS col2" at position 2 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - + col0 col2, + col0, + + CAST ( col1 AS INTEGER ) AS col2 FROM tab1 AS cor0
-----
-9 values hashing to c8beef9b5d95032ecdf18cdd53ed129b
 
 query I rowsort
 SELECT - col2 * - col2 + 10 * - - col2 + - col0 - + 73 AS col1 FROM tab0 AS cor0
@@ -46668,15 +47040,15 @@ SELECT ALL - COUNT ( ALL + col2 ) AS col2 FROM tab0 WHERE NOT + col2 IS NOT NULL
 ----
 0
 
-query II rowsort label-7716
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - -27
+# Datafusion - Expected - 28
+# Datafusion - Expected - -27
+# Datafusion - Expected - 94
+# Datafusion - Expected - -27
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(35\) / tab1\.col0 \+ tab1\.col1 \+ tab1\.col1 AS col2" at position 0 and "Int64\(\-27\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 35 / col0 + col1 + col1 AS col2, - 27 col2 FROM tab1
-----
-10
--27
-28
--27
-94
--27
 
 query I rowsort
 SELECT ALL - col1 + 69 FROM tab2
@@ -46843,15 +47215,15 @@ SELECT ALL 88 AS col2, - 91 FROM tab0
 88
 -91
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 38
+# Datafusion - Expected - 27
+# Datafusion - Expected - 38
+# Datafusion - Expected - 27
+# Datafusion - Expected - 38
+# Datafusion - Expected - 27
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(38\) AS col1" at position 0 and "Int64\(27\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 38 AS col1, 27 col1 FROM tab2 AS cor0
-----
-38
-27
-38
-27
-38
-27
 
 query I rowsort label-7744
 SELECT + COUNT ( * ) * + + 63 AS col0 FROM tab0 AS cor0
@@ -46972,17 +47344,20 @@ SELECT + 42 / - SUM ( DISTINCT col2 ) FROM tab2
 ----
 0
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 1230
+# Datafusion - Expected - 85
+# Datafusion - Expected - 464
+# Datafusion - Expected - 91
+# Datafusion - Expected - 3875
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col0 and unqualified field name col0 which would be ambiguous
 SELECT DISTINCT col0, col2 + + + col1 * + 81 AS col0 FROM tab1
-----
-51
-1230
-85
-464
-91
-3875
 
-query I rowsort label-7766
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7766
 SELECT 32 * + col0 + col2 * + - CAST ( NULL AS FLOAT8 ) AS col0 FROM tab0 AS cor0
 ----
 NULL
@@ -46996,15 +47371,15 @@ SELECT DISTINCT 4 * + + col1 * - col1 AS col0 FROM tab1 AS cor0
 -784
 -8836
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 10
+# Datafusion - Expected - 69
+# Datafusion - Expected - 47
+# Datafusion - Expected - 69
+# Datafusion - Expected - 99
+# Datafusion - Expected - 69
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT col2, + 69 AS col2 FROM tab0 AS cor0
-----
-10
-69
-47
-69
-99
-69
 
 query II rowsort
 SELECT + col0, 97 FROM tab0 AS cor0
@@ -47058,10 +47433,10 @@ SELECT - col1 + - - col0 AS col0 FROM tab2 cor0
 -5
 8
 
-query I rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT DISTINCT - + AVG ( DISTINCT - - col0 ) FROM tab1 AS cor0 WHERE NOT col1 * - col1 IS NOT NULL
-----
-NULL
 
 query I rowsort label-7776
 SELECT + + col0 FROM tab1 AS cor0 WHERE col1 * - + 93 + - - 15 * CAST ( NULL AS INTEGER ) + - col2 * - col2 NOT BETWEEN NULL AND - ( - col1 )
@@ -47119,26 +47494,32 @@ SELECT DISTINCT + 28 - ( - col2 ) + col0 + - - col1 FROM tab1 AS cor0
 189
 234
 
-query I rowsort label-7786
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7786
 SELECT COUNT ( ALL - 30 ) + AVG ( col1 ) * CAST ( NULL AS INTEGER ) * - SUM ( + + CAST ( col2 AS INTEGER ) ) AS col0 FROM tab2 AS cor0
 ----
 NULL
 
-query II rowsort label-7787
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-7787
 SELECT DISTINCT + CAST ( NULL AS FLOAT8 ) AS col2, COUNT ( * ) FROM tab2 AS cor0
 ----
 NULL
 3
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 80
+# Datafusion - Expected - -425
+# Datafusion - Expected - 80
+# Datafusion - Expected - -4277
+# Datafusion - Expected - 80
+# Datafusion - Expected - -714
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-80\)\) AS col0" at position 0 and "cor0\.col0 \* \(\- cor0\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - - 80 AS col0, col0 * - col1 AS col0 FROM tab1 cor0
-----
-80
--425
-80
--4277
-80
--714
 
 query I rowsort
 SELECT ALL - 91 FROM tab2 AS cor0 WHERE col1 IS NOT NULL
@@ -47518,7 +47899,10 @@ SELECT DISTINCT + col0 * + col1 AS col0, col2 FROM tab1 AS cor0
 714
 96
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT - AVG ( ALL + col2 ) FROM tab0 cor0 WHERE NOT NULL BETWEEN + ( - + col0 ) AND col1
 ----
 NULL
@@ -47759,15 +48143,15 @@ SELECT DISTINCT + SUM ( DISTINCT + - col0 ) AS col1 FROM tab2 WHERE NOT - 50 IS 
 ----
 -185
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 51
+# Datafusion - Expected - 67
+# Datafusion - Expected - 67
+# Datafusion - Expected - 77
+# Datafusion - Expected - 77
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL col1 AS col1, + col1 FROM tab2
-----
-51
-51
-67
-67
-77
-77
 
 query II rowsort
 SELECT DISTINCT col0, - col1 + + ( + - col2 ) FROM tab2
@@ -47881,7 +48265,10 @@ SELECT ALL + 88 / col2 AS col1 FROM tab2 AS cor0
 2
 3
 
-query I rowsort label-7907
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-7907
 SELECT DISTINCT 6 + - CAST ( NULL AS FLOAT8 ) AS col1 FROM tab1 AS cor0
 ----
 NULL
@@ -48597,7 +48984,10 @@ query I rowsort
 SELECT 27 FROM tab2 WHERE ( NULL ) NOT IN ( 76 )
 ----
 
-query I rowsort label-8028
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8028
 SELECT + CAST ( - col0 AS FLOAT8 ) FROM tab0 WHERE NOT 87 * col2 + - col0 NOT IN ( ( - col2 ) * - col0 + - 79 * + 96 )
 ----
 
@@ -48928,7 +49318,10 @@ SELECT DISTINCT col0 * 71 col0 FROM tab1 AS cor0
 6035
 6461
 
-query I rowsort label-8087
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8087
 SELECT DISTINCT CAST ( - - col0 AS FLOAT8 ) FROM tab0 AS cor0 WHERE NOT col1 <> ( NULL )
 ----
 
@@ -48959,15 +49352,15 @@ SELECT DISTINCT - 2 + + 5 FROM tab2
 ----
 3
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -10
+# Datafusion - Expected - 82
+# Datafusion - Expected - -10
+# Datafusion - Expected - 82
+# Datafusion - Expected - -10
+# Datafusion - Expected - 82
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-10\) AS col0" at position 0 and "Int64\(54\) \- Int64\(\-28\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - 10 AS col0, 54 - - 28 AS col0 FROM tab0
-----
--10
-82
--10
-82
--10
-82
 
 query III rowsort
 SELECT DISTINCT * FROM tab1 WHERE NULL IN ( + col0 + 49 )
@@ -49050,30 +49443,33 @@ SELECT - MAX ( col2 ) AS col0 FROM tab0
 ----
 -99
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -10
+# Datafusion - Expected - 10
+# Datafusion - Expected - -47
+# Datafusion - Expected - 47
+# Datafusion - Expected - -99
+# Datafusion - Expected - 99
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab0\.col2\) AS col0" at position 0 and "tab0\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - col2 AS col0, col2 AS col0 FROM tab0
-----
--10
-10
--47
-47
--99
-99
 
 query I rowsort
 SELECT - + col2 - - - col0 FROM tab2 WHERE NOT + col1 <> + - 72
 ----
 
-query I rowsort label-8111
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8111
 SELECT DISTINCT - AVG ( DISTINCT + col1 ) FROM tab2 WHERE - ( - - CAST ( NULL AS INTEGER ) ) BETWEEN col2 AND ( col2 + col1 + col2 )
 ----
 NULL
 
-query II rowsort label-8112
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 3
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(Int64\(1\)\) AS count\(\*\) AS col2" at position 0 and "count\(Int64\(1\)\) AS count\(\*\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL COUNT ( * ) AS col2, + COUNT ( * ) AS col2 FROM tab2
-----
-3
-3
 
 query II rowsort
 SELECT DISTINCT + 12 AS col0, 32 * + - 87 FROM tab2 AS cor0
@@ -49178,7 +49574,10 @@ query III rowsort
 SELECT * FROM tab2 WHERE ( - col1 + - 65 + col2 + 61 * 95 ) BETWEEN col0 AND - + col2
 ----
 
-query I rowsort label-8130
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8130
 SELECT - CAST ( - CAST ( NULL AS INTEGER ) AS FLOAT8 ) + - col1 AS col2 FROM tab1
 ----
 NULL
@@ -49225,15 +49624,15 @@ SELECT ALL * FROM tab2 AS cor0 WHERE - col2 + col0 NOT IN ( + 91 )
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 95
+# Datafusion - Expected - -11
+# Datafusion - Expected - 95
+# Datafusion - Expected - -11
+# Datafusion - Expected - 95
+# Datafusion - Expected - -11
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(95\) AS col2" at position 0 and "Int64\(\-11\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 95 AS col2, - 11 AS col2 FROM tab1 AS cor0
-----
-95
--11
-95
--11
-95
--11
 
 query I rowsort
 SELECT col0 col0 FROM tab0 AS cor0 WHERE NOT NULL NOT BETWEEN NULL AND NULL
@@ -49639,15 +50038,15 @@ SELECT - - ( - + CAST ( - col2 AS INTEGER ) ) FROM tab1 AS cor0
 68
 96
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -17
+# Datafusion - Expected - 67
+# Datafusion - Expected - -23
+# Datafusion - Expected - 51
+# Datafusion - Expected - -24
+# Datafusion - Expected - 77
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT col2 - col0 col1, col1 AS col1 FROM tab2 AS cor0
-----
--17
-67
--23
-51
--24
-77
 
 query II rowsort
 SELECT - - 44 - + - 31, col1 + 12 AS col0 FROM tab0 AS cor0
@@ -49677,15 +50076,15 @@ SELECT + 36 * - col2 + - 37 * - + col2 * + col1 + + col1 FROM tab0 cor0
 139248
 7431
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -127
+# Datafusion - Expected - 0
+# Datafusion - Expected - -47
+# Datafusion - Expected - 0
+# Datafusion - Expected - -67
+# Datafusion - Expected - 0
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab0\.col1\) \+ Int64\(\-46\) AS col1" at position 0 and "Int64\(0\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - col1 + + + ( - 46 ) AS col1, + 0 AS col1 FROM tab0
-----
--127
-0
--47
-0
--67
-0
 
 query II rowsort
 SELECT ALL + col2, + col0 FROM tab1 WHERE NULL IS NULL
@@ -49937,15 +50336,15 @@ SELECT DISTINCT 74 + COUNT ( * ) FROM tab0 AS cor0
 ----
 77
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1659
+# Datafusion - Expected - 2937
+# Datafusion - Expected - -6399
+# Datafusion - Expected - 2937
+# Datafusion - Expected - -79
+# Datafusion - Expected - 2937
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(79\) \* \(\- cor0\.col1\) AS col2" at position 0 and "Int64\(33\) \* \(\- Int64\(\-89\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + 79 * - col1 AS col2, 33 * - - 89 AS col2 FROM tab0 AS cor0
-----
--1659
-2937
--6399
-2937
--79
-2937
 
 query I rowsort label-8253
 SELECT DISTINCT + col1 / col1 * + - 68 FROM tab0 AS cor0
@@ -50333,15 +50732,15 @@ SELECT col2 + + + col0, + col2 AS col1 FROM tab2
 69
 23
 
-query II rowsort label-8311
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -3396
+# Datafusion - Expected - -23
+# Datafusion - Expected - -4533
+# Datafusion - Expected - -23
+# Datafusion - Expected - -9165
+# Datafusion - Expected - -23
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0 \+ tab1\.col2 \* \(\- \(\- tab1\.col2\)\) / Int64\(\-1\) AS col0" at position 0 and "Int64\(23\) \+ Int64\(\-46\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col0 + + col2 * - - col2 / - 1 AS col0, + 23 + - 46 AS col0 FROM tab1
-----
--3396
--23
--4533
--23
--9165
--23
 
 query I rowsort
 SELECT ( - - col2 ) + + col2 FROM tab0
@@ -50376,15 +50775,15 @@ SELECT DISTINCT - col2 * - + col1 AS col1, - 26 * col2 * 36 FROM tab2 cor0
 3886
 -54288
 
-query II rowsort label-8317
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 10
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 47
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 99
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT + ( - 52 ) * col2 * col0 + - + CAST ( NULL AS INTEGER ) col2, col2 FROM tab0 AS cor0
-----
-NULL
-10
-NULL
-47
-NULL
-99
 
 query I rowsort
 SELECT ALL 15 * + - col2 FROM tab2 AS cor0
@@ -50486,15 +50885,15 @@ query I rowsort
 SELECT - - 27 * + 38 FROM tab0 AS cor0 WHERE ( 31 BETWEEN NULL AND - - 7 * 22 * + 18 * + col1 )
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 94
+# Datafusion - Expected - -56
+# Datafusion - Expected - 94
+# Datafusion - Expected - -65
+# Datafusion - Expected - 94
+# Datafusion - Expected - -93
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(94\) AS col2" at position 0 and "Int64\(3\) \+ \(\- cor0\.col2\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 94 AS col2, 3 + - col2 AS col2 FROM tab1 AS cor0
-----
-94
--56
-94
--65
-94
--93
 
 query I rowsort
 SELECT 21 + - col0 FROM tab0 cor0
@@ -50594,7 +50993,10 @@ SELECT DISTINCT * FROM tab0 AS cor0 WHERE 27 >= - + 36 - 32
 ----
 9 values hashing to c4b42765dff94eaaa46040e537fb43b7
 
-query II rowsort label-8355
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]I
+# Datafusion - [Actual  ] [R]I
+query RI rowsort label-8355
 SELECT - + CAST ( NULL AS FLOAT8 ) AS col2, 76 FROM tab2 AS cor0
 ----
 NULL
@@ -50633,7 +51035,10 @@ SELECT + col0 * 66 * - - col2, col1 col1 FROM tab1 AS cor0
 408408
 47
 
-query I rowsort label-8361
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8361
 SELECT ALL - CAST ( NULL AS FLOAT8 ) * + - COUNT ( * ) / + COUNT ( * ) FROM tab0 cor0
 ----
 NULL
@@ -50777,15 +51182,15 @@ SELECT DISTINCT 28 - - - col2 * + + 22 col1 FROM tab1
 -1468
 -2084
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 51
+# Datafusion - Expected - 67
+# Datafusion - Expected - 67
+# Datafusion - Expected - 77
+# Datafusion - Expected - 77
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col0" at position 0 and "cor0\.col1 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT col1 AS col0, + col1 col0 FROM tab2 AS cor0
-----
-51
-51
-67
-67
-77
-77
 
 query I rowsort
 SELECT - 36 + col1 col0 FROM tab2 cor0
@@ -50891,15 +51296,15 @@ query III rowsort
 SELECT * FROM tab2 WHERE NOT NULL <= - 83
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -147987
+# Datafusion - Expected - -17
+# Datafusion - Expected - -7857
+# Datafusion - Expected - -17
+# Datafusion - Expected - -98415
+# Datafusion - Expected - -17
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(81\) \* \(\- cor0\.col0\) \* cor0\.col1 AS col2" at position 0 and "Int64\(\-17\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL + 81 * - col0 * col1 AS col2, - 17 AS col2 FROM tab0 AS cor0
-----
--147987
--17
--7857
--17
--98415
--17
 
 query I rowsort
 SELECT 77 + + + 55 col2 FROM tab1 AS cor0
@@ -51028,15 +51433,15 @@ query I rowsort
 SELECT ALL - + 63 AS col0 FROM tab2 AS cor0 WHERE + col1 IS NULL
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 46
+# Datafusion - Expected - -39
+# Datafusion - Expected - 64
+# Datafusion - Expected - -21
+# Datafusion - Expected - 75
+# Datafusion - Expected - -10
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT col0, - 85 + col0 AS col0 FROM tab2 AS cor0
-----
-46
--39
-64
--21
-75
--10
 
 query II rowsort
 SELECT ALL + - 63, - col2 * col2 AS col0 FROM tab1 AS cor0
@@ -51434,17 +51839,20 @@ NULL
 NULL
 5
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -65
+# Datafusion - Expected - 51
+# Datafusion - Expected - -65
+# Datafusion - Expected - 85
+# Datafusion - Expected - -65
+# Datafusion - Expected - 91
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-65\) AS col1" at position 0 and "cor0\.col0 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - 65 AS col1, col0 col1 FROM tab1 cor0
-----
--65
-51
--65
-85
--65
-91
 
-query I rowsort label-8486
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8486
 SELECT - CAST ( NULL AS INTEGER ) + - CAST ( NULL AS FLOAT8 ) FROM tab0 WHERE NULL IS NULL
 ----
 NULL
@@ -51865,15 +52273,15 @@ SELECT + + 17 AS col2 FROM tab0 AS cor0
 17
 17
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 50
+# Datafusion - Expected - 51
+# Datafusion - Expected - 50
+# Datafusion - Expected - 85
+# Datafusion - Expected - 50
+# Datafusion - Expected - 91
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(\-50\)\) AS col2" at position 0 and "cor0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - - 50 AS col2, col0 AS col2 FROM tab1 AS cor0
-----
-50
-51
-50
-85
-50
-91
 
 query III rowsort label-8561
 SELECT * FROM tab2 AS cor0 WHERE NOT ( - - CAST ( - col1 AS INTEGER ) ) < NULL
@@ -51936,11 +52344,11 @@ query III rowsort
 SELECT * FROM tab1 WHERE NOT - + col1 + - col1 + col2 * col2 * col2 IS NOT NULL
 ----
 
-query II rowsort label-8571
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 47
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(47\) AS col2" at position 0 and "count\(Int64\(1\)\) AS count\(\*\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT 47 AS col2, COUNT ( * ) col2 FROM tab0
-----
-47
-3
 
 query III rowsort
 SELECT DISTINCT * FROM tab2 WHERE NOT ( + col0 + - ( - col2 ) * 89 ) NOT IN ( col0 )
@@ -52049,10 +52457,10 @@ query III rowsort
 SELECT DISTINCT * FROM tab0 WHERE NOT NULL BETWEEN 14 / - - col1 * 8 * - 0 / col2 + 80 AND ( NULL )
 ----
 
-query III rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9 values hashing to f681f02feb61ea439ed0250fb08b6597
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\) \* Int64\(60\) AS col0" at position 1 and "cor0\.col1 \* Int64\(46\) \+ cor0\.col2 AS col0" at position 2 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - + col0 + + ( - col0 ) AS col1, - col0 * 60 AS col0, ( col1 ) * + 46 + col2 AS col0 FROM tab2 AS cor0
-----
-9 values hashing to f681f02feb61ea439ed0250fb08b6597
 
 query I rowsort
 SELECT ALL 84 * - 66 + - col0 - + + col0 FROM tab1 AS cor0
@@ -52312,15 +52720,15 @@ SELECT ALL CAST ( col2 AS INTEGER ) + col1 / + col1 AS col2 FROM tab2
 41
 59
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 23
+# Datafusion - Expected - 196
+# Datafusion - Expected - 40
+# Datafusion - Expected - 196
+# Datafusion - Expected - 58
+# Datafusion - Expected - 196
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT col2, - 4 * - 49 col2 FROM tab2 AS cor0
-----
-23
-196
-40
-196
-58
-196
 
 query III rowsort
 SELECT * FROM tab0 AS cor0 WHERE 79 * + col0 = + ( - col0 )
@@ -52444,11 +52852,11 @@ SELECT + MIN ( ALL + 26 ) FROM tab2 AS cor0
 ----
 26
 
-query II rowsort label-8655
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 82
+# Datafusion - Expected - -43
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(82\) AS col0" at position 0 and "\(\- \(\- min\(\(\- \(\- Int64\(\-43\)\)\)\)\)\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL 82 AS col0, - ( - MIN ( + ( - + ( - - 43 ) ) ) ) col0 FROM tab0 cor0
-----
-82
--43
 
 query II rowsort
 SELECT - - col2, col2 AS col1 FROM tab2 AS cor0
@@ -52593,15 +53001,15 @@ SELECT MAX ( ALL - CAST ( 37 AS INTEGER ) ) FROM tab0 AS cor0
 ----
 -37
 
-query II rowsort label-8682
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 15
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 87
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 97
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT ALL CAST ( NULL AS INTEGER ) AS col0, col0 FROM tab0
-----
-NULL
-15
-NULL
-87
-NULL
-97
 
 query II rowsort
 SELECT DISTINCT 75 col1, + col2 AS col0 FROM tab2
@@ -52842,15 +53250,15 @@ SELECT DISTINCT - ( - - COUNT ( * ) ), - 81 AS col0 FROM tab0 AS cor0
 -3
 -81
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 68
+# Datafusion - Expected - -1978
+# Datafusion - Expected - 68
+# Datafusion - Expected - -515
+# Datafusion - Expected - 68
+# Datafusion - Expected - 74
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(68\) AS col1" at position 0 and "Int64\(25\) \* \(\- cor0\.col1\) \+ \(\- \(\- cor0\.col2\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT 68 AS col1, ( + 25 ) * - col1 + - ( + - col2 ) AS col1 FROM tab0 AS cor0 WHERE NOT ( NULL IS NOT NULL )
-----
-68
--1978
-68
--515
-68
-74
 
 query III rowsort
 SELECT * FROM tab2 AS cor0 WHERE + col0 = - + 7
@@ -52994,7 +53402,10 @@ SELECT + SUM ( + 95 ) AS col2 FROM tab2 cor0
 ----
 285
 
-query II rowsort label-8744
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] I[I]
+# Datafusion - [Actual  ] I[R]
+query IR rowsort label-8744
 SELECT DISTINCT + col0 * + col1, 52 / CAST ( NULL AS FLOAT8 ) AS col1 FROM tab2
 ----
 2346
@@ -53185,7 +53596,10 @@ query I rowsort
 SELECT - 12 AS col0 FROM tab2 AS cor0 WHERE NOT NULL <> - col1 - + col0
 ----
 
-query I rowsort label-8778
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8778
 SELECT ALL 43 + - col0 * - - CAST ( NULL AS FLOAT8 ) AS col2 FROM tab1 AS cor0
 ----
 NULL
@@ -53320,10 +53734,10 @@ SELECT DISTINCT + ( + SUM ( DISTINCT col1 ) ) FROM tab0 WHERE NOT - 96 IS NULL
 ----
 103
 
-query I rowsort label-8801
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+query error DataFusion error: Execution error: avg\(DISTINCT\) aggregations are not available
 SELECT AVG ( DISTINCT + 96 ) * + COUNT ( * ) FROM tab1 AS cor0 WHERE NOT 72 - 58 + - col2 <= NULL
-----
-NULL
 
 query I rowsort label-8802
 SELECT COUNT ( + + col1 ) AS col0 FROM tab2 cor0
@@ -53566,15 +53980,15 @@ query I rowsort label-8844
 SELECT DISTINCT - + col2 / 0 * - 4 FROM tab1 AS cor0 WHERE + CAST ( 35 AS INTEGER ) BETWEEN col2 AND NULL
 ----
 
-query II rowsort label-8845
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 148
+# Datafusion - Expected - -1
+# Datafusion - Expected - 59
+# Datafusion - Expected - -21
+# Datafusion - Expected - 96
+# Datafusion - Expected - -81
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 \+ CAST\(Int64\(49\) AS Int32\) AS col1" at position 0 and "\(\- cor0\.col1\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT col2 + + CAST ( + 49 AS INTEGER ) AS col1, - col1 AS col1 FROM tab0 AS cor0
-----
-148
--1
-59
--21
-96
--81
 
 query I rowsort label-8846
 SELECT ALL - + col1 * - col1 + - 66 + - - 29 * ( col2 ) / col1 AS col2 FROM tab1 AS cor0
@@ -53853,11 +54267,11 @@ SELECT - MIN ( ALL + - 18 ), MAX ( + ( + col0 ) ) AS col0 FROM tab2 AS cor0 WHER
 NULL
 NULL
 
-query II rowsort label-8892
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -46
+# Datafusion - Expected - 36
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- min\(cor0\.col0\)\) AS col0" at position 0 and "Int64\(36\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL - MIN ( ALL col0 ) AS col0, 36 AS col0 FROM tab2 AS cor0
-----
--46
-36
 
 query I rowsort
 SELECT 54 * + - col2 AS col2 FROM tab1 cor0
@@ -53993,7 +54407,10 @@ SELECT DISTINCT - col2, + col2 AS col0 FROM tab0 AS cor0 WHERE NOT col1 <= + 13
 -47
 47
 
-query I rowsort label-8915
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8915
 SELECT DISTINCT 81 * + CAST ( NULL AS FLOAT8 ) + MIN ( - 66 ) FROM tab1
 ----
 NULL
@@ -54014,7 +54431,10 @@ SELECT ALL 48 - - col2 * col0 FROM tab2
 2608
 4398
 
-query I rowsort label-8919
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-8919
 SELECT DISTINCT CAST ( NULL AS FLOAT8 ) - 71 FROM tab1 cor0
 ----
 NULL
@@ -54803,15 +55223,15 @@ SELECT * FROM tab2 WHERE - col0 + + + col0 * + + col2 IS NOT NULL
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query II rowsort label-9057
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 56
+# Datafusion - Expected - 59
+# Datafusion - Expected - 56
+# Datafusion - Expected - 68
+# Datafusion - Expected - 56
+# Datafusion - Expected - 96
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(56\) AS col2" at position 0 and "CAST\(\(\- Int64\(44\)\) AS Int32\) / \(\- tab1\.col2\) \- \(\- CAST\(tab1\.col2 AS Int32\)\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT 56 AS col2, CAST ( - + 44 AS INTEGER ) / - col2 - - + CAST ( + col2 AS INTEGER ) AS col2 FROM tab1
-----
-56
-59
-56
-68
-56
-96
 
 query I rowsort
 SELECT ALL col2 + 68 FROM tab1
@@ -54897,15 +55317,15 @@ SELECT ALL 50 * col2 * col1 * + CAST ( - col1 AS INTEGER ) FROM tab1 AS cor0
 -7510600
 -940800
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -79
+# Datafusion - Expected - 46
+# Datafusion - Expected - -79
+# Datafusion - Expected - 64
+# Datafusion - Expected - -79
+# Datafusion - Expected - 75
+query error DataFusion error: Schema error: Schema contains qualified field name cor0\.col0 and unqualified field name col0 which would be ambiguous
 SELECT DISTINCT + ( - 79 ) col0, + col0 AS col0 FROM tab2 AS cor0
-----
--79
-46
--79
-64
--79
-75
 
 query II rowsort
 SELECT - 5, col2 col1 FROM tab2
@@ -55092,11 +55512,11 @@ SELECT ALL 54 + - - 55 * - - col0 AS col1 FROM tab2
 3574
 4179
 
-query II rowsort label-9104
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -3
+# Datafusion - Expected - -3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- count\(Int64\(1\)\) AS count\(\*\)\)" at position 0 and "\(\- count\(Int64\(1\)\) AS count\(\*\)\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - COUNT ( * ), - ( + COUNT ( * ) ) FROM tab0
-----
--3
--3
 
 query I rowsort label-9105
 SELECT DISTINCT + COUNT ( * ) * + 85 + + + COUNT ( * ) AS col2 FROM tab0 AS cor0
@@ -55733,7 +56153,10 @@ query I rowsort
 SELECT col1 / - col1 + - ( + - col0 ) - - 3 AS col0 FROM tab2 cor0 WHERE NULL BETWEEN NULL AND + col1 * + col2
 ----
 
-query I rowsort label-9216
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-9216
 SELECT ALL CAST ( NULL AS FLOAT8 ) * - + 13 - + - col1 FROM tab0 WHERE col1 IS NOT NULL
 ----
 NULL
@@ -56100,15 +56523,15 @@ SELECT DISTINCT + col1 + 78 col1 FROM tab2 AS cor0
 145
 155
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 0
+# Datafusion - Expected - 59
+# Datafusion - Expected - 0
+# Datafusion - Expected - 68
+# Datafusion - Expected - 0
+# Datafusion - Expected - 96
+query error DataFusion error: Schema error: Schema contains qualified field name tab1\.col2 and unqualified field name col2 which would be ambiguous
 SELECT ALL + col1 + + - col1 AS col2, col2 FROM tab1
-----
-0
-59
-0
-68
-0
-96
 
 query II rowsort
 SELECT DISTINCT ( 36 ) AS col1, - 33 AS col2 FROM tab0
@@ -56487,15 +56910,15 @@ SELECT + 52, + col1 FROM tab0
 52
 81
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 96
+# Datafusion - Expected - 21
+# Datafusion - Expected - 66
+# Datafusion - Expected - 81
+# Datafusion - Expected - -66
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col2" at position 0 and "\(\- cor0\.col1\) \+ cor0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL col1 AS col2, - col1 + + + col0 AS col2 FROM tab0 AS cor0
-----
-1
-96
-21
-66
-81
--66
 
 query I rowsort label-9335
 SELECT DISTINCT MAX ( - 25 ) FROM tab2 AS cor0
@@ -56545,11 +56968,11 @@ SELECT - COUNT ( * ) / - 88 AS col1 FROM tab0
 ----
 0
 
-query II rowsort label-9343
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 34
+# Datafusion - Expected - 56
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(Int64\(1\)\) AS count\(\*\) \+ \(\- Int64\(\-44\)\) \+ \(\- Int64\(13\)\) AS col1" at position 0 and "max\(DISTINCT Int64\(53\)\) \+ \(\- \(\- count\(Int64\(1\)\) AS count\(\*\)\)\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL COUNT ( * ) + - - 44 + - + 13 AS col1, MAX ( DISTINCT 53 ) + - - COUNT ( * ) AS col1 FROM tab2
-----
-34
-56
 
 query I rowsort
 SELECT col2 + - - ( - - col2 ) col1 FROM tab0
@@ -57644,15 +58067,15 @@ query III rowsort label-9529
 SELECT DISTINCT * FROM tab2 WHERE NOT ( NOT ( ( NULL ) BETWEEN - col0 + col2 AND - CAST ( NULL AS INTEGER ) ) )
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 51
+# Datafusion - Expected - 14
+# Datafusion - Expected - 85
+# Datafusion - Expected - 5
+# Datafusion - Expected - 91
+# Datafusion - Expected - 47
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0 AS col2" at position 0 and "cor0\.col1 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT ALL col0 AS col2, col1 AS col2 FROM tab1 cor0
-----
-51
-14
-85
-5
-91
-47
 
 query III rowsort
 SELECT DISTINCT * FROM tab0 WHERE NOT - - 54 NOT BETWEEN 19 AND ( - col0 * + col1 * - + col1 )
@@ -57945,7 +58368,10 @@ SELECT + 73 * - - 88 + + + col2 AS col0 FROM tab0
 6471
 6523
 
-query I rowsort label-9580
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-9580
 SELECT - + CAST ( NULL AS FLOAT8 ) + - + MIN ( DISTINCT - + ( + col2 ) ) - 76 AS col1 FROM tab2 AS cor0
 ----
 NULL
@@ -58055,11 +58481,11 @@ SELECT DISTINCT - col2 / + 14 - col2 * + col2 FROM tab2 AS cor0
 -3368
 -530
 
-query II rowsort label-9599
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 9
+# Datafusion - Expected - 9
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(Int64\(1\)\) AS count\(\*\)" at position 0 and "count\(Int64\(1\)\) AS count\(\*\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + COUNT ( * ), COUNT ( * ) FROM tab2 cor0 CROSS JOIN tab2 AS cor1
-----
-9
-9
 
 query I rowsort label-9600
 SELECT - MAX ( DISTINCT + CAST ( + - col0 AS INTEGER ) ) * COUNT ( * ) FROM tab0
@@ -58076,15 +58502,15 @@ SELECT + col0, col1 * + 31 AS col2 FROM tab1
 91
 1457
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 15
+# Datafusion - Expected - 81
+# Datafusion - Expected - 87
+# Datafusion - Expected - 21
+# Datafusion - Expected - 97
+# Datafusion - Expected - 1
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0 AS col2" at position 0 and "tab0\.col1 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT + col0 AS col2, + col1 AS col2 FROM tab0
-----
-15
-81
-87
-21
-97
-1
 
 query I rowsort
 SELECT ALL - - ( + - 8 ) FROM tab2 cor0
@@ -58108,11 +58534,11 @@ SELECT + + col0 AS col2, 48 * - 51 AS col0 FROM tab0 AS cor0
 97
 -2448
 
-query II rowsort label-9606
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 1
+# Datafusion - Expected - 3
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "count\(DISTINCT Int64\(15\)\) AS col1" at position 0 and "count\(Int64\(1\)\) AS count\(\*\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT + COUNT ( DISTINCT + + 15 ) AS col1, COUNT ( * ) AS col1 FROM tab1
-----
-1
-3
 
 query I rowsort
 SELECT col1 * + 2 * col1 AS col2 FROM tab0
@@ -58288,15 +58714,15 @@ SELECT DISTINCT * FROM tab0 WHERE - 27 + + - col1 - col2 < - 4 * - 39 * 49 + + -
 ----
 9 values hashing to c4b42765dff94eaaa46040e537fb43b7
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 23
+# Datafusion - Expected - 2397
+# Datafusion - Expected - 40
+# Datafusion - Expected - 5005
+# Datafusion - Expected - 58
+# Datafusion - Expected - 5092
+query error DataFusion error: Schema error: Schema contains qualified field name tab2\.col2 and unqualified field name col2 which would be ambiguous
 SELECT ALL col2, + col1 + ( - - col1 ) * col0 AS col2 FROM tab2
-----
-23
-2397
-40
-5005
-58
-5092
 
 query II rowsort label-9639
 SELECT - COUNT ( * ) AS col0, 45 FROM tab0 AS cor0
@@ -58488,11 +58914,11 @@ SELECT ALL - ( + 45 ) * + 76 * col1 + + col1 FROM tab2 AS cor0
 -229073
 -263263
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - NULL
+# Datafusion - Expected - 50
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- Int64\(52\)\) \+ \(\- avg\(DISTINCT Int64\(16\)\)\) AS col0" at position 0 and "Int64\(50\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT DISTINCT - + 52 + - AVG ( DISTINCT + + 16 ) col0, 50 AS col0 FROM tab0 WHERE NOT + col2 * - + col1 < + 83
-----
-NULL
-50
 
 query I rowsort
 SELECT ALL - col0 + + 3 * - col2 + - 15 AS col0 FROM tab0
@@ -58867,7 +59293,10 @@ SELECT ALL + col2 + col0 + - + col0 AS col0 FROM tab0 AS cor0
 47
 99
 
-query I rowsort label-9735
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-9735
 SELECT + AVG ( - - col0 ) + - CAST ( NULL AS INTEGER ) FROM tab0 AS cor0
 ----
 NULL
@@ -58983,15 +59412,15 @@ query I rowsort
 SELECT col2 FROM tab2 WHERE NOT NULL <= + col2
 ----
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - 66
+# Datafusion - Expected - 23
+# Datafusion - Expected - 66
+# Datafusion - Expected - 40
+# Datafusion - Expected - 66
+# Datafusion - Expected - 58
+query error DataFusion error: Schema error: Schema contains qualified field name tab2\.col2 and unqualified field name col2 which would be ambiguous
 SELECT DISTINCT 66 AS col2, col2 FROM tab2
-----
-66
-23
-66
-40
-66
-58
 
 query IIIIII rowsort
 SELECT * FROM tab2 AS cor0 CROSS JOIN tab0 AS cor1 WHERE NULL < - 22
@@ -59315,7 +59744,10 @@ SELECT ALL col1 - 92 + 90 + - ( + col1 ) / - - col1 AS col2, + ( + - 62 ) - col1
 74
 -139
 
-query I rowsort label-9807
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-9807
 SELECT DISTINCT + 90 * - - COUNT ( * ) / - CAST ( NULL AS FLOAT8 ) * - - 81 - COUNT ( * ) col0 FROM tab0 AS cor0 CROSS JOIN tab2 AS cor1
 ----
 NULL
@@ -59401,20 +59833,23 @@ SELECT * FROM tab2 WHERE NOT - + col1 * - col2 = + + 82 / + + 83
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query I rowsort label-9821
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort label-9821
 SELECT DISTINCT CAST ( NULL AS FLOAT8 ) * - 74 FROM tab2
 ----
 NULL
 
-query II rowsort
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -68
+# Datafusion - Expected - -15
+# Datafusion - Expected - -68
+# Datafusion - Expected - -87
+# Datafusion - Expected - -68
+# Datafusion - Expected - -97
+query error DataFusion error: Error during planning: Projections require unique expression names but the expression "Int64\(\-68\) AS col1" at position 0 and "\(\- tab0\.col0\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
 SELECT - 68 AS col1, - col0 AS col1 FROM tab0
-----
--68
--15
--68
--87
--68
--97
 
 query I rowsort label-9823
 SELECT DISTINCT 77 / - col1 AS col2 FROM tab1
@@ -59591,15 +60026,15 @@ SELECT * FROM tab2 WHERE NOT ( - + 83 * + col0 ) IS NULL
 ----
 9 values hashing to 75c998aa53ac83218cbf2feb962d0a49
 
-query II rowsort label-9851
+# Datafusion - Datafusion expected results:
+# Datafusion - Expected - -1
+# Datafusion - Expected - 1
+# Datafusion - Expected - -1
+# Datafusion - Expected - 21
+# Datafusion - Expected - -1
+# Datafusion - Expected - 81
+query error DataFusion error: Schema error: Schema contains qualified field name tab0\.col1 and unqualified field name col1 which would be ambiguous
 SELECT ALL col1 / - col1 AS col1, col1 col1 FROM tab0
-----
--1
-1
--1
-21
--1
-81
 
 query I rowsort
 SELECT + col0 + - ( col2 ) * - col0 FROM tab0
@@ -59953,7 +60388,10 @@ SELECT - col2 * + col2 FROM tab1 WHERE + col1 * - col0 IS NOT NULL
 -4624
 -9216
 
-query I rowsort
+# Datafusion - Types were automatically converted from:
+# Datafusion - [Expected] [I]
+# Datafusion - [Actual  ] [R]
+query R rowsort
 SELECT AVG ( 75 ) AS col2 FROM tab2 WHERE - col1 IS NULL
 ----
 NULL
@@ -60449,4 +60887,3 @@ query I rowsort label-9999
 SELECT + COUNT ( DISTINCT col0 ) + - 0 col2 FROM tab0 AS cor0
 ----
 3
-
