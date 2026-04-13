@@ -110,8 +110,15 @@ SELECT - col2 * + + col2 AS col1 FROM tab1 GROUP BY col2, col2 HAVING NOT - col2
 # Datafusion - Expected - -38
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0 AS col2" at position 0 and "tab0\.col0 \+ \(\- tab0\.col1\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0 AS col2, + col0 + - col1 AS col2 FROM tab0 GROUP BY col1, col0
+----
+-38
+26
+26
+43
+83
+83
 
 query I rowsort
 SELECT DISTINCT - col1 AS col0 FROM tab2 AS cor0 GROUP BY col1, col1 HAVING NOT NULL IS NULL
@@ -593,8 +600,15 @@ SELECT ALL - - col0 AS col2 FROM tab1 AS cor0 GROUP BY col0, col0
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col2 AS col2, + col2 FROM tab2 AS cor0 GROUP BY col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT col0 + + col2 AS col2 FROM tab2 GROUP BY col0, col2 HAVING NOT - col2 IS NOT NULL
@@ -1114,8 +1128,15 @@ SELECT ALL - col1 col1 FROM tab2 GROUP BY col1
 # Datafusion - Expected - 28
 # Datafusion - Expected - 82
 # Datafusion - Expected - 82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0" at position 0 and "tab1\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col0 AS col0, col0 AS col0 FROM tab1 GROUP BY col0
+----
+22
+22
+28
+28
+82
+82
 
 query I rowsort
 SELECT ALL - + col1 FROM tab0 WHERE col0 IS NULL GROUP BY col1, col2
@@ -1156,8 +1177,15 @@ SELECT ALL col1 + + col1 AS col0 FROM tab1 GROUP BY col1 HAVING NULL IS NULL
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col0" at position 0 and "tab2\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col0 col0, col0 FROM tab2 GROUP BY col1, col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT ALL + - col2 AS col2 FROM tab0 AS cor0 GROUP BY col0, col2
@@ -1606,8 +1634,15 @@ SELECT DISTINCT col1 FROM tab1 AS cor0 GROUP BY col1, col1
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col2" at position 0 and "tab1\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2, + col2 FROM tab1 GROUP BY col2, col0
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT DISTINCT - + col0 FROM tab0 AS cor0 WHERE col2 IS NULL GROUP BY col2, col0 HAVING NOT ( NULL IS NOT NULL )
@@ -1739,8 +1774,15 @@ SELECT ALL - + col1 + + - col1 FROM tab2 AS cor0 GROUP BY col1, col1
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + col0, + col0 FROM tab0 GROUP BY col0 HAVING NOT NULL IS NOT NULL
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT + col0 FROM tab0 GROUP BY col0 HAVING NOT AVG ( - col0 ) < NULL
@@ -2290,8 +2332,15 @@ SELECT - col2 AS col1 FROM tab1 cor0 GROUP BY col2
 # Datafusion - Expected - 79
 # Datafusion - Expected - 0
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 \+ \(\- cor0\.col2\) AS col1" at position 0 and "cor0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col2 + - col2 AS col1, col2 AS col1 FROM tab2 AS cor0 GROUP BY col2
+----
+0
+0
+0
+58
+79
+87
 
 query I rowsort label-358
 SELECT - + col0 / + col1 AS col1 FROM tab2 AS cor0 GROUP BY col1, col0
@@ -2338,8 +2387,13 @@ SELECT ALL col0 FROM tab0 cor0 WHERE NOT NULL IS NOT NULL GROUP BY col0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1" at position 0 and "tab0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1, col1 FROM tab0 GROUP BY col1, col1
+----
+0
+0
+81
+81
 
 query I rowsort
 SELECT DISTINCT col1 FROM tab1 AS cor0 GROUP BY col1, col2, col0 HAVING NOT NULL IS NOT NULL
@@ -2569,8 +2623,15 @@ SELECT - - col2 FROM tab0 AS cor0 GROUP BY col1, col2, col2 HAVING NOT ( NULL IS
 # Datafusion - Expected - 57
 # Datafusion - Expected - -6
 # Datafusion - Expected - 6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\) AS col2" at position 0 and "cor0\.col1 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col1 AS col2, + col1 col2 FROM tab1 AS cor0 GROUP BY col1
+----
+-44
+-57
+-6
+44
+57
+6
 
 query I rowsort
 SELECT DISTINCT + col1 AS col0 FROM tab1 AS cor0 GROUP BY col1 HAVING NOT ( - col1 * + col1 IS NULL )
@@ -2837,8 +2898,13 @@ SELECT ALL - + col2 col2 FROM tab0 AS cor0 GROUP BY col2, col1
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col1, col1 FROM tab0 AS cor0 GROUP BY col1
+----
+0
+0
+81
+81
 
 query I rowsort
 SELECT DISTINCT col0 + + col2 FROM tab1 AS cor0 GROUP BY col2, col0
@@ -2915,8 +2981,15 @@ SELECT + col2 * col2 FROM tab2 GROUP BY col1, col2
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2" at position 0 and "tab2\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2, + col2 FROM tab2 GROUP BY col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT ALL + + col1 FROM tab2 AS cor0 GROUP BY col1, col1
@@ -3860,8 +3933,15 @@ SELECT DISTINCT + col2 FROM tab0 cor0 GROUP BY col2, col2
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col2" at position 0 and "cor0\.col1 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col1 AS col2, col1 AS col2 FROM tab2 cor0 GROUP BY col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT col1 FROM tab1 GROUP BY col1 HAVING NOT NULL <> NULL
@@ -4426,8 +4506,9 @@ SELECT + - col1 col2 FROM tab0 cor0 GROUP BY col1 HAVING NULL > NULL
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col2, col2 FROM tab0 AS cor0 WHERE col0 * col1 IS NULL GROUP BY col2
+----
 
 query I rowsort
 SELECT DISTINCT + col1 FROM tab0 GROUP BY col1, col1 HAVING NULL IS NOT NULL
@@ -4613,8 +4694,15 @@ SELECT ALL - - col1 AS col0 FROM tab1 AS cor0 GROUP BY col1, col0 HAVING ( NULL 
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1, + col1 FROM tab2 GROUP BY col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT ALL col1 + + - col1 FROM tab0 GROUP BY col1
@@ -4644,8 +4732,15 @@ SELECT DISTINCT - col0 AS col1 FROM tab1 AS cor0 GROUP BY col0, col2 HAVING NOT 
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col2, col2 FROM tab2 AS cor0 GROUP BY col2, col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort label-737
 SELECT ALL - col0 / + col1 col2 FROM tab1 AS cor0 GROUP BY col0, col1
@@ -4773,8 +4868,15 @@ SELECT + col1 * - col2 FROM tab1 AS cor0 GROUP BY col2, col1
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0, col0 FROM tab2 AS cor0 GROUP BY col0, col1, col1
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT DISTINCT + col0 FROM tab2 cor0 GROUP BY col0, col1
@@ -5817,8 +5919,9 @@ SELECT ALL + col1 AS col1 FROM tab2 cor0 GROUP BY col1
 61
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1 AS col0" at position 0 and "tab2\.col1 \* tab2\.col1 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1 AS col0, + col1 * + col1 AS col0 FROM tab2 GROUP BY col1, col1 HAVING NULL IS NOT NULL
+----
 
 query I rowsort
 SELECT col2 + col2 + - col2 FROM tab2 GROUP BY col2, col2
@@ -7068,8 +7171,9 @@ SELECT ALL - col0 * col0 FROM tab0 AS cor0 GROUP BY col0
 -6889
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col2" at position 0 and "tab1\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 AS col2, col2 AS col2 FROM tab1 GROUP BY col2 HAVING NULL <= NULL
+----
 
 query I rowsort
 SELECT DISTINCT + col1 FROM tab2 WHERE NOT col1 IS NOT NULL GROUP BY col1 HAVING NULL IS NOT NULL
@@ -7329,8 +7433,15 @@ SELECT col1 AS col2 FROM tab2 GROUP BY col0, col1
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col0" at position 0 and "tab2\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0, col0 FROM tab2 GROUP BY col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT - - col2 AS col0 FROM tab2 AS cor0 GROUP BY col2, col2
@@ -7865,8 +7976,15 @@ SELECT DISTINCT col2 - - + col2 FROM tab0 GROUP BY col2, col0
 # Datafusion - Expected - 28
 # Datafusion - Expected - 82
 # Datafusion - Expected - 82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col0, + col0 FROM tab1 cor0 GROUP BY col0, col0
+----
+22
+22
+28
+28
+82
+82
 
 query I rowsort
 SELECT col2 col2 FROM tab0 GROUP BY col2, col0, col2
@@ -8197,8 +8315,15 @@ SELECT ALL col2 * - col2 AS col2 FROM tab1 GROUP BY col2
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col2 AS col2, col2 FROM tab0 AS cor0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT - col2 AS col1 FROM tab2 GROUP BY col2, col0 HAVING NULL IS NULL
@@ -8656,8 +8781,13 @@ SELECT - - col1 col1 FROM tab1 cor0 GROUP BY col1
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - -81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col2" at position 0 and "\(\- cor0\.col1\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1 AS col2, - col1 AS col2 FROM tab0 AS cor0 WHERE col0 IS NOT NULL GROUP BY col1
+----
+-81
+0
+0
+81
 
 query I rowsort
 SELECT - col1 + - col1 FROM tab2 AS cor0 GROUP BY col1, col0, col1
@@ -9190,8 +9320,15 @@ SELECT DISTINCT + col2 AS col1 FROM tab0 GROUP BY col2, col2
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col0" at position 0 and "cor0\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 col0, + col2 col0 FROM tab1 AS cor0 GROUP BY col2, col2 HAVING NOT ( NULL ) IS NOT NULL
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT ALL + - col1 AS col0 FROM tab1 AS cor0 GROUP BY col1, col2 HAVING NOT NULL BETWEEN NULL AND NULL
@@ -9417,8 +9554,15 @@ SELECT - col1 * - + col1 AS col0 FROM tab2 GROUP BY col1
 # Datafusion - Expected - 91
 # Datafusion - Expected - -92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\) AS col2" at position 0 and "cor0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + - col0 AS col2, col0 AS col2 FROM tab2 AS cor0 GROUP BY col0, col1
+----
+-15
+-91
+-92
+15
+91
+92
 
 # Datafusion - Datafusion expected results:
 # Datafusion - Expected - -26
@@ -9553,8 +9697,15 @@ SELECT + col0 * + - col0 * - col0 AS col2 FROM tab2 AS cor0 GROUP BY col0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 79
 # Datafusion - Expected - 0
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "avg\(cor0\.col2\) AS col0" at position 0 and "\(\- cor0\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query RI valuesort
 SELECT AVG ( col2 ) AS col0, - col1 AS col0 FROM tab0 AS cor0 GROUP BY col1, col2 HAVING + col2 IS NOT NULL
+----
+-81
+0
+0
+24
+38
+79
 
 query I rowsort
 SELECT ALL col2 FROM tab0 AS cor0 GROUP BY col2 HAVING NOT NULL > ( NULL )
@@ -10399,8 +10550,15 @@ SELECT col0 FROM tab2 GROUP BY col0, col2 HAVING NOT NULL IS NOT NULL
 # Datafusion - Expected - -79
 # Datafusion - Expected - 87
 # Datafusion - Expected - -87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col0" at position 0 and "\(\- cor0\.col2\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col2 AS col0, - col2 AS col0 FROM tab2 AS cor0 GROUP BY col2
+----
+-58
+-79
+-87
+58
+79
+87
 
 query I rowsort
 SELECT DISTINCT - col0 + - col0 FROM tab2 AS cor0 GROUP BY col0
@@ -10833,8 +10991,15 @@ SELECT col0 AS col0 FROM tab2 AS cor0 WHERE NOT NULL IS NULL GROUP BY col0
 # Datafusion - Expected - 56
 # Datafusion - Expected - -82
 # Datafusion - Expected - 164
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab1\.col0\) AS col2" at position 0 and "tab1\.col0 \- \(\- tab1\.col0\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col0 AS col2, col0 - - col0 AS col2 FROM tab1 GROUP BY col0
+----
+-22
+-28
+-82
+164
+44
+56
 
 query I rowsort
 SELECT col2 FROM tab1 GROUP BY col2 HAVING NULL <= NULL
@@ -10938,8 +11103,15 @@ SELECT DISTINCT + + col2 FROM tab0 cor0 GROUP BY col2
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0 AS col0, + col0 FROM tab0 AS cor0 GROUP BY col0
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT DISTINCT col1 FROM tab0 GROUP BY col2, col1, col1
@@ -11011,8 +11183,15 @@ SELECT DISTINCT col0 AS col2 FROM tab1 cor0 GROUP BY col0 HAVING NULL IS NOT NUL
 # Datafusion - Expected - 28
 # Datafusion - Expected - 82
 # Datafusion - Expected - 82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0" at position 0 and "tab1\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0, col0 col0 FROM tab1 GROUP BY col0 HAVING AVG ( col0 ) IS NOT NULL
+----
+22
+22
+28
+28
+82
+82
 
 query I rowsort
 SELECT + col0 * + - col2 / - - col0 AS col2 FROM tab0 cor0 GROUP BY col2, col0 HAVING NULL <= NULL
@@ -11498,8 +11677,15 @@ SELECT DISTINCT + col0 FROM tab0 AS cor0 GROUP BY col0, col1
 # Datafusion - Expected - 57
 # Datafusion - Expected - 6
 # Datafusion - Expected - 6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col1" at position 0 and "tab1\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col1, col1 FROM tab1 GROUP BY col1, col1
+----
+44
+44
+57
+57
+6
+6
 
 query I rowsort
 SELECT + col0 * + col0 AS col1 FROM tab0 GROUP BY col0, col2
@@ -11536,8 +11722,15 @@ SELECT DISTINCT - - col0 * - col0 FROM tab1 AS cor0 GROUP BY col2, col0, col0
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col1 AS col1, + col1 FROM tab2 AS cor0 GROUP BY col1, col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT DISTINCT + col0 + - col0 col0 FROM tab1 GROUP BY col0
@@ -11886,8 +12079,9 @@ SELECT + + col0 FROM tab2 AS cor0 GROUP BY col0, col1, col0
 92
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col0, col0 FROM tab2 cor0 GROUP BY col0 HAVING NULL IS NOT NULL
+----
 
 query I rowsort
 SELECT DISTINCT - col0 AS col2 FROM tab1 AS cor0 GROUP BY col2, col0
@@ -12093,8 +12287,15 @@ SELECT ALL + - col0 AS col2 FROM tab1 AS cor0 GROUP BY col1, col0
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col2" at position 0 and "tab0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 AS col2, col2 FROM tab0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT DISTINCT - col0 AS col0 FROM tab0 AS cor0 GROUP BY col0, col0
@@ -12739,8 +12940,9 @@ SELECT col0 FROM tab1 GROUP BY col1, col1, col0
 82
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0 col0, + col0 FROM tab0 GROUP BY col0 HAVING NULL IS NOT NULL
+----
 
 query II rowsort
 SELECT col0, - col0 FROM tab2 GROUP BY col0
@@ -13411,8 +13613,9 @@ query error DataFusion error: Error during planning: Column in HAVING must be in
 SELECT DISTINCT + col2 - + col2 * - col2 col0 FROM tab0 GROUP BY col2 HAVING NOT ( NULL ) NOT IN ( col0 )
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col1, col1 FROM tab2 WHERE NULL IS NOT NULL GROUP BY col1 HAVING NOT - AVG ( ALL col2 ) IS NOT NULL
+----
 
 query I rowsort
 SELECT ALL + col2 AS col0 FROM tab1 cor0 GROUP BY col2, col0
@@ -13589,8 +13792,15 @@ SELECT DISTINCT + col2 FROM tab0 WHERE NOT col0 NOT BETWEEN - col2 + col0 AND NU
 # Datafusion - Expected - -28
 # Datafusion - Expected - -82
 # Datafusion - Expected - -82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\)" at position 0 and "\(\- cor0\.col0\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL - col0, - col0 FROM tab1 cor0 GROUP BY col1, col0
+----
+-22
+-22
+-28
+-28
+-82
+-82
 
 query I rowsort
 SELECT col0 FROM tab0 cor0 WHERE NOT NULL IS NOT NULL GROUP BY col0 HAVING NULL IS NOT NULL
@@ -14505,8 +14715,15 @@ SELECT DISTINCT col0 FROM tab1 cor0 GROUP BY col1, col0
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col2 AS col2, col2 FROM tab1 cor0 GROUP BY col2
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT - col0 FROM tab2 AS cor0 GROUP BY col0 HAVING NOT NULL IS NULL
@@ -15059,8 +15276,15 @@ SELECT col2 AS col0 FROM tab2 GROUP BY col0, col2 HAVING NOT NULL IS NULL
 # Datafusion - Expected - 142
 # Datafusion - Expected - -8
 # Datafusion - Expected - 16
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab1\.col2\) AS col1" at position 0 and "tab1\.col2 \+ tab1\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col2 AS col1, col2 + col2 AS col1 FROM tab1 GROUP BY col2
+----
+-45
+-71
+-8
+142
+16
+90
 
 query I rowsort
 SELECT ALL col1 AS col1 FROM tab1 cor0 GROUP BY col1
@@ -16169,8 +16393,9 @@ SELECT - col0 FROM tab2 GROUP BY col2, col0, col0
 -92
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col2\) AS col0" at position 0 and "cor0\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL - col2 AS col0, + col2 AS col0 FROM tab0 AS cor0 GROUP BY col2 HAVING NULL IS NOT NULL
+----
 
 query I rowsort
 SELECT ALL col2 FROM tab2 GROUP BY col2, col2, col2
@@ -16419,8 +16644,15 @@ SELECT DISTINCT - - col1 FROM tab0 AS cor0 GROUP BY col1 HAVING NOT NULL >= NULL
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + + col2, col2 col2 FROM tab1 AS cor0 GROUP BY col2
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT col1 AS col2 FROM tab1 GROUP BY col0, col0, col1 HAVING + - col1 IS NOT NULL
@@ -17440,8 +17672,15 @@ SELECT ALL col2 AS col1 FROM tab2 AS cor0 GROUP BY col2, col2, col0
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col1" at position 0 and "cor0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 AS col1, + col2 AS col1 FROM tab1 AS cor0 GROUP BY col2, col2
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT col2 * - + col2 AS col1 FROM tab2 AS cor0 GROUP BY col2
@@ -18248,8 +18487,15 @@ SELECT + AVG ( ALL + + col2 ) AS col1 FROM tab1 GROUP BY col2 HAVING NOT NULL <>
 # Datafusion - Expected - 0
 # Datafusion - Expected - 2
 # Datafusion - Expected - -2
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col1 / tab1\.col0 AS col0" at position 0 and "tab1\.col1 / \(\- tab1\.col0\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1 / + col0 AS col0, col1 / - col0 AS col0 FROM tab1 GROUP BY col1, col0
+----
+-2
+0
+0
+0
+0
+2
 
 query I rowsort
 SELECT DISTINCT col0 FROM tab2 GROUP BY col0, col2 HAVING col0 IS NULL
@@ -18269,8 +18515,15 @@ SELECT ALL + col0 AS col2 FROM tab1 GROUP BY col1, col0
 # Datafusion - Expected - 28
 # Datafusion - Expected - 82
 # Datafusion - Expected - 82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0" at position 0 and "tab1\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0, + col0 FROM tab1 GROUP BY col0, col0
+----
+22
+22
+28
+28
+82
+82
 
 query I rowsort
 SELECT col1 col2 FROM tab2 AS cor0 GROUP BY col1, col2
@@ -18478,8 +18731,9 @@ SELECT - col1 FROM tab1 GROUP BY col1, col0, col1 HAVING NULL IS NOT NULL
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col0" at position 0 and "avg\(cor0\.col2\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query IR valuesort
 SELECT + col2 AS col0, AVG ( ALL + col2 ) col0 FROM tab1 AS cor0 GROUP BY col2 HAVING NOT NULL IS NULL
+----
 
 query I rowsort
 SELECT col0 - - col0 * col0 col0 FROM tab2 GROUP BY col0, col0
@@ -18553,8 +18807,15 @@ SELECT col2 * col2 FROM tab1 AS cor0 GROUP BY col2
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col2" at position 0 and "tab0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col2, col2 FROM tab0 GROUP BY col1, col1, col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT - col0 - + col0 AS col0 FROM tab1 GROUP BY col0
@@ -18644,8 +18905,15 @@ SELECT DISTINCT - col0 FROM tab0 AS cor0 GROUP BY col0, col0 HAVING NOT NULL IS 
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2" at position 0 and "tab2\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col2, + col2 FROM tab2 GROUP BY col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT DISTINCT - col1 * - - col1 FROM tab0 AS cor0 GROUP BY col1
@@ -19111,8 +19379,13 @@ SELECT col1 AS col2 FROM tab0 GROUP BY col1 HAVING NULL NOT BETWEEN NULL AND NUL
 # Datafusion - Expected - -81
 # Datafusion - Expected - 0
 # Datafusion - Expected - 0
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\)" at position 0 and "\(\- cor0\.col1\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + - col1, - col1 FROM tab0 cor0 GROUP BY col1, col1 HAVING NOT ( NULL ) IS NOT NULL
+----
+-81
+-81
+0
+0
 
 query I rowsort
 SELECT - col2 AS col1 FROM tab2 GROUP BY col2, col2, col0
@@ -20070,8 +20343,15 @@ SELECT ALL - + col1 AS col1 FROM tab2 AS cor0 GROUP BY col1, col1
 # Datafusion - Expected - 28
 # Datafusion - Expected - 82
 # Datafusion - Expected - 82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col0, + col0 FROM tab1 AS cor0 GROUP BY col0
+----
+22
+22
+28
+28
+82
+82
 
 query I rowsort
 SELECT DISTINCT + col0 FROM tab1 GROUP BY col0 HAVING NOT NULL IS NOT NULL
@@ -20253,8 +20533,15 @@ SELECT DISTINCT - col2 AS col1 FROM tab2 GROUP BY col1, col2, col1
 # Datafusion - Expected - 57
 # Datafusion - Expected - 6
 # Datafusion - Expected - 6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col1" at position 0 and "tab1\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col1 AS col1, col1 FROM tab1 GROUP BY col1, col2
+----
+44
+44
+57
+57
+6
+6
 
 query I rowsort
 SELECT DISTINCT + + col0 FROM tab2 AS cor0 GROUP BY col0, col2
@@ -20345,8 +20632,15 @@ SELECT - col1 AS col1 FROM tab2 AS cor0 WHERE NOT NULL IS NOT NULL GROUP BY col1
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0 AS col0, + col0 AS col0 FROM tab0 GROUP BY col0
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT col1 + col2 AS col2 FROM tab0 AS cor0 GROUP BY col1, col2, col0, col0
@@ -20770,8 +21064,15 @@ SELECT ALL - + col2 AS col2, + col2 AS col0 FROM tab0 cor0 GROUP BY col2, col2
 # Datafusion - Expected - -71
 # Datafusion - Expected - -8
 # Datafusion - Expected - -8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col2\)" at position 0 and "\(\- cor0\.col2\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col2, - col2 FROM tab1 AS cor0 GROUP BY col2, col1
+----
+-45
+-45
+-71
+-71
+-8
+-8
 
 query I rowsort
 SELECT - col0 + + + col0 AS col1 FROM tab2 GROUP BY col0, col1, col0
@@ -23108,8 +23409,15 @@ SELECT + - col0 AS col2, col0 FROM tab1 AS cor0 GROUP BY col0
 # Datafusion - Expected - 38
 # Datafusion - Expected - -79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col2\) AS col1" at position 0 and "cor0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL - col2 AS col1, + col2 AS col1 FROM tab0 AS cor0 GROUP BY col2
+----
+-24
+-38
+-79
+24
+38
+79
 
 query I rowsort
 SELECT DISTINCT + col0 AS col2 FROM tab1 GROUP BY col0, col2
@@ -24083,8 +24391,15 @@ SELECT ALL col0 / + col0 AS col1 FROM tab1 GROUP BY col0
 # Datafusion - Expected - 26
 # Datafusion - Expected - -6889
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0 \* \(\- tab0\.col0\) AS col2" at position 0 and "tab0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0 * - col0 AS col2, + col0 AS col2 FROM tab0 GROUP BY col0
+----
+-1849
+-676
+-6889
+26
+43
+83
 
 query I rowsort
 SELECT DISTINCT - col0 AS col0 FROM tab2 GROUP BY col2, col0
@@ -24268,8 +24583,9 @@ SELECT - col1 + + col1 FROM tab1 GROUP BY col1, col2
 0
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab0\.col1\)" at position 0 and "\(\- tab0\.col1\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT - col1, - col1 FROM tab0 WHERE NOT ( NULL ) NOT BETWEEN ( NULL ) AND NULL GROUP BY col1 HAVING NULL IS NOT NULL
+----
 
 query I rowsort
 SELECT DISTINCT + col2 AS col1 FROM tab1 AS cor0 GROUP BY col0, col2 HAVING ( NULL ) IS NULL
@@ -24707,8 +25023,15 @@ SELECT ALL + col2 FROM tab2 AS cor0 WHERE NOT NULL = ( NULL ) GROUP BY col2, col
 # Datafusion - Expected - -57
 # Datafusion - Expected - -6
 # Datafusion - Expected - -6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab1\.col1\) AS col0" at position 0 and "\(\- tab1\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT - col1 AS col0, - col1 AS col0 FROM tab1 GROUP BY col1, col1
+----
+-44
+-44
+-57
+-57
+-6
+-6
 
 query I rowsort label-3939
 SELECT DISTINCT col1 * - col1 / col1 FROM tab2 GROUP BY col1
@@ -24816,8 +25139,15 @@ SELECT - col2 FROM tab2 GROUP BY col2, col2, col2
 # Datafusion - Expected - -43
 # Datafusion - Expected - 83
 # Datafusion - Expected - -83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0 AS col1" at position 0 and "\(\- cor0\.col0\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col0 AS col1, - col0 col1 FROM tab0 AS cor0 GROUP BY col0
+----
+-26
+-43
+-83
+26
+43
+83
 
 query I rowsort
 SELECT DISTINCT col2 * - - col2 * + col2 FROM tab0 GROUP BY col2
@@ -24867,8 +25197,13 @@ SELECT ALL + col0 AS col0 FROM tab1 cor0 GROUP BY col0, col0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1" at position 0 and "tab0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1, + col1 AS col1 FROM tab0 GROUP BY col1
+----
+0
+0
+81
+81
 
 query I rowsort
 SELECT ALL + col0 + + col0 FROM tab1 GROUP BY col0
@@ -26017,8 +26352,15 @@ SELECT col0 FROM tab0 GROUP BY col0, col0 HAVING NULL IS NOT NULL
 # Datafusion - Expected - 79
 # Datafusion - Expected - 1944
 # Datafusion - Expected - 24
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 \* cor0\.col2 AS col0" at position 0 and "cor0\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col1 * + col2 AS col0, col2 AS col0 FROM tab0 AS cor0 GROUP BY col2, col1
+----
+0
+0
+1944
+24
+38
+79
 
 query I rowsort
 SELECT ALL col1 AS col0 FROM tab1 GROUP BY col1, col0, col0
@@ -26157,8 +26499,15 @@ SELECT + col2 AS col2 FROM tab0 AS cor0 WHERE ( NULL ) IS NULL GROUP BY col2 HAV
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col1, + col1 FROM tab2 AS cor0 GROUP BY col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT + - col2 AS col0 FROM tab1 AS cor0 GROUP BY col2, col1
@@ -26549,8 +26898,10 @@ SELECT + col0 FROM tab1 WHERE NOT ( NULL ) IS NULL GROUP BY col0
 
 # Datafusion - Datafusion expected results:
 # Datafusion - Expected - 9 values hashing to 559da8f454c4e5599b87319641a4f49a
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0 AS col1" at position 0 and "cor0\.col0 AS col1" at position 2 have the same name\. Consider aliasing \("AS"\) one of them\.
+query III valuesort
 SELECT DISTINCT col0 AS col1, col0, col0 AS col1 FROM tab0 cor0 GROUP BY col0
+----
+9 values hashing to 559da8f454c4e5599b87319641a4f49a
 
 query I rowsort
 SELECT - col0 col1 FROM tab0 AS cor0 GROUP BY col0, col2
@@ -26745,8 +27096,15 @@ SELECT + col1 - col1 FROM tab1 AS cor0 GROUP BY col1
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2" at position 0 and "tab2\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2, col2 FROM tab2 GROUP BY col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT + col0 + col0 FROM tab1 GROUP BY col0
@@ -26770,8 +27128,9 @@ SELECT DISTINCT - col0 FROM tab1 AS cor0 WHERE - col0 IS NULL GROUP BY col0
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2 AS col0" at position 0 and "tab2\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 AS col0, col2 AS col0 FROM tab2 GROUP BY col1, col2 HAVING NOT col1 > NULL
+----
 
 query I rowsort label-4276
 SELECT - col0 - - - col0 / + + col0 FROM tab0 GROUP BY col0, col0
@@ -27131,8 +27490,15 @@ SELECT - + col0 AS col0 FROM tab1 AS cor0 GROUP BY col2, col0
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0 AS col2" at position 0 and "tab0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0 AS col2, col0 col2 FROM tab0 GROUP BY col0
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT col1 - + - col0 FROM tab1 cor0 GROUP BY col0, col1
@@ -27243,8 +27609,15 @@ SELECT col2 FROM tab2 GROUP BY col2, col0, col2
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col0, + col0 AS col0 FROM tab0 GROUP BY col0
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT + col1 col1 FROM tab0 GROUP BY col1 HAVING NULL IS NOT NULL
@@ -28856,8 +29229,15 @@ SELECT - col0 AS col0 FROM tab2 GROUP BY col0, col2, col0
 # Datafusion - Expected - 118
 # Datafusion - Expected - 61
 # Datafusion - Expected - 122
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col0" at position 0 and "cor0\.col1 \- \(\- cor0\.col1\) AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + + col1 AS col0, col1 - - col1 AS col0 FROM tab2 AS cor0 GROUP BY col1 HAVING ( NOT col1 IS NULL )
+----
+118
+122
+41
+59
+61
+82
 
 query I rowsort
 SELECT DISTINCT - col0 AS col0 FROM tab2 cor0 GROUP BY col0
@@ -29002,8 +29382,15 @@ SELECT ALL - col1 AS col1 FROM tab2 AS cor0 GROUP BY col1 HAVING NOT NULL IS NUL
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col0" at position 0 and "tab2\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col0, + col0 FROM tab2 GROUP BY col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT + col0 + - - col0 * + - col0 - + - col0 * col0 AS col0 FROM tab0 GROUP BY col0
@@ -29057,8 +29444,9 @@ SELECT DISTINCT - col2 AS col1 FROM tab2 GROUP BY col2 HAVING NOT NULL >= NULL
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0, + col0 FROM tab0 GROUP BY col0, col0 HAVING NOT NULL >= ( NULL )
+----
 
 query I rowsort
 SELECT - col1 + col1 FROM tab2 AS cor0 GROUP BY col1
@@ -29200,8 +29588,13 @@ SELECT DISTINCT + col0 + - + col0 AS col0 FROM tab2 AS cor0 GROUP BY col0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1, + col1 AS col1 FROM tab0 cor0 GROUP BY col1
+----
+0
+0
+81
+81
 
 query I rowsort
 SELECT DISTINCT + - col2 AS col2 FROM tab1 cor0 GROUP BY col0, col2
@@ -29285,8 +29678,15 @@ SELECT ALL col0 * col2 FROM tab0 GROUP BY col1, col2, col0
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col2, col2 FROM tab2 AS cor0 GROUP BY col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT ALL - + col0 col2 FROM tab1 AS cor0 GROUP BY col0, col1
@@ -29740,8 +30140,15 @@ SELECT - - col0 FROM tab1 AS cor0 GROUP BY col0 HAVING NOT NULL IS NULL
 # Datafusion - Expected - 28
 # Datafusion - Expected - 82
 # Datafusion - Expected - 82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0" at position 0 and "tab1\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col0, col0 FROM tab1 GROUP BY col1, col0
+----
+22
+22
+28
+28
+82
+82
 
 query I rowsort
 SELECT ALL + + col1 AS col2 FROM tab0 AS cor0 GROUP BY col1, col1
@@ -29830,8 +30237,13 @@ SELECT ALL + col0 FROM tab1 AS cor0 WHERE NOT NULL IS NOT NULL GROUP BY col0 HAV
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1" at position 0 and "tab0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1 AS col1, col1 FROM tab0 GROUP BY col1, col1
+----
+0
+0
+81
+81
 
 query I rowsort
 SELECT ALL - col2 + col1 FROM tab1 GROUP BY col2, col1
@@ -32959,8 +33371,9 @@ SELECT ALL AVG ( DISTINCT + col1 ) FROM tab2 AS cor0 GROUP BY col2, col2, col1 H
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\) AS col2" at position 0 and "cor0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col0 AS col2, col0 AS col2 FROM tab0 AS cor0 WHERE NULL = ( NULL ) GROUP BY col0 HAVING NOT NULL > ( NULL )
+----
 
 query I rowsort
 SELECT ALL + col1 * + col1 AS col1 FROM tab2 GROUP BY col1 HAVING NULL IS NOT NULL
@@ -33543,8 +33956,9 @@ SELECT ALL - col0 - col0 FROM tab2 AS cor0 GROUP BY col0
 -30
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col0, + col0 FROM tab0 GROUP BY col0 HAVING NOT NULL IS NULL
+----
 
 query I rowsort
 SELECT + col2 * + col1 FROM tab0 AS cor0 GROUP BY col1, col2
@@ -33654,8 +34068,9 @@ SELECT ALL - col2 col2 FROM tab0 AS cor0 GROUP BY col2, col1
 -79
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0, col0 FROM tab1 AS cor0 GROUP BY col0 HAVING NULL >= NULL
+----
 
 query I rowsort
 SELECT - col0 + + col0 AS col1 FROM tab1 GROUP BY col0
@@ -35255,8 +35670,15 @@ SELECT col1 AS col2 FROM tab1 AS cor0 WHERE NULL <= - col1 GROUP BY col1
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + + col1 AS col1, + col1 FROM tab2 cor0 GROUP BY col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT + col0 FROM tab2 cor0 GROUP BY col2, col0
@@ -35703,8 +36125,13 @@ SELECT DISTINCT + col0 AS col2 FROM tab0 AS cor0 GROUP BY col0, col1
 # Datafusion - Expected - -81
 # Datafusion - Expected - 0
 # Datafusion - Expected - 0
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\)" at position 0 and "\(\- cor0\.col1\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + - col1, - col1 FROM tab0 AS cor0 GROUP BY col1
+----
+-81
+-81
+0
+0
 
 query I rowsort
 SELECT DISTINCT + col2 * - - col1 AS col1 FROM tab1 GROUP BY col1, col2
@@ -35773,8 +36200,15 @@ SELECT - + col2 AS col0 FROM tab2 AS cor0 WHERE ( NULL ) IS NOT NULL GROUP BY co
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col1 AS col1, col1 FROM tab2 GROUP BY col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT ALL + col1 FROM tab1 AS cor0 GROUP BY col1 HAVING col1 BETWEEN NULL AND NULL
@@ -36075,8 +36509,15 @@ SELECT ALL + col1 FROM tab0 GROUP BY col1 HAVING NULL IS NOT NULL
 # Datafusion - Expected - -28
 # Datafusion - Expected - -82
 # Datafusion - Expected - -82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\)" at position 0 and "\(\- cor0\.col0\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT - col0, - col0 FROM tab1 AS cor0 GROUP BY col0
+----
+-22
+-22
+-28
+-28
+-82
+-82
 
 query I rowsort
 SELECT + col2 col1 FROM tab0 AS cor0 GROUP BY col2, col0
@@ -36745,8 +37186,15 @@ SELECT DISTINCT col0 FROM tab0 AS cor0 WHERE NOT ( NULL ) IS NOT NULL GROUP BY c
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col2, col2 FROM tab2 cor0 GROUP BY col2, col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT ALL + - col2 col1 FROM tab0 AS cor0 GROUP BY col0, col2
@@ -37097,8 +37545,15 @@ SELECT ALL col0 * + col1, col0 FROM tab2 GROUP BY col0, col1
 # Datafusion - Expected - -59
 # Datafusion - Expected - -61
 # Datafusion - Expected - -61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\)" at position 0 and "\(\- cor0\.col1\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT - col1, - col1 FROM tab2 AS cor0 GROUP BY col1
+----
+-41
+-41
+-59
+-59
+-61
+-61
 
 query I rowsort
 SELECT - + col2 AS col2 FROM tab0 AS cor0 GROUP BY col2, col0
@@ -37531,8 +37986,9 @@ SELECT col2 FROM tab0 GROUP BY col2 HAVING NOT ( + col2 IS NULL )
 79
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col1" at position 0 and "\(\- cor0\.col2\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 AS col1, - col2 AS col1 FROM tab1 AS cor0 GROUP BY col2 HAVING NULL IS NOT NULL
+----
 
 query I rowsort
 SELECT col1 + + col1 FROM tab2 GROUP BY col1, col2 HAVING NULL IS NOT NULL
@@ -37627,8 +38083,15 @@ SELECT DISTINCT - col2 col2 FROM tab1 AS cor0 GROUP BY col2
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col0" at position 0 and "tab2\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col0 AS col0, + col0 FROM tab2 GROUP BY col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT DISTINCT + + col0 FROM tab0 AS cor0 GROUP BY col0 HAVING NOT NULL = NULL
@@ -37670,8 +38133,15 @@ SELECT ALL col2 col0 FROM tab2 cor0 GROUP BY col2 HAVING NULL IS NULL
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2" at position 0 and "tab2\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 col2, col2 AS col2 FROM tab2 GROUP BY col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT + + col1 AS col1 FROM tab1 AS cor0 GROUP BY col2, col1, col1
@@ -38416,8 +38886,15 @@ SELECT DISTINCT + col2 / - + col1 AS col1 FROM tab1 GROUP BY col2, col1 HAVING N
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + + col2, col2 FROM tab0 AS cor0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT - col0 AS col2 FROM tab1 GROUP BY col0, col1 HAVING NOT NULL < col1 * - AVG ( + col1 )
@@ -39654,8 +40131,15 @@ SELECT ALL - col0 * - - col0 AS col2 FROM tab1 GROUP BY col0
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col0, col0 FROM tab0 GROUP BY col0
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT col1 AS col2 FROM tab1 cor0 WHERE NOT NULL >= ( NULL ) GROUP BY col1 HAVING NOT ( NULL ) IS NOT NULL
@@ -39690,8 +40174,15 @@ SELECT DISTINCT + - col2 FROM tab1 AS cor0 GROUP BY col2, col2
 # Datafusion - Expected - -91
 # Datafusion - Expected - -92
 # Datafusion - Expected - -92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\)" at position 0 and "\(\- cor0\.col0\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col0, - col0 FROM tab2 AS cor0 GROUP BY col1, col0, col0
+----
+-15
+-15
+-91
+-91
+-92
+-92
 
 query I rowsort
 SELECT - col2 AS col1 FROM tab0 AS cor0 GROUP BY col2, col1 HAVING NOT NULL IS NOT NULL
@@ -40201,8 +40692,15 @@ SELECT DISTINCT - col1, col1 AS col0 FROM tab0 AS cor0 GROUP BY col1
 # Datafusion - Expected - -91
 # Datafusion - Expected - 3721
 # Datafusion - Expected - -15
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "avg\(cor0\.col1\) \* avg\(cor0\.col1\) AS col2" at position 0 and "\(\- cor0\.col0\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query RI valuesort
 SELECT DISTINCT AVG ( + col1 ) * AVG ( + + col1 ) col2, - col0 col2 FROM tab2 AS cor0 GROUP BY col1, col0
+----
+-15
+-91
+-92
+1681
+3481
+3721
 
 query II rowsort
 SELECT col1, col1 * + col1 AS col2 FROM tab0 GROUP BY col1
@@ -40352,8 +40850,15 @@ SELECT DISTINCT - col2 AS col2 FROM tab1 GROUP BY col2 HAVING NULL IS NOT NULL
 # Datafusion - Expected - -3481
 # Datafusion - Expected - 61
 # Datafusion - Expected - -3721
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- cor0\.col1\)\) AS col1" at position 0 and "\(\- cor0\.col1\) \* cor0\.col1 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT - - col1 AS col1, - col1 * + col1 AS col1 FROM tab2 cor0 GROUP BY col1, col1
+----
+-1681
+-3481
+-3721
+41
+59
+61
 
 query I rowsort
 SELECT DISTINCT col1 + col1 AS col1 FROM tab1 WHERE NOT NULL = NULL GROUP BY col1 HAVING ( NULL ) IS NOT NULL
@@ -40510,8 +41015,15 @@ SELECT - col0 AS col2 FROM tab2 GROUP BY col0, col1 HAVING NULL IS NOT NULL
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col1" at position 0 and "cor0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col2 col1, col2 AS col1 FROM tab2 AS cor0 GROUP BY col0, col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT col1 AS col0 FROM tab0 AS cor0 GROUP BY col2, col1 HAVING NULL < NULL
@@ -40726,8 +41238,15 @@ SELECT DISTINCT + col0 AS col0 FROM tab2 AS cor0 GROUP BY col2, col0
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0, col0 FROM tab0 GROUP BY col0
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT + col2 * + + col2 + + col2 FROM tab2 AS cor0 GROUP BY col2
@@ -41372,8 +41891,15 @@ SELECT ALL + col0 AS col2 FROM tab1 GROUP BY col0 HAVING NULL IS NOT NULL
 # Datafusion - Expected - 57
 # Datafusion - Expected - 6
 # Datafusion - Expected - 6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1 AS col1, + col1 AS col1 FROM tab1 AS cor0 GROUP BY col1
+----
+44
+44
+57
+57
+6
+6
 
 query I rowsort
 SELECT DISTINCT col1 * + col1 FROM tab2 AS cor0 GROUP BY col1
@@ -41564,8 +42090,9 @@ SELECT - col1 AS col1, col1 * - col1 col2 FROM tab1 GROUP BY col1
 -36
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0 AS col0, col0 FROM tab0 GROUP BY col0, col0 HAVING + col0 IS NULL
+----
 
 query I rowsort
 SELECT - col0 + col0 AS col1 FROM tab2 AS cor0 GROUP BY col1, col0
@@ -41942,8 +42469,15 @@ SELECT ALL - col0 * - + col0 AS col0 FROM tab2 AS cor0 WHERE NOT NULL <= - col0 
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col2" at position 0 and "tab0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + col2 AS col2, col2 FROM tab0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT + + col1 FROM tab1 WHERE NOT NULL IS NULL GROUP BY col1 HAVING ( NOT NULL IS NOT NULL )
@@ -42028,8 +42562,15 @@ SELECT - col2 FROM tab0 AS cor0 WHERE NOT NULL IS NOT NULL GROUP BY col2, col1 H
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col2" at position 0 and "tab1\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2, col2 AS col2 FROM tab1 GROUP BY col2, col2
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT DISTINCT + col2 col0 FROM tab0 AS cor0 GROUP BY col2, col2
@@ -42371,8 +42912,13 @@ SELECT - col1 + + - col1 FROM tab0 cor0 GROUP BY col1, col0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1 AS col1, col1 FROM tab0 AS cor0 GROUP BY col1, col1
+----
+0
+0
+81
+81
 
 query I rowsort
 SELECT + col2 FROM tab0 AS cor0 WHERE NOT NULL IS NOT NULL GROUP BY col2 HAVING NOT NULL IS NOT NULL
@@ -43807,8 +44353,15 @@ SELECT DISTINCT - - col1 FROM tab0 AS cor0 GROUP BY col1, col2
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + + col0, col0 AS col0 FROM tab2 AS cor0 GROUP BY col0 HAVING NOT NULL IS NOT NULL
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT + col2 AS col1 FROM tab1 AS cor0 GROUP BY col2, col2 HAVING NULL IS NOT NULL
@@ -43827,8 +44380,15 @@ SELECT + + col1 * + - col1 FROM tab0 AS cor0 GROUP BY col1
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col1, col1 col1 FROM tab2 GROUP BY col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT DISTINCT - col0 FROM tab1 AS cor0 GROUP BY col1, col0 HAVING + col1 * - col1 IS NOT NULL
@@ -44477,8 +45037,15 @@ SELECT - + AVG ( col1 ) AS col0 FROM tab0 AS cor0 GROUP BY col1 HAVING NOT NULL 
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col0" at position 0 and "tab2\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col0, + col0 AS col0 FROM tab2 GROUP BY col1, col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT DISTINCT - col2 AS col1 FROM tab1 cor0 GROUP BY col2
@@ -44958,8 +45525,15 @@ SELECT ALL col1 * + col1 * + col1 AS col0 FROM tab1 GROUP BY col1
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2" at position 0 and "tab2\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2, col2 FROM tab2 GROUP BY col2, col2, col2
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT col2 col1 FROM tab2 GROUP BY col0, col2 HAVING NOT NULL IS NULL
@@ -45373,8 +45947,15 @@ SELECT ALL + col2 * + col0 AS col0 FROM tab1 GROUP BY col0, col2
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + + col2 AS col2, col2 FROM tab0 AS cor0 GROUP BY col2, col0
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT col0 AS col0 FROM tab0 AS cor0 GROUP BY col2, col0, col0
@@ -45725,8 +46306,15 @@ SELECT ALL + col2 * + col2 FROM tab0 AS cor0 GROUP BY col2
 # Datafusion - Expected - 43
 # Datafusion - Expected - 83
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col0 AS col0, col0 FROM tab0 AS cor0 GROUP BY col0
+----
+26
+26
+43
+43
+83
+83
 
 query I rowsort
 SELECT ALL + col0 AS col0 FROM tab2 cor0 GROUP BY col0 HAVING NOT NULL <= NULL
@@ -45775,8 +46363,15 @@ SELECT ALL - col0 - col0 AS col2 FROM tab1 GROUP BY col0, col2
 # Datafusion - Expected - 0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 0
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\)" at position 0 and "\(\- cor0\.col1\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col1, - col1 FROM tab0 AS cor0 GROUP BY col2, col1
+----
+-81
+-81
+0
+0
+0
+0
 
 query I rowsort label-7341
 SELECT col2 / + col2 FROM tab2 GROUP BY col2
@@ -45970,8 +46565,15 @@ SELECT ALL + + col1 FROM tab1 AS cor0 GROUP BY col1 HAVING NULL IS NULL
 # Datafusion - Expected - -91
 # Datafusion - Expected - -92
 # Datafusion - Expected - -92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab2\.col0\)" at position 0 and "\(\- tab2\.col0\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL - col0, - col0 FROM tab2 GROUP BY col0, col0
+----
+-15
+-15
+-91
+-91
+-92
+-92
 
 query I rowsort
 SELECT + col1 FROM tab1 AS cor0 GROUP BY col1, col1 HAVING NULL IS NOT NULL
@@ -46092,8 +46694,15 @@ SELECT + col2 + + col2 * - col2 AS col1 FROM tab2 GROUP BY col2
 # Datafusion - Expected - 26
 # Datafusion - Expected - 0
 # Datafusion - Expected - 83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\) AS col2" at position 0 and "cor0\.col0 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col1 AS col2, + col0 AS col2 FROM tab0 AS cor0 GROUP BY col0, col1
+----
+-81
+0
+0
+26
+43
+83
 
 query I rowsort
 SELECT DISTINCT + col2 FROM tab1 WHERE NOT - col1 BETWEEN NULL AND NULL GROUP BY col0, col2 HAVING NOT NULL IS NOT NULL
@@ -46210,8 +46819,15 @@ SELECT - col0 FROM tab1 GROUP BY col2, col0 HAVING NOT NULL IS NOT NULL
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col2, col2 FROM tab0 AS cor0 GROUP BY col1, col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT + col2 * col2 FROM tab0 cor0 GROUP BY col2
@@ -46447,8 +47063,15 @@ SELECT DISTINCT col1 FROM tab1 WHERE NOT NULL <= NULL GROUP BY col1
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col2 AS col2, col2 AS col2 FROM tab1 cor0 GROUP BY col2
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT + col1 * col1 AS col2 FROM tab0 WHERE NOT ( col0 ) IN ( - col0 ) GROUP BY col1
@@ -46592,8 +47215,15 @@ SELECT - - col1 AS col0 FROM tab2 AS cor0 WHERE col1 NOT BETWEEN NULL AND NULL G
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 col2, col2 AS col2 FROM tab2 AS cor0 GROUP BY col2, col1
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT - col1 FROM tab2 cor0 GROUP BY col2, col1
@@ -47401,8 +48031,9 @@ SELECT col0 FROM tab2 GROUP BY col0, col0 HAVING ( NULL ) IS NULL OR NOT ( col0 
 92
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col0" at position 0 and "tab0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + col0, + col0 FROM tab0 WHERE NULL >= ( NULL ) GROUP BY col0, col0
+----
 
 query I rowsort
 SELECT + + col0 AS col2 FROM tab1 AS cor0 GROUP BY col0, col2
@@ -48202,8 +48833,13 @@ SELECT - col0 - - col0 FROM tab2 GROUP BY col0 HAVING NOT NULL <= NULL
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - -81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col2" at position 0 and "\(\- cor0\.col1\) AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1 col2, - col1 AS col2 FROM tab0 AS cor0 GROUP BY col1
+----
+-81
+0
+0
+81
 
 query I rowsort
 SELECT - col2 FROM tab0 AS cor0 GROUP BY col2, col2 HAVING NULL IS NOT NULL
@@ -48404,8 +49040,15 @@ SELECT - col1 FROM tab0 GROUP BY col1, col1 HAVING NULL IS NOT NULL
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1 AS col0" at position 0 and "cor0\.col1 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col1 AS col0, col1 AS col0 FROM tab0 AS cor0 GROUP BY col2, col1, col2
+----
+0
+0
+0
+0
+81
+81
 
 query I rowsort
 SELECT + col1 + col1 FROM tab0 AS cor0 WHERE NULL > col2 * - + col1 GROUP BY col1 HAVING NOT ( NULL IS NOT NULL )
@@ -48707,8 +49350,9 @@ SELECT DISTINCT col1 AS col2 FROM tab0 GROUP BY col1 HAVING NOT NULL > + AVG ( A
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1, + col1 FROM tab2 GROUP BY col2, col2, col1 HAVING NOT col2 IS NOT NULL
+----
 
 query I rowsort
 SELECT - col0 col0 FROM tab1 GROUP BY col0, col1
@@ -49418,8 +50062,15 @@ SELECT DISTINCT - col1 AS col2 FROM tab1 GROUP BY col1 HAVING NOT NULL IS NOT NU
 # Datafusion - Expected - 57
 # Datafusion - Expected - 82
 # Datafusion - Expected - 44
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0 AS col2" at position 0 and "tab1\.col1 AS col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + col0 AS col2, col1 AS col2 FROM tab1 GROUP BY col0, col1, col0
+----
+22
+28
+44
+57
+6
+82
 
 query I rowsort
 SELECT DISTINCT + + col1 AS col0 FROM tab1 cor0 GROUP BY col0, col1
@@ -49794,8 +50445,13 @@ SELECT DISTINCT - col0 * + col0 col1 FROM tab0 AS cor0 GROUP BY col0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1" at position 0 and "tab0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col1, col1 FROM tab0 GROUP BY col1
+----
+0
+0
+81
+81
 
 query I rowsort
 SELECT + col0 / + col2 AS col2 FROM tab1 AS cor0 GROUP BY col2, col0 HAVING NULL < ( col2 )
@@ -49812,8 +50468,15 @@ SELECT ALL col0 * col0 FROM tab1 AS cor0 GROUP BY col2, col0 HAVING NOT NULL IS 
 # Datafusion - Expected - -43
 # Datafusion - Expected - -83
 # Datafusion - Expected - -83
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\)" at position 0 and "\(\- cor0\.col0\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT - col0, - col0 FROM tab0 AS cor0 GROUP BY col0
+----
+-26
+-26
+-43
+-43
+-83
+-83
 
 query I rowsort
 SELECT ALL + col0 FROM tab0 AS cor0 GROUP BY col0 HAVING NULL IS NOT NULL
@@ -49844,8 +50507,15 @@ SELECT - + col2 col1 FROM tab1 AS cor0 GROUP BY col2 HAVING NOT NULL <> NULL
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0 AS col1" at position 0 and "cor0\.col0 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0 col1, col0 AS col1 FROM tab2 AS cor0 GROUP BY col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT + + col0 AS col0 FROM tab1 cor0 GROUP BY col0, col0
@@ -50544,8 +51214,15 @@ SELECT ALL AVG ( - col2 ) AS col1 FROM tab0 GROUP BY col2 HAVING NULL IS NOT NUL
 # Datafusion - Expected - 0
 # Datafusion - Expected - 0
 # Datafusion - Expected - 0
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab0\.col1\)" at position 0 and "\(\- tab0\.col1\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col1, - col1 FROM tab0 GROUP BY col1, col2
+----
+-81
+-81
+0
+0
+0
+0
 
 query I rowsort
 SELECT DISTINCT + col0 FROM tab1 AS cor0 GROUP BY col0 HAVING - col0 IS NOT NULL
@@ -51314,8 +51991,15 @@ SELECT ALL col2 + - + col2 FROM tab1 GROUP BY col2
 # Datafusion - Expected - 57
 # Datafusion - Expected - 6
 # Datafusion - Expected - 6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1, + col1 FROM tab1 AS cor0 GROUP BY col1
+----
+44
+44
+57
+57
+6
+6
 
 query I rowsort
 SELECT ALL col1 * col0 * - col0 FROM tab1 AS cor0 GROUP BY col1, col0
@@ -52084,8 +52768,15 @@ SELECT - col2 AS col0 FROM tab2 AS cor0 WHERE NULL = NULL GROUP BY col2
 # Datafusion - Expected - -8
 # Datafusion - Expected - 5822
 # Datafusion - Expected - -71
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- avg\(cor0\.col2\)\) \* \(\- cor0\.col0\) AS col1" at position 0 and "\(\- cor0\.col2\) AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query RI valuesort
 SELECT DISTINCT - AVG ( col2 ) * - col0 AS col1, - col2 AS col1 FROM tab1 AS cor0 GROUP BY col2, col0
+----
+-45
+-71
+-8
+1260
+176
+5822
 
 query I rowsort
 SELECT ALL + col2 col1 FROM tab1 AS cor0 GROUP BY col1, col2
@@ -53530,8 +54221,15 @@ SELECT col0 + + col0 + + + col0 AS col1 FROM tab0 GROUP BY col0
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0, + col0 AS col0 FROM tab2 AS cor0 GROUP BY col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT + col1 FROM tab1 AS cor0 GROUP BY col1 HAVING NOT NULL IS NOT NULL
@@ -54037,8 +54735,15 @@ SELECT - col0 FROM tab1 GROUP BY col0, col0 HAVING NOT NULL = NULL
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0 AS col1" at position 0 and "cor0\.col0 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + col0 AS col1, col0 AS col1 FROM tab2 AS cor0 GROUP BY col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT col2 * - col1 FROM tab0 GROUP BY col2, col0, col1
@@ -54070,8 +54775,15 @@ SELECT + col2 FROM tab0 AS cor0 WHERE NOT col2 IS NOT NULL GROUP BY col2, col1
 # Datafusion - Expected - -57
 # Datafusion - Expected - -6
 # Datafusion - Expected - -6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col1\)" at position 0 and "\(\- cor0\.col1\)" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + - col1, - col1 FROM tab1 AS cor0 GROUP BY col1, col1
+----
+-44
+-44
+-57
+-57
+-6
+-6
 
 query I rowsort
 SELECT ALL + col2 * - col2 col0 FROM tab1 GROUP BY col2
@@ -56085,8 +56797,9 @@ SELECT ALL - + AVG ( + col1 ) AS col0 FROM tab2 AS cor0 GROUP BY col1 HAVING NOT
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1, + col1 FROM tab2 WHERE + + col2 IS NULL GROUP BY col1
+----
 
 query I rowsort
 SELECT ALL col1 * col1 AS col2 FROM tab1 AS cor0 GROUP BY col1, col0
@@ -56155,8 +56868,15 @@ SELECT ALL - - col2 + - + col2 FROM tab1 AS cor0 GROUP BY col2
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- \(\- cor0\.col2\)\) AS col0" at position 0 and "cor0\.col2 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - - col2 AS col0, + col2 AS col0 FROM tab1 AS cor0 GROUP BY col2
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT ALL col0 AS col1 FROM tab1 GROUP BY col0, col0, col0
@@ -56376,8 +57096,10 @@ SELECT ALL + col0 AS col0 FROM tab1 GROUP BY col0 HAVING NULL IS NULL
 
 # Datafusion - Datafusion expected results:
 # Datafusion - Expected - 9 values hashing to 2c52b02bd20d527053aa739535a682aa
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2" at position 0 and "tab2\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query III valuesort
 SELECT DISTINCT col2 AS col2, + col2, + - col2 FROM tab2 GROUP BY col2
+----
+9 values hashing to bc7de0dbf53c6db903b6fb95ab7fe994
 
 query II rowsort
 SELECT DISTINCT - + col0 AS col0, - col0 AS col1 FROM tab1 AS cor0 GROUP BY col0, col0
@@ -57332,8 +58054,13 @@ SELECT ALL col2 FROM tab2 WHERE NULL <> col0 GROUP BY col2
 # Datafusion - Expected - 0
 # Datafusion - Expected - 81
 # Datafusion - Expected - 81
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1" at position 0 and "tab0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col1, + col1 FROM tab0 GROUP BY col1
+----
+0
+0
+81
+81
 
 query II rowsort
 SELECT ALL - col2 col2, col2 AS col0 FROM tab2 GROUP BY col2
@@ -58732,8 +59459,9 @@ SELECT col1 AS col2 FROM tab1 AS cor0 GROUP BY col1 HAVING - col1 = NULL
 ----
 
 # Datafusion - Datafusion expected results:
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col1" at position 0 and "tab0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT + col1, col1 FROM tab0 GROUP BY col1 HAVING NULL IS NOT NULL
+----
 
 query I rowsort
 SELECT DISTINCT col0 FROM tab2 cor0 GROUP BY col0, col2
@@ -58788,8 +59516,15 @@ SELECT + col2 AS col0 FROM tab2 AS cor0 GROUP BY col2 HAVING NOT NULL IS NULL
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab0\.col2" at position 0 and "tab0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col2, col2 AS col2 FROM tab0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort label-9438
 SELECT ALL col1 / col1 / - + col1 FROM tab2 GROUP BY col1
@@ -58880,8 +59615,15 @@ SELECT - col1 + col0 AS col1 FROM tab0 GROUP BY col0, col1 HAVING NOT NULL IS NU
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL + col2 AS col2, + col2 FROM tab0 AS cor0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT - - col0 AS col0 FROM tab0 AS cor0 WHERE NOT col1 IS NULL GROUP BY col0
@@ -59334,8 +60076,15 @@ SELECT - - col1 AS col0 FROM tab1 AS cor0 GROUP BY col1, col1
 # Datafusion - Expected - 59
 # Datafusion - Expected - 61
 # Datafusion - Expected - 61
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col1" at position 0 and "tab2\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT ALL col1, col1 AS col1 FROM tab2 GROUP BY col1
+----
+41
+41
+59
+59
+61
+61
 
 query I rowsort
 SELECT ALL - + col2 col1 FROM tab0 AS cor0 GROUP BY col2
@@ -59423,8 +60172,15 @@ SELECT - col0 - col0 FROM tab1 AS cor0 GROUP BY col0
 # Datafusion - Expected - 79
 # Datafusion - Expected - -87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- tab2\.col2\) AS col1" at position 0 and "tab2\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col2 col1, col2 AS col1 FROM tab2 GROUP BY col2
+----
+-58
+-79
+-87
+58
+79
+87
 
 query I rowsort
 SELECT ALL - col2 FROM tab0 GROUP BY col2 HAVING ( + - col2 ) IS NOT NULL
@@ -59710,8 +60466,15 @@ SELECT + col2 FROM tab2 cor0 WHERE NULL <> col2 GROUP BY col2
 # Datafusion - Expected - 91
 # Datafusion - Expected - 92
 # Datafusion - Expected - 92
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col0" at position 0 and "cor0\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col0, col0 FROM tab2 AS cor0 GROUP BY col0, col0
+----
+15
+15
+91
+91
+92
+92
 
 query I rowsort
 SELECT DISTINCT + col1 FROM tab0 GROUP BY col1 HAVING NOT NULL IS NOT NULL
@@ -59923,8 +60686,15 @@ SELECT - - col2 * + - col2 col0 FROM tab1 AS cor0 GROUP BY col2
 # Datafusion - Expected - 28
 # Datafusion - Expected - 82
 # Datafusion - Expected - 82
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab1\.col0" at position 0 and "tab1\.col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col0, col0 AS col0 FROM tab1 GROUP BY col0
+----
+22
+22
+28
+28
+82
+82
 
 query I rowsort
 SELECT ALL - col1 AS col2 FROM tab0 AS cor0 GROUP BY col0, col1
@@ -60000,8 +60770,15 @@ SELECT ALL col2 AS col0 FROM tab1 AS cor0 GROUP BY col2, col0
 # Datafusion - Expected - 79
 # Datafusion - Expected - 87
 # Datafusion - Expected - 87
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "tab2\.col2" at position 0 and "tab2\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT col2, col2 AS col2 FROM tab2 GROUP BY col2, col1
+----
+58
+58
+79
+79
+87
+87
 
 query I rowsort
 SELECT - col1 AS col0 FROM tab1 AS cor0 GROUP BY col2, col0, col1
@@ -60977,8 +61754,15 @@ SELECT DISTINCT + col0 AS col0 FROM tab1 AS cor0 GROUP BY col1, col0
 # Datafusion - Expected - 57
 # Datafusion - Expected - 6
 # Datafusion - Expected - 6
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col1" at position 0 and "cor0\.col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col1, col1 FROM tab1 AS cor0 GROUP BY col1
+----
+44
+44
+57
+57
+6
+6
 
 query I rowsort
 SELECT - col0 AS col2 FROM tab1 AS cor0 GROUP BY col0 HAVING NULL IS NOT NULL
@@ -61199,8 +61983,15 @@ SELECT col1 AS col0 FROM tab2 cor0 GROUP BY col1 HAVING NULL > NULL
 # Datafusion - Expected - 71
 # Datafusion - Expected - 8
 # Datafusion - Expected - 8
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT DISTINCT + + col2, col2 FROM tab1 AS cor0 GROUP BY col2
+----
+45
+45
+71
+71
+8
+8
 
 query I rowsort
 SELECT DISTINCT col0 col1 FROM tab2 GROUP BY col0, col1, col0
@@ -61227,8 +62018,15 @@ SELECT ALL col1 FROM tab2 AS cor0 GROUP BY col1, col2 HAVING NOT NULL IS NULL
 # Datafusion - Expected - 1596
 # Datafusion - Expected - -82
 # Datafusion - Expected - 3608
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "\(\- cor0\.col0\) AS col0" at position 0 and "cor0\.col0 \* cor0\.col1 AS col0" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT - col0 AS col0, col0 * col1 AS col0 FROM tab1 cor0 GROUP BY col1, col0 HAVING NULL IS NULL
+----
+-22
+-28
+-82
+132
+1596
+3608
 
 query I rowsort
 SELECT - - col2 AS col1 FROM tab1 AS cor0 GROUP BY col2, col1
@@ -61306,8 +62104,15 @@ SELECT DISTINCT col1 AS col1 FROM tab1 WHERE NOT NULL < + col1 GROUP BY col1, co
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2" at position 0 and "cor0\.col2" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2, col2 AS col2 FROM tab0 AS cor0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query I rowsort
 SELECT col1 FROM tab2 GROUP BY col1 HAVING NULL <= NULL
@@ -61896,8 +62701,15 @@ SELECT DISTINCT - col2 col2 FROM tab2 cor0 GROUP BY col0, col2
 # Datafusion - Expected - 38
 # Datafusion - Expected - 79
 # Datafusion - Expected - 79
-query error DataFusion error: Error during planning: Projections require unique expression names but the expression "cor0\.col2 AS col1" at position 0 and "cor0\.col2 AS col1" at position 1 have the same name\. Consider aliasing \("AS"\) one of them\.
+query II valuesort
 SELECT col2 AS col1, + col2 AS col1 FROM tab0 AS cor0 GROUP BY col2
+----
+24
+24
+38
+38
+79
+79
 
 query II rowsort
 SELECT + col1 AS col0, col1 FROM tab1 AS cor0 GROUP BY col1, col0, col0
